@@ -2,7 +2,7 @@
 
 ![alt text](logo.jpg)
 
-#### Синтаксис
+#### Syntax
 
 ![alt text](syntax.png)
 
