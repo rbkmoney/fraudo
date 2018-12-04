@@ -2,11 +2,11 @@
 
 ![alt text](logo.jpg)
 
-####Синтаксис
+#### Синтаксис
 
 ![alt text](syntax.png)
 
-#####OPERATIONS:
+##### OPERATIONS:
 ~~~~
 *   count("group_field", time_in_minut)
 *   countSuccess("group_field", time_in_minut)
@@ -21,7 +21,7 @@
 *   like("field", "regexp_in_java_style")
 *   equalsCountry(")
 ~~~~
-#####RESULTS:
+##### RESULTS:
 ~~~~
 *   accept 
 *   3ds
