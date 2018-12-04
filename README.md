@@ -28,3 +28,33 @@
 *   decline
 *   notify
 ~~~~
+##### EXAMPLES:
+###### Simple:
+~~~~
+rule: 3 > 2 AND 1 = 1
+-> accept;
+~~~~
+###### Black list check:
+~~~~
+rule: inBlackList("email")
+-> notify;
+~~~~
+###### Counts check:
+~~~~
+rule: (count("ip", 1444) >= 10 OR countSuccess("email", 1444) > 5)
+        AND countError("fingerprint", 1444, "error_code") > 5
+-> notify;
+~~~~
+###### Unique count emails for ip:
+~~~~
+rule: unique("email", "ip") < 4
+-> decline;
+~~~~
+###### Combined check:
+~~~~
+rule: 3 > 2 AND 1 > 1
+-> decline;
+
+rule: count("email", 10) <= 10 AND count("ip", 1444) = 10
+-> 3ds;
+~~~~
