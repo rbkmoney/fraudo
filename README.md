@@ -19,7 +19,7 @@
 *   inWhiteList("field")
 *   inBlackList("field")
 *   like("field", "regexp_in_java_style")
-*   equalsCountry(")
+*   equalsCountry()
 ~~~~
 ##### RESULTS:
 ~~~~
