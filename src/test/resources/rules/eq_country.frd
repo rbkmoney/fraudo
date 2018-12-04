@@ -1,0 +1,2 @@
+rule: equals_country()
+-> notify;

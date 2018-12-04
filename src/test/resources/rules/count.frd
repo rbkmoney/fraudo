@@ -1,0 +1,2 @@
+rule: (count("ip", 1444) >= 10 OR countSuccess("email", 1444) > 5) AND countError("fingerprint", 1444, "error_code") > 5
+-> notify;

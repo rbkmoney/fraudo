@@ -1,0 +1,2 @@
+rule: inWhiteList("email")
+-> notify;
