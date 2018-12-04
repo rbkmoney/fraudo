@@ -87,7 +87,7 @@ like
  ;
 
 equals_country
- : 'equals_country' LPAREN RPAREN
+ : 'equalsCountry' LPAREN RPAREN
  ;
 
 DELIMETER : ',' ;

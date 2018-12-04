@@ -1,2 +1,2 @@
-rule: equals_country()
+rule: equalsCountry()
 -> notify;
