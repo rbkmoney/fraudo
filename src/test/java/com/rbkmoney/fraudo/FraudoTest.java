@@ -189,13 +189,12 @@ public class FraudoTest {
     public void eqCountryTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/eq_country.frd");
 
-        Mockito.when(countryResolver.resolveCountryBank(anyString())).thenReturn("RU");
-        Mockito.when(countryResolver.resolveCountryIp(anyString())).thenReturn("RU");
+        Mockito.when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
 
         Object result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.NOTIFY, result);
 
-        Mockito.when(countryResolver.resolveCountryBank(anyString())).thenReturn("US");
+        Mockito.when(countryResolver.resolveCountry(any(), anyString())).thenReturn("US");
         resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/eq_country.frd");
         result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.ACCEPT, result);

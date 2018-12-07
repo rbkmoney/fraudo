@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
+import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -45,6 +46,11 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     @Override
     public Object visitDecimalExpression(com.rbkmoney.fraudo.FraudoParser.DecimalExpressionContext ctx) {
         return Double.valueOf(ctx.DECIMAL().getText());
+    }
+
+    @Override
+    public Object visitStringExpression(FraudoParser.StringExpressionContext ctx) {
+        return TextUtil.safeGetText(ctx.STRING());
     }
 
     @Override
@@ -119,8 +125,8 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitEquals_country(FraudoParser.Equals_countryContext ctx) {
-        return customFuncVisitor.visitEquals_country(ctx);
+    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+        return customFuncVisitor.visitCountry_by(ctx);
     }
 
     @Override
@@ -139,13 +145,13 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitInWhiteList(FraudoParser.InWhiteListContext ctx) {
-        return listVisitor.visitInWhiteList(ctx);
+    public Object visitIn_white_list(FraudoParser.In_white_listContext ctx) {
+        return listVisitor.visitIn_white_list(ctx);
     }
 
     @Override
-    public Object visitInBlackList(FraudoParser.InBlackListContext ctx) {
-        return listVisitor.visitInBlackList(ctx);
+    public Object visitIn_black_list(FraudoParser.In_black_listContext ctx) {
+        return listVisitor.visitIn_black_list(ctx);
     }
 
     private boolean asBoolean(com.rbkmoney.fraudo.FraudoParser.ExpressionContext ctx) {

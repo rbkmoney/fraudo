@@ -22,12 +22,13 @@ expression
  | sum_error                                      #sumErrorExpression
  | unique                                         #uniqueExpression
  | in                                             #inFunctionExpression
- | inWhiteList                                    #inWhiteListExpression
- | inBlackList                                    #inBlackListExpression
+ | in_white_list                                  #inWhiteListExpression
+ | in_black_list                                  #inBlackListExpression
  | like                                           #likeFunctionExpression
- | equals_country                                 #equalsCountryFunctionExpression
+ | country_by                                     #countryByFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
+ | STRING                                         #stringExpression
  ;
 
 comparator
@@ -74,11 +75,11 @@ in
  : 'in' LPAREN STRING DELIMETER string_list RPAREN
  ;
 
-inWhiteList
+in_white_list
  : 'inWhiteList' LPAREN STRING RPAREN
  ;
 
-inBlackList
+in_black_list
  : 'inBlackList' LPAREN STRING RPAREN
  ;
 
@@ -86,23 +87,23 @@ like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
-equals_country
- : 'equalsCountry' LPAREN RPAREN
- ;
-
-DELIMETER : ',' ;
+country_by
+  : 'countryBy' LPAREN STRING DELIMETER STRING RPAREN
+  ;
 
 result
  : 'accept' | '3ds' | 'decline' | 'notify'
+ ;
+
+string_list
+ : STRING (',' STRING | WS)+
  ;
 
 STRING
  : '"' (~["\r\n] | '""')* '"'
  ;
 
-string_list
- : STRING (',' STRING | WS)+
- ;
+DELIMETER : ',' ;
 
 COMMENT
  : '#' ~[\r\n]* -> skip

@@ -17,17 +17,16 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
     private final InListFinder whiteListFinder;
 
     @Override
-    public Object visitInWhiteList(FraudoParser.InWhiteListContext ctx) {
+    public Object visitIn_white_list(FraudoParser.In_white_listContext ctx) {
         String fieldName = TextUtil.safeGetText(ctx.STRING());
         String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
         return whiteListFinder.findInList(CheckedField.getByValue(fieldName), fieldValue);
     }
 
     @Override
-    public Object visitInBlackList(FraudoParser.InBlackListContext ctx) {
+    public Object visitIn_black_list(FraudoParser.In_black_listContext ctx) {
         String fieldName = TextUtil.safeGetText(ctx.STRING());
         String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
         return blackListFinder.findInList(CheckedField.getByValue(fieldName), fieldValue);
     }
-
 }
