@@ -18,9 +18,10 @@
 *   in(("field", "first", "second", ...)
 *   inWhiteList("field")
 *   inBlackList("field")
-*   like("field", [regexp_in_java_style](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html))
+*   like("field", "regexp_in_java_style"[1])
 *   countryBy("field")
 ~~~~
+1. [regexp_in_java_style](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
 ##### RESULTS:
 ~~~~
 *   accept 
