@@ -1,0 +1,3 @@
+rule: (sum("ip", 1444) >= 10500.50 OR sumSuccess("email", 1444) > 500)
+      AND sumError("fingerprint", 1444, "error_code") > 523.12
+-> notify;
