@@ -10,9 +10,8 @@
         <version>1.0.2</version>
     </parent>
 
-    <groupId>com.rbkmoney</groupId>
     <artifactId>fraudo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
