@@ -88,7 +88,7 @@ like
  ;
 
 country_by
-  : 'countryBy' LPAREN STRING DELIMETER STRING RPAREN
+  : 'countryBy' LPAREN STRING RPAREN
   ;
 
 result

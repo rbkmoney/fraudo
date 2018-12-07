@@ -19,7 +19,7 @@
 *   inWhiteList("field")
 *   inBlackList("field")
 *   like("field", "regexp_in_java_style")
-*   equalsCountry()
+*   countryBy("field")
 ~~~~
 ##### RESULTS:
 ~~~~
@@ -49,6 +49,11 @@ rule: (count("ip", 1444) >= 10 OR countSuccess("email", 1444) > 5)
 ~~~~
 rule: unique("email", "ip") < 4
 -> decline;
+~~~~
+###### Check country by ip:
+~~~~
+rule: countryBy("ip") = "RU"
+-> notify;
 ~~~~
 ###### Combined check:
 ~~~~
