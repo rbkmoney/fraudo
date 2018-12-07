@@ -8,17 +8,17 @@
 
 ##### OPERATIONS:
 ~~~~
-*   count("group_field", time_in_minut)
-*   countSuccess("group_field", time_in_minut)
-*   countError("group_field", time_in_minut, "error_code")
-*   sum("group_field", time_in_minut)
-*   sumSuccess("group_field", time_in_minut)
-*   sumError(("group_field", time_in_minut, "error_code")
+*   count("group_field", time_in_minutes)
+*   countSuccess("group_field", time_in_minutes)
+*   countError("group_field", time_in_minutes, "error_code")
+*   sum("group_field", time_in_minutes)
+*   sumSuccess("group_field", time_in_minutes)
+*   sumError(("group_field", time_in_minutes, "error_code")
 *   unique(("group_field", "by_field")
 *   in(("field", "first", "second", ...)
 *   inWhiteList("field")
 *   inBlackList("field")
-*   like("field", "regexp_in_java_style")
+*   like("field", [regexp_in_java_style](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html))
 *   countryBy("field")
 ~~~~
 ##### RESULTS:
