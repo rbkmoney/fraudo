@@ -8,6 +8,7 @@ public enum ResultStatus {
     ACCEPT("accept"),
     THREE_DS("3ds"),
     DECLINE("decline"),
+    NORMAL("normal"),
     NOTIFY("notify");
 
     private String value;

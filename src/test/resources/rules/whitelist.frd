@@ -1,2 +1,2 @@
 rule: inWhiteList("email")
--> notify;
+-> decline;

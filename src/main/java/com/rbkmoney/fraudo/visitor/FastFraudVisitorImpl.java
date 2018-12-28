@@ -5,10 +5,12 @@ import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
+import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
@@ -23,19 +25,25 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         if (asBoolean(ctx.expression())) {
             return super.visit(ctx.result());
         }
-        return ResultStatus.ACCEPT;
+        return ResultStatus.NORMAL;
     }
 
     @Override
     public Object visitParse(com.rbkmoney.fraudo.FraudoParser.ParseContext ctx) {
+        List<String> notifications = new ArrayList<>();
         for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraud_ruleContext : ctx.fraud_rule()) {
             if (asBoolean(fraud_ruleContext.expression())) {
                 String result = fraud_ruleContext.result().getText();
-                return Optional.ofNullable(ResultStatus.getByValue(result))
-                        .orElseThrow(() -> new UnknownResultException(result));
+                if (result != null && ResultStatus.NOTIFY.equals(ResultStatus.getByValue(result))) {
+                    notifications.add(String.valueOf(fraud_ruleContext.getRuleIndex()));
+                } else if (result != null && ResultStatus.getByValue(result) != null) {
+                    return new ResultModel(ResultStatus.getByValue(result), notifications);
+                } else {
+                    throw new UnknownResultException(result);
+                }
             }
         }
-        return ResultStatus.ACCEPT;
+        return new ResultModel(ResultStatus.NORMAL, notifications);
     }
 
     @Override
