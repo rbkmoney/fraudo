@@ -18,20 +18,20 @@ public class SumVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitSum(FraudoParser.SumContext ctx) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         String time = TextUtil.safeGetText(ctx.DECIMAL());
-        return sumAggregator.sum(CheckedField.getByValue(countTarget), fraudModel.getEmail(), Long.valueOf(time));
+        return sumAggregator.sum(CheckedField.getByValue(countTarget), fraudModel, Long.valueOf(time));
     }
 
     @Override
     public Object visitSum_success(FraudoParser.Sum_successContext ctx) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
-        return sumAggregator.sumSuccess(CheckedField.getByValue(countTarget), fraudModel.getEmail(), Long.valueOf(ctx.DECIMAL().getText()));
+        return sumAggregator.sumSuccess(CheckedField.getByValue(countTarget), fraudModel, Long.valueOf(ctx.DECIMAL().getText()));
     }
 
     @Override
     public Object visitSum_error(FraudoParser.Sum_errorContext ctx) {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
-        return sumAggregator.sumError(CheckedField.getByValue(countTarget), fraudModel.getEmail(),
+        return sumAggregator.sumError(CheckedField.getByValue(countTarget), fraudModel,
                 Long.valueOf(ctx.DECIMAL().getText()), errorCode);
     }
 

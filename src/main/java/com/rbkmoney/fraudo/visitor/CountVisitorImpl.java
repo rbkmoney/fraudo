@@ -18,7 +18,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitCount(com.rbkmoney.fraudo.FraudoParser.CountContext ctx) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         String time = TextUtil.safeGetText(ctx.DECIMAL());
-        return (double) countAggregator.count(CheckedField.getByValue(countTarget), fraudModel.getEmail(),
+        return (double) countAggregator.count(CheckedField.getByValue(countTarget), fraudModel,
                 Long.valueOf(time));
     }
 
@@ -26,7 +26,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitCount_success(FraudoParser.Count_successContext ctx) {
         String countTarget = ctx.STRING().getText();
         String time = TextUtil.safeGetText(ctx.DECIMAL());
-        return (double) countAggregator.countSuccess(CheckedField.getByValue(countTarget), fraudModel.getEmail(),
+        return (double) countAggregator.countSuccess(CheckedField.getByValue(countTarget), fraudModel,
                 Long.valueOf(time));
     }
 
@@ -35,7 +35,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String time = TextUtil.safeGetText(ctx.DECIMAL());
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
-        return (double) countAggregator.countError(CheckedField.getByValue(countTarget), fraudModel.getEmail(),
+        return (double) countAggregator.countError(CheckedField.getByValue(countTarget), fraudModel,
                 Long.valueOf(time), errorCode);
     }
 

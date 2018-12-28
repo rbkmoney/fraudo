@@ -1,2 +1,2 @@
 rule: in("email", "test@gmail", "test@gmail.ru")
--> notify;
+-> accept;
