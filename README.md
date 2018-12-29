@@ -28,6 +28,7 @@
 *   3ds
 *   decline
 *   notify
+*   normal
 ~~~~
 ##### EXAMPLES:
 ###### Simple:
