@@ -49,7 +49,8 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitUnique(FraudoParser.UniqueContext ctx) {
         String field = TextUtil.safeGetText(ctx.STRING(0));
         String fieldBy = TextUtil.safeGetText(ctx.STRING(1));
-        return (double) uniqueValueAggregator.countUniqueValue(CheckedField.getByValue(field), CheckedField.getByValue(fieldBy));
+        return (double) uniqueValueAggregator.countUniqueValue(CheckedField.getByValue(field), fraudModel,
+                CheckedField.getByValue(fieldBy));
     }
 
 }

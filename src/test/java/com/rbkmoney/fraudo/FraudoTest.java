@@ -168,7 +168,7 @@ public class FraudoTest {
     @Test
     public void uniqCountTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_uniq.frd");
-        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any())).thenReturn(2);
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any())).thenReturn(2);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
