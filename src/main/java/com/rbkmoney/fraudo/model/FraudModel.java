@@ -11,5 +11,6 @@ public class FraudModel {
     private String fingerprint;
     private String shopId;
     private String partyId;
+    private Long amount;
 
 }
