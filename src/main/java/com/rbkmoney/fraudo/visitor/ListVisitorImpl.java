@@ -27,10 +27,10 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
         return findInList(ctx.STRING(), blackListFinder);
     }
 
-    private Object findInList(TerminalNode string, InListFinder blackListFinder) {
+    private Object findInList(TerminalNode string, InListFinder listFinder) {
         String fieldName = TextUtil.safeGetText(string);
         String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
-        return blackListFinder.findInList(fraudModel.getPartyId(), fraudModel.getShopId(),
+        return listFinder.findInList(fraudModel.getPartyId(), fraudModel.getShopId(),
                 CheckedField.getByValue(fieldName), fieldValue);
     }
 }
