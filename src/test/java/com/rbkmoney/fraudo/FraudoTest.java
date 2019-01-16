@@ -178,13 +178,13 @@ public class FraudoTest {
     public void whiteBlackListTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/whitelist.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        Mockito.when(whiteListFinder.findInList(any(), anyString())).thenReturn(true);
+        Mockito.when(whiteListFinder.findInList(anyString(), anyString(), any(), anyString())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
 
         resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/blacklist.frd");
         parseContext = getParseContext(resourceAsStream);
-        Mockito.when(blackListFinder.findInList(any(), anyString())).thenReturn(true);
+        Mockito.when(blackListFinder.findInList(anyString(), anyString(), any(), anyString())).thenReturn(true);
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());

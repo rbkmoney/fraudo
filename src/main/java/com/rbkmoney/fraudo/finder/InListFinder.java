@@ -4,6 +4,6 @@ import com.rbkmoney.fraudo.constant.CheckedField;
 
 public interface InListFinder {
 
-    Boolean findInList(CheckedField field, String value);
+    Boolean findInList(String partyId, String shopId, CheckedField field, String value);
 
 }
