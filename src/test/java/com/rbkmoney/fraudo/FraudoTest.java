@@ -138,6 +138,16 @@ public class FraudoTest {
     }
 
     @Test
+    public void amountTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/amount.frd");
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        FraudModel model = new FraudModel();
+        model.setAmount(56L);
+        ResultModel result = invoke(parseContext, model);
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/catch.frd");
         Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any())).thenThrow(new UnknownResultException("as"));

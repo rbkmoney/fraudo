@@ -26,6 +26,7 @@ expression
  | in_black_list                                  #inBlackListExpression
  | like                                           #likeFunctionExpression
  | country_by                                     #countryByFunctionExpression
+ | amount                                         #amountFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  | STRING                                         #stringExpression
@@ -41,6 +42,10 @@ binary
 
 bool
  : TRUE | FALSE
+ ;
+
+amount
+ : 'amount' LPAREN RPAREN
  ;
 
 count

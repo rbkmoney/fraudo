@@ -19,6 +19,7 @@
 *   inWhiteList("field")
 *   inBlackList("field")
 *   like("field", "regexp_in_java_style"[1])
+*   amount()
 *   countryBy("ip") - this function can return result "unknown", you must remember it!
 ~~~~
 
@@ -66,6 +67,11 @@ rule: unique("email", "ip") < 4
 ~~~~
 rule: countryBy("ip") = "RU"
 -> notify;
+~~~~
+###### Check current amount:
+~~~~
+rule: amount() < 100
+-> accept;
 ~~~~
 ###### Combined check:
 ~~~~

@@ -167,6 +167,11 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         return listVisitor.visitIn_black_list(ctx);
     }
 
+    @Override
+    public Object visitAmount(FraudoParser.AmountContext ctx) {
+        return customFuncVisitor.visitAmount(ctx);
+    }
+
     private boolean asBoolean(com.rbkmoney.fraudo.FraudoParser.ExpressionContext ctx) {
         return (boolean) visit(ctx);
     }

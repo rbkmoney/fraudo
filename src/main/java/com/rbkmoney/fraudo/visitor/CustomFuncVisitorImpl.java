@@ -53,4 +53,8 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
                 CheckedField.getByValue(fieldBy));
     }
 
+    @Override
+    public Object visitAmount(FraudoParser.AmountContext ctx) {
+        return (double) fraudModel.getAmount();
+    }
 }
