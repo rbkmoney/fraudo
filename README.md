@@ -19,8 +19,19 @@
 *   inWhiteList("field")
 *   inBlackList("field")
 *   like("field", "regexp_in_java_style"[1])
-*   countryBy("field") - this function can return result "unknown", you must remember it!
+*   amount()
+*   country() - this function can return result "unknown", you must remember it!
 ~~~~
+
+##### group_field:
+  *  email,
+  *  ip,
+  *  fingerprint,
+  *  bin,
+  *  shop_ip,
+  *  party_id,
+  *  card_token
+    
 1. [regexp_in_java_style](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
 ##### RESULTS:
 ~~~~
@@ -54,8 +65,13 @@ rule: unique("email", "ip") < 4
 ~~~~
 ###### Check country by ip:
 ~~~~
-rule: countryBy("ip") = "RU"
+rule: country() = "RU"
 -> notify;
+~~~~
+###### Check current amount:
+~~~~
+rule: amount() < 100
+-> accept;
 ~~~~
 ###### Combined check:
 ~~~~

@@ -5,7 +5,7 @@ parse
  ;
 
 fraud_rule
- : RULE_BLOCK expression RETURN result SCOL
+ : RULE_BLOCK expression RETURN result (CATCH_ERROR catch_result)? SCOL
  ;
 
 expression
@@ -25,7 +25,8 @@ expression
  | in_white_list                                  #inWhiteListExpression
  | in_black_list                                  #inBlackListExpression
  | like                                           #likeFunctionExpression
- | country_by                                     #countryByFunctionExpression
+ | country                                        #countryFunctionExpression
+ | amount                                         #amountFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  | STRING                                         #stringExpression
@@ -41,6 +42,10 @@ binary
 
 bool
  : TRUE | FALSE
+ ;
+
+amount
+ : 'amount' LPAREN RPAREN
  ;
 
 count
@@ -87,11 +92,15 @@ like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
-country_by
-  : 'countryBy' LPAREN STRING RPAREN
+country
+  : 'country' LPAREN RPAREN
   ;
 
 result
+ : 'accept' | '3ds' | 'decline' | 'notify'
+ ;
+
+catch_result
  : 'accept' | '3ds' | 'decline' | 'notify'
  ;
 
@@ -110,12 +119,13 @@ COMMENT
  ;
 
 RETURN     : '->' ;
+CATCH_ERROR: 'catch:' ;
 RULE_BLOCK : 'rule:' ;
-AND        : 'AND' ;
-OR         : 'OR' ;
-NOT        : 'NOT';
-TRUE       : 'TRUE' ;
-FALSE      : 'FALSE' ;
+AND        : 'AND' | 'and';
+OR         : 'OR' | 'or' ;
+NOT        : 'NOT' | 'not';
+TRUE       : 'TRUE' | 'true';
+FALSE      : 'FALSE' | 'false';
 GT         : '>' ;
 GE         : '>=' ;
 LT         : '<' ;
