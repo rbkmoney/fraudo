@@ -5,7 +5,7 @@ parse
  ;
 
 fraud_rule
- : RULE_BLOCK expression RETURN result SCOL
+ : RULE_BLOCK expression RETURN result (CATCH_ERROR catch_result)? SCOL
  ;
 
 expression
@@ -95,6 +95,10 @@ result
  : 'accept' | '3ds' | 'decline' | 'notify'
  ;
 
+catch_result
+ : 'accept' | '3ds' | 'decline' | 'notify'
+ ;
+
 string_list
  : STRING (',' STRING | WS)+
  ;
@@ -110,12 +114,13 @@ COMMENT
  ;
 
 RETURN     : '->' ;
+CATCH_ERROR: 'catch:' ;
 RULE_BLOCK : 'rule:' ;
-AND        : 'AND' ;
-OR         : 'OR' ;
-NOT        : 'NOT';
-TRUE       : 'TRUE' ;
-FALSE      : 'FALSE' ;
+AND        : 'AND' | 'and';
+OR         : 'OR' | 'or' ;
+NOT        : 'NOT' | 'not';
+TRUE       : 'TRUE' | 'true';
+FALSE      : 'FALSE' | 'false';
 GT         : '>' ;
 GE         : '>=' ;
 LT         : '<' ;

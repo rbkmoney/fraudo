@@ -49,12 +49,8 @@ public class FraudoTest {
     @Test
     public void threeDsTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/three_ds.frd");
-        com.rbkmoney.fraudo.FraudoLexer lexer = new com.rbkmoney.fraudo.FraudoLexer(new ANTLRInputStream(resourceAsStream));
-        com.rbkmoney.fraudo.FraudoParser parser = new com.rbkmoney.fraudo.FraudoParser(new CommonTokenStream(lexer));
-
         Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(10);
-        ResultModel result = (ResultModel) new FastFraudVisitorFactory().createVisitor(new FraudModel(), countAggregator,
-                sumAggregator, uniqueValueAggregator, countryResolver, blackListFinder, whiteListFinder).visit(parser.parse());
+        ResultModel result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
     }
 
@@ -139,6 +135,15 @@ public class FraudoTest {
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
+    public void catchTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/catch.frd");
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any())).thenThrow(new UnknownResultException("as"));
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
     }
 
     @Test

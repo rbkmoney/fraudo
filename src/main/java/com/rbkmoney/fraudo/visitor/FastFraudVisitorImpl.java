@@ -22,8 +22,15 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
 
     @Override
     public Object visitFraud_rule(com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext ctx) {
-        if (asBoolean(ctx.expression())) {
-            return super.visit(ctx.result());
+        try {
+            if (asBoolean(ctx.expression())) {
+                return ResultStatus.getByValue((String) super.visit(ctx.result()));
+            }
+        } catch (Exception e) {
+            if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
+                return ResultStatus.getByValue(ctx.catch_result().getText());
+            }
+            return ResultStatus.THREE_DS;
         }
         return ResultStatus.NORMAL;
     }
@@ -32,15 +39,13 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitParse(com.rbkmoney.fraudo.FraudoParser.ParseContext ctx) {
         List<String> notifications = new ArrayList<>();
         for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraud_ruleContext : ctx.fraud_rule()) {
-            if (asBoolean(fraud_ruleContext.expression())) {
-                String result = fraud_ruleContext.result().getText();
-                if (result != null && ResultStatus.NOTIFY.equals(ResultStatus.getByValue(result))) {
-                    notifications.add(String.valueOf(fraud_ruleContext.getRuleIndex()));
-                } else if (result != null && ResultStatus.getByValue(result) != null) {
-                    return new ResultModel(ResultStatus.getByValue(result), notifications);
-                } else {
-                    throw new UnknownResultException(result);
-                }
+            ResultStatus result = (ResultStatus) visitFraud_rule(fraud_ruleContext);
+            if (result != null && ResultStatus.NOTIFY.equals(result)) {
+                notifications.add(String.valueOf(fraud_ruleContext.getRuleIndex()));
+            } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
+                return new ResultModel(result, notifications);
+            } else if (result == null) {
+                throw new UnknownResultException(fraud_ruleContext.getText());
             }
         }
         return new ResultModel(ResultStatus.NORMAL, notifications);
