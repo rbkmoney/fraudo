@@ -25,7 +25,7 @@ expression
  | in_white_list                                  #inWhiteListExpression
  | in_black_list                                  #inBlackListExpression
  | like                                           #likeFunctionExpression
- | country_by                                     #countryByFunctionExpression
+ | country                                        #countryFunctionExpression
  | amount                                         #amountFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
@@ -92,8 +92,8 @@ like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
-country_by
-  : 'countryBy' LPAREN STRING RPAREN
+country
+  : 'country' LPAREN RPAREN
   ;
 
 result

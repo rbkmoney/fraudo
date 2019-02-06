@@ -20,7 +20,7 @@
 *   inBlackList("field")
 *   like("field", "regexp_in_java_style"[1])
 *   amount()
-*   countryBy("ip") - this function can return result "unknown", you must remember it!
+*   country() - this function can return result "unknown", you must remember it!
 ~~~~
 
 ##### group_field:
@@ -65,7 +65,7 @@ rule: unique("email", "ip") < 4
 ~~~~
 ###### Check country by ip:
 ~~~~
-rule: countryBy("ip") = "RU"
+rule: country() = "RU"
 -> notify;
 ~~~~
 ###### Check current amount:

@@ -19,10 +19,8 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
     private final CountryResolver countryResolver;
 
     @Override
-    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
-        String fieldName = TextUtil.safeGetText(ctx.STRING());
-        String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
-        return countryResolver.resolveCountry(CheckedField.getByValue(fieldName), fieldValue);
+    public Object visitCountry(FraudoParser.CountryContext ctx) {
+        return countryResolver.resolveCountryByIp(fraudModel.getIp());
     }
 
     @Override
