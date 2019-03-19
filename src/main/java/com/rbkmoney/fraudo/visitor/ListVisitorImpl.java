@@ -10,6 +10,9 @@ import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
 
@@ -19,12 +22,12 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
 
     @Override
     public Object visitIn_white_list(FraudoParser.In_white_listContext ctx) {
-        return findInList(ctx.STRING(), whiteListFinder);
+        return findInList(ctx.string_list().STRING(), whiteListFinder);
     }
 
     @Override
     public Object visitIn_black_list(FraudoParser.In_black_listContext ctx) {
-        return findInList(ctx.STRING(), blackListFinder);
+        return findInList(ctx.string_list().STRING(), blackListFinder);
     }
 
     private Object findInList(TerminalNode string, InListFinder listFinder) {
@@ -32,5 +35,19 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
         String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
         return listFinder.findInList(fraudModel.getPartyId(), fraudModel.getShopId(),
                 CheckedField.getByValue(fieldName), fieldValue);
+    }
+
+    private Object findInList(List<TerminalNode> nodes, InListFinder listFinder) {
+        List<String> fields = nodes.stream()
+                .map(TextUtil::safeGetText)
+                .collect(Collectors.toList());
+        List<String> values = fields.stream()
+                .map(field -> FieldResolver.resolveString(field, fraudModel))
+                .collect(Collectors.toList());
+        List<CheckedField> checkedFields = fields.stream()
+                .map(CheckedField::getByValue)
+                .collect(Collectors.toList());
+        return listFinder.findInList(fraudModel.getPartyId(), fraudModel.getShopId(),
+                checkedFields, values);
     }
 }

@@ -138,8 +138,8 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitCountry(FraudoParser.CountryContext ctx) {
-        return customFuncVisitor.visitCountry(ctx);
+    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+        return customFuncVisitor.visitCountry_by(ctx);
     }
 
     @Override

@@ -138,6 +138,17 @@ public class FraudoTest {
     }
 
     @Test
+    public void inCountryTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/in_country.frd");
+        Mockito.when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
+
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        FraudModel model = new FraudModel();
+        ResultModel result = invoke(parseContext, model);
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void amountTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/amount.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
@@ -150,7 +161,7 @@ public class FraudoTest {
     @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/catch.frd");
-        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any())).thenThrow(new UnknownResultException("as"));
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -183,7 +194,7 @@ public class FraudoTest {
     @Test
     public void uniqCountTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_uniq.frd");
-        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any())).thenReturn(2);
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any())).thenReturn(2);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -193,13 +204,13 @@ public class FraudoTest {
     public void whiteBlackListTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/whitelist.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        Mockito.when(whiteListFinder.findInList(anyString(), anyString(), any(), anyString())).thenReturn(true);
+        Mockito.when(whiteListFinder.findInList(anyString(), anyString(), anyList(), anyList())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
 
         resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/blacklist.frd");
         parseContext = getParseContext(resourceAsStream);
-        Mockito.when(blackListFinder.findInList(anyString(), anyString(), any(), anyString())).thenReturn(true);
+        Mockito.when(blackListFinder.findInList(anyString(), anyString(), anyList(), anyList())).thenReturn(true);
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());
@@ -209,13 +220,13 @@ public class FraudoTest {
     public void eqCountryTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/eq_country.frd");
 
-        Mockito.when(countryResolver.resolveCountryByIp( anyString())).thenReturn("RU");
+        Mockito.when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
 
         ResultModel result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());
 
-        Mockito.when(countryResolver.resolveCountryByIp( anyString())).thenReturn("US");
+        Mockito.when(countryResolver.resolveCountry(any(), anyString())).thenReturn("US");
         resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/eq_country.frd");
         result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
