@@ -1,2 +1,2 @@
-rule: country() = "RU"
+rule: countryBy("ip") = "RU"
 -> notify;

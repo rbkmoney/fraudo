@@ -5,6 +5,6 @@ import com.rbkmoney.fraudo.model.FraudModel;
 
 public interface UniqueValueAggregator {
 
-    Integer countUniqueValue(CheckedField countField, FraudModel fraudModel, CheckedField onField);
+    Integer countUniqueValue(CheckedField countField, FraudModel fraudModel, CheckedField onField, Long time);
 
 }

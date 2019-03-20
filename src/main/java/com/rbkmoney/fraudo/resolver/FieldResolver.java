@@ -16,6 +16,8 @@ public class FieldResolver {
                 return fraudModel.getFingerprint();
             case EMAIL:
                 return fraudModel.getEmail();
+            case COUNTRY_BANK:
+                return fraudModel.getBinCountryCode();
             default:
                 throw new UnresolvableFieldException(fieldName);
         }

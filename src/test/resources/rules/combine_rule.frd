@@ -1,0 +1,20 @@
+rule:
+inWhiteList("email", "fingerprint", "card", "bin", "ip") -> accept; # принимаем платеж, если хотя бы один из указанных параметров находится в вайтлисте
+rule:
+inBlackList("email", "fingerprint", "card", "bin", "ip") -> decline; # отклоняем платеж, если хотя бы один из указанных параметров находится в блэклисте
+rule:
+in(countryBy("bin"), "AR", "AU", "CA", "CL", "CO", "JP", "MX", "NZ", "PE", "UK", "US") -> decline; # эти страны блочим всегда
+rule:
+amount() > 3000 AND in(countryBy("bin"), "DE", "ES", "PH") -> decline; # лимит суммы платежа 30 баксов для Германии, Испании, Филиппин
+rule:
+amount() > 5000 AND in(countryBy("bin"), "BR", "IS") -> decline;# лимит суммы платежа 50 баксов для Бразилии, Израиля
+rule:
+amount() > 500000 -> decline;# лимит суммы платежа 500 баксов для всех остальных
+rule:
+count("card", 1440) > 10 AND in (countryBy("bin"), "BY", "BR", "EE", "GE", "KZ", "LT", "LV", "PL", "UA") -> decline;# этим странам 10 попыток с одной карты в сутки
+rule:
+count("card", 1440) > 5 -> decline;# остальным странам 5 попыток с одной карты в сутки
+rule:
+unique("card", "email", 1440) > 3 -> decline; # лимит 3 уникальных карты на емэйл за сутки
+rule:
+unique("card", "fingerprint", 1440) > 3 -> decline; # лимит 3 уникальных карты на девайс за сутки

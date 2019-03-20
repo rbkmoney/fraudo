@@ -19,14 +19,23 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
     private final CountryResolver countryResolver;
 
     @Override
-    public Object visitCountry(FraudoParser.CountryContext ctx) {
-        return countryResolver.resolveCountryByIp(fraudModel.getIp());
+    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+        String fieldName = TextUtil.safeGetText(ctx.STRING());
+        String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
+        return countryResolver.resolveCountry(CheckedField.getByValue(fieldName), fieldValue);
     }
 
     @Override
     public Object visitIn(FraudoParser.InContext ctx) {
-        String field = TextUtil.safeGetText(ctx.STRING());
-        String fieldValue = FieldResolver.resolveString(field, fraudModel);
+        String fieldValue = "";
+        if (ctx.STRING() != null && ctx.STRING().getText() != null && !ctx.STRING().getText().isEmpty()) {
+            String field = TextUtil.safeGetText(ctx.STRING());
+            fieldValue = FieldResolver.resolveString(field, fraudModel);
+        } else {
+            String fieldName = TextUtil.safeGetText(ctx.country_by().STRING());
+            String value = FieldResolver.resolveString(fieldName, fraudModel);
+            fieldValue = countryResolver.resolveCountry(CheckedField.getByValue(fieldName), value);
+        }
         for (TerminalNode string : ctx.string_list().STRING()) {
             if (fieldValue.equals(TextUtil.safeGetText(string))) {
                 return true;
@@ -47,8 +56,9 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitUnique(FraudoParser.UniqueContext ctx) {
         String field = TextUtil.safeGetText(ctx.STRING(0));
         String fieldBy = TextUtil.safeGetText(ctx.STRING(1));
+        String time = TextUtil.safeGetText(ctx.DECIMAL());
         return (double) uniqueValueAggregator.countUniqueValue(CheckedField.getByValue(field), fraudModel,
-                CheckedField.getByValue(fieldBy));
+                CheckedField.getByValue(fieldBy), Long.valueOf(time));
     }
 
     @Override
