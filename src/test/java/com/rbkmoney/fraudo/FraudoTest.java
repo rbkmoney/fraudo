@@ -108,6 +108,15 @@ public class FraudoTest {
     }
 
     @Test
+    public void countCardTokenTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_card_token.frd");
+        Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(10);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+    }
+
+    @Test
     public void sumTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/sum.frd");
         Mockito.when(sumAggregator.sum(anyObject(), any(), anyLong())).thenReturn(10500.60);
