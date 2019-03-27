@@ -5,7 +5,7 @@ parse
  ;
 
 fraud_rule
- : RULE_BLOCK expression RETURN result (CATCH_ERROR catch_result)? SCOL
+ : RULE_BLOCK (IDENTIFIER ':')? expression RETURN result (CATCH_ERROR catch_result)? SCOL
  ;
 
 expression

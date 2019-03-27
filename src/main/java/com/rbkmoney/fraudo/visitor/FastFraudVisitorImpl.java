@@ -40,15 +40,23 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         List<String> notifications = new ArrayList<>();
         for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraud_ruleContext : ctx.fraud_rule()) {
             ResultStatus result = (ResultStatus) visitFraud_rule(fraud_ruleContext);
+            String key = generateRuleKey(fraud_ruleContext);
             if (result != null && ResultStatus.NOTIFY.equals(result)) {
-                notifications.add(String.valueOf(fraud_ruleContext.getRuleIndex()));
+                notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
-                return new ResultModel(result, notifications);
+                return new ResultModel(result, key, notifications);
             } else if (result == null) {
                 throw new UnknownResultException(fraud_ruleContext.getText());
             }
         }
-        return new ResultModel(ResultStatus.NORMAL, notifications);
+        return new ResultModel(ResultStatus.NORMAL, null, notifications);
+    }
+
+    private String generateRuleKey(FraudoParser.Fraud_ruleContext fraud_ruleContext) {
+        if (fraud_ruleContext.IDENTIFIER() != null && !fraud_ruleContext.IDENTIFIER().getText().isEmpty()) {
+            return fraud_ruleContext.IDENTIFIER().getText();
+        }
+        return String.valueOf(fraud_ruleContext.getRuleIndex());
     }
 
     @Override

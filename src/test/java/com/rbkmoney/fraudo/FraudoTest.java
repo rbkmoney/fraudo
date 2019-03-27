@@ -67,6 +67,7 @@ public class FraudoTest {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/decline.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals("test_11", result.getRuleChecked());
     }
 
     @Test
@@ -98,6 +99,7 @@ public class FraudoTest {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals("1", result.getRuleChecked());
 
         Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(9);
         Mockito.when(countAggregator.countError(anyObject(), any(), anyLong(), anyString())).thenReturn(6);
