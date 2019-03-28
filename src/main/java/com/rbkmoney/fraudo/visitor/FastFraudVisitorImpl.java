@@ -6,6 +6,7 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.utils.RuleKeyGenerator;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -38,25 +39,18 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     @Override
     public Object visitParse(com.rbkmoney.fraudo.FraudoParser.ParseContext ctx) {
         List<String> notifications = new ArrayList<>();
-        for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraud_ruleContext : ctx.fraud_rule()) {
-            ResultStatus result = (ResultStatus) visitFraud_rule(fraud_ruleContext);
-            String key = generateRuleKey(fraud_ruleContext);
+        for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
+            ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
+            String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
             if (result != null && ResultStatus.NOTIFY.equals(result)) {
                 notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
                 return new ResultModel(result, key, notifications);
             } else if (result == null) {
-                throw new UnknownResultException(fraud_ruleContext.getText());
+                throw new UnknownResultException(fraudRuleContext.getText());
             }
         }
-        return new ResultModel(ResultStatus.NORMAL, null, notifications);
-    }
-
-    private String generateRuleKey(FraudoParser.Fraud_ruleContext fraud_ruleContext) {
-        if (fraud_ruleContext.IDENTIFIER() != null && !fraud_ruleContext.IDENTIFIER().getText().isEmpty()) {
-            return fraud_ruleContext.IDENTIFIER().getText();
-        }
-        return String.valueOf(fraud_ruleContext.getRuleIndex());
+        return new ResultModel(ResultStatus.NORMAL, notifications);
     }
 
     @Override
