@@ -1,2 +1,2 @@
-rule: unique("email", "ip") < 4
+rule: unique("email", "ip", 1444) < 4
 -> decline;

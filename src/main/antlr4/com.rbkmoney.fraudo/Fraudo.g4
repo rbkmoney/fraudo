@@ -5,7 +5,7 @@ parse
  ;
 
 fraud_rule
- : RULE_BLOCK expression RETURN result (CATCH_ERROR catch_result)? SCOL
+ : RULE_BLOCK (IDENTIFIER ':')? expression RETURN result (CATCH_ERROR catch_result)? SCOL
  ;
 
 expression
@@ -26,6 +26,7 @@ expression
  | in_black_list                                  #inBlackListExpression
  | like                                           #likeFunctionExpression
  | country                                        #countryFunctionExpression
+ | country_by                                     #countryByFunctionExpression
  | amount                                         #amountFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
@@ -73,19 +74,19 @@ sum_error
  ;
 
 unique
- : 'unique' LPAREN STRING DELIMETER STRING RPAREN
+ : 'unique' LPAREN STRING DELIMETER STRING DELIMETER DECIMAL RPAREN
  ;
 
 in
- : 'in' LPAREN STRING DELIMETER string_list RPAREN
+ : 'in' LPAREN (country_by | STRING) DELIMETER string_list RPAREN
  ;
 
 in_white_list
- : 'inWhiteList' LPAREN STRING RPAREN
+ : 'inWhiteList' LPAREN string_list RPAREN
  ;
 
 in_black_list
- : 'inBlackList' LPAREN STRING RPAREN
+ : 'inBlackList' LPAREN string_list RPAREN
  ;
 
 like
@@ -94,6 +95,10 @@ like
 
 country
   : 'country' LPAREN RPAREN
+  ;
+
+country_by
+  : 'countryBy' LPAREN STRING RPAREN
   ;
 
 result

@@ -13,5 +13,11 @@ import java.util.List;
 public class ResultModel {
 
     private ResultStatus resultStatus;
+    private String ruleChecked;
     private List<String> notificationsRule;
+
+    public ResultModel(ResultStatus resultStatus, List<String> notificationsRule) {
+        this.resultStatus = resultStatus;
+        this.notificationsRule = notificationsRule;
+    }
 }

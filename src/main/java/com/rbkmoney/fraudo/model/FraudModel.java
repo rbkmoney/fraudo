@@ -8,6 +8,8 @@ public class FraudModel {
     private String ip;
     private String email;
     private String bin;
+    private String binCountryCode;
+    private String cardToken;
     private String fingerprint;
     private String shopId;
     private String partyId;

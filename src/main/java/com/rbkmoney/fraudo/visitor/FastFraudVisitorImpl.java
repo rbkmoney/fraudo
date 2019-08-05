@@ -6,6 +6,7 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.utils.RuleKeyGenerator;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +22,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     private final CustomFuncVisitorImpl customFuncVisitor;
 
     @Override
-    public Object visitFraud_rule(com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext ctx) {
+    public Object visitFraud_rule(FraudoParser.Fraud_ruleContext ctx) {
         try {
             if (asBoolean(ctx.expression())) {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
@@ -36,28 +37,29 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitParse(com.rbkmoney.fraudo.FraudoParser.ParseContext ctx) {
+    public Object visitParse(FraudoParser.ParseContext ctx) {
         List<String> notifications = new ArrayList<>();
-        for (com.rbkmoney.fraudo.FraudoParser.Fraud_ruleContext fraud_ruleContext : ctx.fraud_rule()) {
-            ResultStatus result = (ResultStatus) visitFraud_rule(fraud_ruleContext);
+        for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
+            ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
+            String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
             if (result != null && ResultStatus.NOTIFY.equals(result)) {
-                notifications.add(String.valueOf(fraud_ruleContext.getRuleIndex()));
+                notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
-                return new ResultModel(result, notifications);
+                return new ResultModel(result, key, notifications);
             } else if (result == null) {
-                throw new UnknownResultException(fraud_ruleContext.getText());
+                throw new UnknownResultException(fraudRuleContext.getText());
             }
         }
         return new ResultModel(ResultStatus.NORMAL, notifications);
     }
 
     @Override
-    public Object visitResult(com.rbkmoney.fraudo.FraudoParser.ResultContext ctx) {
+    public Object visitResult(FraudoParser.ResultContext ctx) {
         return ctx.getText();
     }
 
     @Override
-    public Object visitDecimalExpression(com.rbkmoney.fraudo.FraudoParser.DecimalExpressionContext ctx) {
+    public Object visitDecimalExpression(FraudoParser.DecimalExpressionContext ctx) {
         return Double.valueOf(ctx.DECIMAL().getText());
     }
 
@@ -67,17 +69,17 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitNotExpression(com.rbkmoney.fraudo.FraudoParser.NotExpressionContext ctx) {
+    public Object visitNotExpression(FraudoParser.NotExpressionContext ctx) {
         return !((Boolean) this.visit(ctx.expression()));
     }
 
     @Override
-    public Object visitParenExpression(com.rbkmoney.fraudo.FraudoParser.ParenExpressionContext ctx) {
+    public Object visitParenExpression(FraudoParser.ParenExpressionContext ctx) {
         return super.visit(ctx.expression());
     }
 
     @Override
-    public Object visitComparatorExpression(com.rbkmoney.fraudo.FraudoParser.ComparatorExpressionContext ctx) {
+    public Object visitComparatorExpression(FraudoParser.ComparatorExpressionContext ctx) {
         if (ctx.op.EQ() != null) {
             return this.visit(ctx.left).equals(this.visit(ctx.right));
         } else if (ctx.op.LE() != null) {
@@ -93,7 +95,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitBinaryExpression(com.rbkmoney.fraudo.FraudoParser.BinaryExpressionContext ctx) {
+    public Object visitBinaryExpression(FraudoParser.BinaryExpressionContext ctx) {
         if (ctx.op.AND() != null) {
             return asBoolean(ctx.left) && asBoolean(ctx.right);
         } else if (ctx.op.OR() != null) {
@@ -103,12 +105,12 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitBoolExpression(com.rbkmoney.fraudo.FraudoParser.BoolExpressionContext ctx) {
+    public Object visitBoolExpression(FraudoParser.BoolExpressionContext ctx) {
         return Boolean.valueOf(ctx.getText());
     }
 
     @Override
-    public Object visitCount(com.rbkmoney.fraudo.FraudoParser.CountContext ctx) {
+    public Object visitCount(FraudoParser.CountContext ctx) {
         return countVisitor.visitCount(ctx);
     }
 
@@ -138,8 +140,8 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitCountry(FraudoParser.CountryContext ctx) {
-        return customFuncVisitor.visitCountry(ctx);
+    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+        return customFuncVisitor.visitCountry_by(ctx);
     }
 
     @Override
@@ -172,11 +174,11 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         return customFuncVisitor.visitAmount(ctx);
     }
 
-    private boolean asBoolean(com.rbkmoney.fraudo.FraudoParser.ExpressionContext ctx) {
+    private boolean asBoolean(FraudoParser.ExpressionContext ctx) {
         return (boolean) visit(ctx);
     }
 
-    private double asDouble(com.rbkmoney.fraudo.FraudoParser.ExpressionContext ctx) {
+    private double asDouble(FraudoParser.ExpressionContext ctx) {
         return (double) visit(ctx);
     }
 }
