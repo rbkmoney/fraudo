@@ -12,13 +12,17 @@ import com.rbkmoney.fraudo.visitor.*;
 public class FastFraudVisitorFactory implements FraudVisitorFactory {
 
     @Override
-    public FraudoVisitor<Object> createVisitor(FraudModel model, CountAggregator countAggregator,
-                                               SumAggregator sumAggregator, UniqueValueAggregator uniqueValueAggregator,
-                                               CountryResolver countryResolver, InListFinder blackListFinder,
-                                               InListFinder whiteListFinder) {
+    public FraudoVisitor<Object> createVisitor(FraudModel model,
+                                               CountAggregator countAggregator,
+                                               SumAggregator sumAggregator,
+                                               UniqueValueAggregator uniqueValueAggregator,
+                                               CountryResolver countryResolver,
+                                               InListFinder blackListFinder,
+                                               InListFinder whiteListFinder,
+                                               InListFinder greyListFinder) {
         CountVisitorImpl countVisitor = new CountVisitorImpl(model, countAggregator);
         SumVisitorImpl sumVisitor = new SumVisitorImpl(model, sumAggregator);
-        ListVisitorImpl listVisitor = new ListVisitorImpl(model, blackListFinder, whiteListFinder);
+        ListVisitorImpl listVisitor = new ListVisitorImpl(model, blackListFinder, whiteListFinder, greyListFinder);
         CustomFuncVisitorImpl customFuncVisitor = new CustomFuncVisitorImpl(model, uniqueValueAggregator, countryResolver);
         return new FastFraudVisitorImpl(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
     }

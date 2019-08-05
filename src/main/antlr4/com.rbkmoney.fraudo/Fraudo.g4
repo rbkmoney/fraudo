@@ -24,6 +24,7 @@ expression
  | in                                             #inFunctionExpression
  | in_white_list                                  #inWhiteListExpression
  | in_black_list                                  #inBlackListExpression
+ | in_grey_list                                   #inGreyListExpression
  | like                                           #likeFunctionExpression
  | country                                        #countryFunctionExpression
  | country_by                                     #countryByFunctionExpression
@@ -89,17 +90,21 @@ in_black_list
  : 'inBlackList' LPAREN string_list RPAREN
  ;
 
+in_grey_list
+ : 'inGreyList' LPAREN string_list RPAREN
+ ;
+
 like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
 country
-  : 'country' LPAREN RPAREN
-  ;
+ : 'country' LPAREN RPAREN
+ ;
 
 country_by
-  : 'countryBy' LPAREN STRING RPAREN
-  ;
+ : 'countryBy' LPAREN STRING RPAREN
+ ;
 
 result
  : 'accept' | '3ds' | 'decline' | 'notify'

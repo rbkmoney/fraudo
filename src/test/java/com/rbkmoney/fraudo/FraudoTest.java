@@ -40,6 +40,8 @@ public class FraudoTest {
     InListFinder whiteListFinder;
     @Mock
     InListFinder blackListFinder;
+    @Mock
+    InListFinder greyListFinder;
 
     @Before
     public void init() {
@@ -228,6 +230,15 @@ public class FraudoTest {
     }
 
     @Test
+    public void greyListTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/greyList.frd");
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        Mockito.when(greyListFinder.findInList(anyString(), anyString(), anyList(), anyList())).thenReturn(true);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void eqCountryTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/eq_country.frd");
 
@@ -259,8 +270,10 @@ public class FraudoTest {
     }
 
     private ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, FraudModel model) {
-        return (ResultModel) new FastFraudVisitorFactory().createVisitor(model, countAggregator,
-                sumAggregator, uniqueValueAggregator, countryResolver, blackListFinder, whiteListFinder).visit(parse);
+        return (ResultModel) new FastFraudVisitorFactory()
+                .createVisitor(model, countAggregator, sumAggregator, uniqueValueAggregator, countryResolver,
+                        blackListFinder, whiteListFinder, greyListFinder)
+                .visit(parse);
     }
 
     private com.rbkmoney.fraudo.FraudoParser.ParseContext getParseContext(InputStream resourceAsStream) throws IOException {

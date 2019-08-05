@@ -10,9 +10,13 @@ import com.rbkmoney.fraudo.resolver.CountryResolver;
 
 public interface FraudVisitorFactory {
 
-    FraudoVisitor<Object> createVisitor(FraudModel model, CountAggregator countAggregator,
-                                        SumAggregator sumAggregator, UniqueValueAggregator uniqueValueAggregator,
-                                        CountryResolver countryResolver, InListFinder blackListFinder,
-                                        InListFinder whiteListFinder);
+    FraudoVisitor<Object> createVisitor(FraudModel model,
+                                        CountAggregator countAggregator,
+                                        SumAggregator sumAggregator,
+                                        UniqueValueAggregator uniqueValueAggregator,
+                                        CountryResolver countryResolver,
+                                        InListFinder blackListFinder,
+                                        InListFinder whiteListFinder,
+                                        InListFinder greyListFinder);
 
 }
