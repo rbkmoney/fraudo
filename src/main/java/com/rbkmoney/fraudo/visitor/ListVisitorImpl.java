@@ -19,6 +19,7 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
     private final FraudModel fraudModel;
     private final InListFinder blackListFinder;
     private final InListFinder whiteListFinder;
+    private final InListFinder greyListFinder;
 
     @Override
     public Object visitIn_white_list(FraudoParser.In_white_listContext ctx) {
@@ -30,13 +31,11 @@ public class ListVisitorImpl extends FraudoBaseVisitor<Object> {
         return findInList(ctx.string_list().STRING(), blackListFinder);
     }
 
-    private Object findInList(TerminalNode string, InListFinder listFinder) {
-        String fieldName = TextUtil.safeGetText(string);
-        String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
-        return listFinder.findInList(fraudModel.getPartyId(), fraudModel.getShopId(),
-                CheckedField.getByValue(fieldName), fieldValue);
+    @Override
+    public Object visitIn_grey_list(FraudoParser.In_grey_listContext ctx) {
+        return findInList(ctx.string_list().STRING(), greyListFinder);
     }
-
+    
     private Object findInList(List<TerminalNode> nodes, InListFinder listFinder) {
         List<String> fields = nodes.stream()
                 .map(TextUtil::safeGetText)

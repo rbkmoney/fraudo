@@ -170,6 +170,11 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitIn_grey_list(FraudoParser.In_grey_listContext ctx) {
+        return listVisitor.visitIn_grey_list(ctx);
+    }
+
+    @Override
     public Object visitAmount(FraudoParser.AmountContext ctx) {
         return customFuncVisitor.visitAmount(ctx);
     }
