@@ -51,31 +51,31 @@ amount
  ;
 
 count
- : 'count' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'count' LPAREN STRING time_window RPAREN
  ;
 
 count_success
- : 'countSuccess' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'countSuccess' LPAREN STRING time_window RPAREN
  ;
 
 count_error
- : 'countError' LPAREN STRING DELIMETER DECIMAL DELIMETER STRING RPAREN
+ : 'countError' LPAREN STRING time_window DELIMETER STRING RPAREN
  ;
 
 sum
- : 'sum' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'sum' LPAREN STRING time_window RPAREN
  ;
 
 sum_success
- : 'sumSuccess' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'sumSuccess' LPAREN STRING time_window RPAREN
  ;
 
 sum_error
- : 'sumError' LPAREN STRING DELIMETER DECIMAL DELIMETER STRING RPAREN
+ : 'sumError' LPAREN STRING time_window DELIMETER STRING RPAREN
  ;
 
 unique
- : 'unique' LPAREN STRING DELIMETER STRING DELIMETER DECIMAL RPAREN
+ : 'unique' LPAREN STRING DELIMETER STRING time_window RPAREN
  ;
 
 in
@@ -116,6 +116,10 @@ catch_result
 
 string_list
  : STRING (',' STRING | WS)+
+ ;
+
+time_window
+ : DELIMETER DECIMAL | DELIMETER DECIMAL DELIMETER DECIMAL
  ;
 
 STRING

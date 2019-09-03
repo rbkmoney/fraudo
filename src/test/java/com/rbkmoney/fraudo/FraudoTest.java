@@ -9,6 +9,7 @@ import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.model.TimeWindow;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -51,7 +52,7 @@ public class FraudoTest {
     @Test
     public void threeDsTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/three_ds.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(10);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
     }
@@ -95,17 +96,17 @@ public class FraudoTest {
     @Test
     public void countTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(10);
-        Mockito.when(countAggregator.countError(anyObject(), any(), anyLong(), anyString())).thenReturn(6);
-        Mockito.when(countAggregator.countSuccess(anyObject(), any(), anyLong())).thenReturn(4);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
+        Mockito.when(countAggregator.countError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(6);
+        Mockito.when(countAggregator.countSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(4);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         Assert.assertEquals("1", result.getRuleChecked());
 
-        Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(9);
-        Mockito.when(countAggregator.countError(anyObject(), any(), anyLong(), anyString())).thenReturn(6);
-        Mockito.when(countAggregator.countSuccess(anyObject(), any(), anyLong())).thenReturn(6);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(9);
+        Mockito.when(countAggregator.countError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(6);
+        Mockito.when(countAggregator.countSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(6);
 
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -114,7 +115,7 @@ public class FraudoTest {
     @Test
     public void countCardTokenTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_card_token.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), anyLong())).thenReturn(10);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -123,17 +124,17 @@ public class FraudoTest {
     @Test
     public void sumTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/sum.frd");
-        Mockito.when(sumAggregator.sum(anyObject(), any(), anyLong())).thenReturn(10500.60);
-        Mockito.when(sumAggregator.sumError(anyObject(), any(), anyLong(), anyString())).thenReturn(524.0);
-        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), anyLong())).thenReturn(4.0);
+        Mockito.when(sumAggregator.sum(anyObject(), any(), any(TimeWindow.class))).thenReturn(10500.60);
+        Mockito.when(sumAggregator.sumError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(524.0);
+        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(4.0);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());
 
-        Mockito.when(sumAggregator.sum(anyObject(), any(), anyLong())).thenReturn(90.0);
-        Mockito.when(sumAggregator.sumError(anyObject(), any(), anyLong(), anyString())).thenReturn(504.0);
-        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), anyLong())).thenReturn(501.0);
+        Mockito.when(sumAggregator.sum(anyObject(), any(), any(TimeWindow.class))).thenReturn(90.0);
+        Mockito.when(sumAggregator.sumError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(504.0);
+        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(501.0);
 
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
@@ -174,7 +175,7 @@ public class FraudoTest {
     @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/catch.frd");
-        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(TimeWindow.class))).thenThrow(new UnknownResultException("as"));
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -207,7 +208,7 @@ public class FraudoTest {
     @Test
     public void uniqCountTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_uniq.frd");
-        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any())).thenReturn(2);
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(TimeWindow.class))).thenReturn(2);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
