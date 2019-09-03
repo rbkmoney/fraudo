@@ -41,4 +41,24 @@ public class SumTest extends AbstractFraudoTest {
         Assert.assertEquals(0, result.getNotificationsRule().size());
     }
 
+    @Test
+    public void sumGroupByTest() throws Exception {
+        InputStream resourceAsStream = SumTest.class.getResourceAsStream("/rules/sumGroupBy.frd");
+        Mockito.when(sumAggregator.sum(anyObject(), any(), any(), any())).thenReturn(10500.60);
+        Mockito.when(sumAggregator.sumError(anyObject(), any(), any(), anyString(), any())).thenReturn(524.0);
+        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), any(), any())).thenReturn(4.0);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        Assert.assertEquals(1, result.getNotificationsRule().size());
+
+        Mockito.when(sumAggregator.sum(anyObject(), any(), any(), any())).thenReturn(90.0);
+        Mockito.when(sumAggregator.sumError(anyObject(), any(), any(), anyString(), any())).thenReturn(504.0);
+        Mockito.when(sumAggregator.sumSuccess(anyObject(), any(), any(), any())).thenReturn(501.0);
+
+        result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        Assert.assertEquals(0, result.getNotificationsRule().size());
+    }
+
 }

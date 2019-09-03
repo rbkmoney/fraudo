@@ -64,6 +64,13 @@ public class CountTest extends AbstractFraudoTest {
         Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+
+        resourceAsStream = CountTest.class.getResourceAsStream("/rules/countTimeWindowGroupBy_2.frd");
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        parseContext = getParseContext(resourceAsStream);
+        result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals("1", result.getRuleChecked());
     }
 
     @Test

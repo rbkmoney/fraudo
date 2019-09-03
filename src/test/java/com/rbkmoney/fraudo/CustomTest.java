@@ -141,6 +141,15 @@ public class CustomTest extends AbstractFraudoTest {
     }
 
     @Test
+    public void uniqCountGroupByTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/count_uniqGroupBy_window.frd");
+        Mockito.when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenReturn(2);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+    }
+
+    @Test
     public void eqCountryTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/eq_country.frd");
 
