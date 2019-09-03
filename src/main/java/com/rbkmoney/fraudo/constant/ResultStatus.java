@@ -8,6 +8,7 @@ public enum ResultStatus {
     ACCEPT("accept"),
     THREE_DS("3ds"),
     DECLINE("decline"),
+    HIGH_RISK("highRisk"),
     NORMAL("normal"),
     NOTIFY("notify");
 

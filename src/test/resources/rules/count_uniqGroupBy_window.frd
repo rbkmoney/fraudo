@@ -1,0 +1,2 @@
+rule: unique("email", "ip", 1444, 123, "partyId", "shopId") < 4
+-> decline;

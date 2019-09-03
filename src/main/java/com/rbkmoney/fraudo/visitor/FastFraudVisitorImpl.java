@@ -42,7 +42,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
             ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
             String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
-            if (result != null && ResultStatus.NOTIFY.equals(result)) {
+            if (ResultStatus.NOTIFY.equals(result)) {
                 notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
                 return new ResultModel(result, key, notifications);

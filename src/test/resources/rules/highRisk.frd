@@ -1,0 +1,5 @@
+rule: 3 > 2 AND 1 > 1
+-> decline;
+
+rule: count("email", 10) <= 10 AND count("ip", 1444) = 10
+-> highRisk;
