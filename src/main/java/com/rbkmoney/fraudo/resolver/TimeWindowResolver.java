@@ -20,7 +20,6 @@ public class TimeWindowResolver {
         return builder
                 .startWindowTime(Long.valueOf(startWindow))
                 .build();
-
     }
 
 }

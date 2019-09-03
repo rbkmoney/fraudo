@@ -9,6 +9,7 @@ import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.utils.RuleKeyGenerator;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());
             }

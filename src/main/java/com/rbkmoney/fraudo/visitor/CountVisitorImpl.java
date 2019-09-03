@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.constant.CheckedField;
 import com.rbkmoney.fraudo.model.FraudModel;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitCount(com.rbkmoney.fraudo.FraudoParser.CountContext ctx) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return (double) countAggregator.count(CheckedField.getByValue(countTarget), fraudModel,
-                TimeWindowResolver.resolve(ctx.time_window()));
+                TimeWindowResolver.resolve(ctx.time_window()), GroupByModelResolver.resolve(ctx.group_by()));
     }
 
     @Override

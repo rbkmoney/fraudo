@@ -51,7 +51,7 @@ amount
  ;
 
 count
- : 'count' LPAREN STRING time_window RPAREN
+ : 'count' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 count_success
@@ -115,11 +115,15 @@ catch_result
  ;
 
 string_list
- : STRING (',' STRING | WS)+
+ : STRING (DELIMETER STRING | WS)*
  ;
 
 time_window
  : DELIMETER DECIMAL | DELIMETER DECIMAL DELIMETER DECIMAL
+ ;
+
+group_by
+ : DELIMETER string_list
  ;
 
 STRING

@@ -52,7 +52,7 @@ public class FraudoTest {
     @Test
     public void threeDsTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/three_ds.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         Assert.assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
     }
@@ -96,7 +96,7 @@ public class FraudoTest {
     @Test
     public void countTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         Mockito.when(countAggregator.countError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(6);
         Mockito.when(countAggregator.countSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(4);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
@@ -104,7 +104,7 @@ public class FraudoTest {
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         Assert.assertEquals("1", result.getRuleChecked());
 
-        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(9);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(9);
         Mockito.when(countAggregator.countError(anyObject(), any(), any(TimeWindow.class), anyString())).thenReturn(6);
         Mockito.when(countAggregator.countSuccess(anyObject(), any(), any(TimeWindow.class))).thenReturn(6);
 
@@ -113,9 +113,37 @@ public class FraudoTest {
     }
 
     @Test
+    public void countGroupByTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/countGroupBy.frd");
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals("1", result.getRuleChecked());
+
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
+        result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+    }
+
+    @Test
+    public void countTimeWindowGroupByTest() throws Exception {
+        InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/countTimeWindowGroupBy.frd");
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals("1", result.getRuleChecked());
+
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
+        result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+    }
+
+    @Test
     public void countCardTokenTest() throws Exception {
         InputStream resourceAsStream = FraudoTest.class.getResourceAsStream("/rules/count_card_token.frd");
-        Mockito.when(countAggregator.count(anyObject(), any(), any(TimeWindow.class))).thenReturn(10);
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
