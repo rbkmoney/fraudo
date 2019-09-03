@@ -28,7 +28,6 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());
             }
@@ -43,7 +42,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
             ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
             String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
-            if (result != null && ResultStatus.NOTIFY.equals(result)) {
+            if (ResultStatus.NOTIFY.equals(result)) {
                 notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
                 return new ResultModel(result, key, notifications);

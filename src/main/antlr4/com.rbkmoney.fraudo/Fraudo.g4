@@ -107,11 +107,11 @@ country_by
  ;
 
 result
- : 'accept' | '3ds' | 'decline' | 'notify'
+ : 'accept' | '3ds' | 'highRisk' | 'decline' | 'notify'
  ;
 
 catch_result
- : 'accept' | '3ds' | 'decline' | 'notify'
+ : 'accept' | '3ds' | 'highRisk' | 'notify'
  ;
 
 string_list

@@ -32,6 +32,14 @@ public class CustomTest extends AbstractFraudoTest {
     }
 
     @Test
+    public void highRiskTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/highRisk.frd");
+        Mockito.when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        ResultModel result = parseAndVisit(resourceAsStream);
+        Assert.assertEquals(ResultStatus.HIGH_RISK, result.getResultStatus());
+    }
+
+    @Test
     public void notifyTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/notify.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
