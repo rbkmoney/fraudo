@@ -27,7 +27,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
     public Object visitCount_success(FraudoParser.Count_successContext ctx) {
         String countTarget = ctx.STRING().getText();
         return (double) countAggregator.countSuccess(CheckedField.getByValue(countTarget), fraudModel,
-                TimeWindowResolver.resolve(ctx.time_window()));
+                TimeWindowResolver.resolve(ctx.time_window()), GroupByModelResolver.resolve(ctx.group_by()));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CountVisitorImpl extends FraudoBaseVisitor<Object> {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
         return (double) countAggregator.countError(CheckedField.getByValue(countTarget), fraudModel,
-                TimeWindowResolver.resolve(ctx.time_window()), errorCode);
+                TimeWindowResolver.resolve(ctx.time_window()), errorCode, GroupByModelResolver.resolve(ctx.group_by()));
     }
 
 }

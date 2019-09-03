@@ -16,11 +16,11 @@ public interface CountAggregator {
     @Deprecated
     Integer countSuccess(CheckedField checkedField, FraudModel model, Long timeInMinutes);
 
-    Integer countSuccess(CheckedField checkedField, FraudModel model, TimeWindow timeWindow);
+    Integer countSuccess(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, List<CheckedField> fields);
 
     @Deprecated
     Integer countError(CheckedField checkedField, FraudModel model, Long timeInMinutes, String errorCode);
 
-    Integer countError(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, String errorCode);
+    Integer countError(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, String errorCode, List<CheckedField> fields);
 
 }

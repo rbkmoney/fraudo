@@ -55,27 +55,27 @@ count
  ;
 
 count_success
- : 'countSuccess' LPAREN STRING time_window RPAREN
+ : 'countSuccess' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 count_error
- : 'countError' LPAREN STRING time_window DELIMETER STRING RPAREN
+ : 'countError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
  ;
 
 sum
- : 'sum' LPAREN STRING time_window RPAREN
+ : 'sum' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 sum_success
- : 'sumSuccess' LPAREN STRING time_window RPAREN
+ : 'sumSuccess' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 sum_error
- : 'sumError' LPAREN STRING time_window DELIMETER STRING RPAREN
+ : 'sumError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
  ;
 
 unique
- : 'unique' LPAREN STRING DELIMETER STRING time_window RPAREN
+ : 'unique' LPAREN STRING DELIMETER STRING time_window (group_by)? RPAREN
  ;
 
 in

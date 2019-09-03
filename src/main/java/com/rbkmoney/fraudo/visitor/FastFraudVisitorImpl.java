@@ -9,7 +9,6 @@ import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.utils.RuleKeyGenerator;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;

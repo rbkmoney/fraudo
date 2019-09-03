@@ -7,6 +7,7 @@ import com.rbkmoney.fraudo.constant.CheckedField;
 import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
         String field = TextUtil.safeGetText(ctx.STRING(0));
         String fieldBy = TextUtil.safeGetText(ctx.STRING(1));
         return (double) uniqueValueAggregator.countUniqueValue(CheckedField.getByValue(field), fraudModel,
-                CheckedField.getByValue(fieldBy), TimeWindowResolver.resolve(ctx.time_window()));
+                CheckedField.getByValue(fieldBy), TimeWindowResolver.resolve(ctx.time_window()), GroupByModelResolver.resolve(ctx.group_by()));
     }
 
     @Override
