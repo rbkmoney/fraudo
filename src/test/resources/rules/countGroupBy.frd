@@ -1,2 +1,2 @@
-rule: count("ip", 1444, "partyId") >= 10
--> decline;
+rule: count("ip", 1444, "party_id") >= 10
+           -> decline;
