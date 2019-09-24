@@ -2,6 +2,7 @@ package com.rbkmoney.fraudo.resolver;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.constant.CheckedField;
+import com.rbkmoney.fraudo.utils.TextUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class GroupByModelResolver {
                 && groupByContext.string_list().STRING() != null
                 && !groupByContext.string_list().STRING().isEmpty()) {
             checkedFields = groupByContext.string_list().STRING().stream()
-                    .map(terminalNode -> CheckedField.getByValue(terminalNode.getText()))
+                    .map(terminalNode -> CheckedField.getByValue(TextUtil.safeGetText(terminalNode)))
                     .collect(Collectors.toList());
         }
         return checkedFields;
