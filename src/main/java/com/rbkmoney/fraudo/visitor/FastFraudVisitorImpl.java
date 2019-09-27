@@ -42,7 +42,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
         for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
             ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
             String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
-            if (result != null && ResultStatus.NOTIFY.equals(result)) {
+            if (ResultStatus.NOTIFY.equals(result)) {
                 notifications.add(key);
             } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
                 return new ResultModel(result, key, notifications);
@@ -167,6 +167,11 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
     @Override
     public Object visitIn_black_list(FraudoParser.In_black_listContext ctx) {
         return listVisitor.visitIn_black_list(ctx);
+    }
+
+    @Override
+    public Object visitIn_grey_list(FraudoParser.In_grey_listContext ctx) {
+        return listVisitor.visitIn_grey_list(ctx);
     }
 
     @Override

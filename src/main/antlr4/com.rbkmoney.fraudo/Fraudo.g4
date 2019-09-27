@@ -24,6 +24,7 @@ expression
  | in                                             #inFunctionExpression
  | in_white_list                                  #inWhiteListExpression
  | in_black_list                                  #inBlackListExpression
+ | in_grey_list                                   #inGreyListExpression
  | like                                           #likeFunctionExpression
  | country                                        #countryFunctionExpression
  | country_by                                     #countryByFunctionExpression
@@ -50,31 +51,31 @@ amount
  ;
 
 count
- : 'count' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'count' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 count_success
- : 'countSuccess' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'countSuccess' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 count_error
- : 'countError' LPAREN STRING DELIMETER DECIMAL DELIMETER STRING RPAREN
+ : 'countError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
  ;
 
 sum
- : 'sum' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'sum' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 sum_success
- : 'sumSuccess' LPAREN STRING DELIMETER DECIMAL RPAREN
+ : 'sumSuccess' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 sum_error
- : 'sumError' LPAREN STRING DELIMETER DECIMAL DELIMETER STRING RPAREN
+ : 'sumError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
  ;
 
 unique
- : 'unique' LPAREN STRING DELIMETER STRING DELIMETER DECIMAL RPAREN
+ : 'unique' LPAREN STRING DELIMETER STRING time_window (group_by)? RPAREN
  ;
 
 in
@@ -89,28 +90,40 @@ in_black_list
  : 'inBlackList' LPAREN string_list RPAREN
  ;
 
+in_grey_list
+ : 'inGreyList' LPAREN string_list RPAREN
+ ;
+
 like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
 country
-  : 'country' LPAREN RPAREN
-  ;
+ : 'country' LPAREN RPAREN
+ ;
 
 country_by
-  : 'countryBy' LPAREN STRING RPAREN
-  ;
+ : 'countryBy' LPAREN STRING RPAREN
+ ;
 
 result
- : 'accept' | '3ds' | 'decline' | 'notify'
+ : 'accept' | '3ds' | 'highRisk' | 'decline' | 'notify'
  ;
 
 catch_result
- : 'accept' | '3ds' | 'decline' | 'notify'
+ : 'accept' | '3ds' | 'highRisk' | 'notify'
  ;
 
 string_list
- : STRING (',' STRING | WS)+
+ : STRING (DELIMETER STRING | WS)*
+ ;
+
+time_window
+ : DELIMETER DECIMAL | DELIMETER DECIMAL DELIMETER DECIMAL
+ ;
+
+group_by
+ : DELIMETER string_list
  ;
 
 STRING

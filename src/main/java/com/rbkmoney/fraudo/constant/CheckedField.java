@@ -11,7 +11,7 @@ public enum CheckedField {
     COUNTRY_BANK("country_bank"),
     COUNTRY_IP("country_ip"),
     BIN("bin"),
-    SHOP_ID("shop_ip"),
+    SHOP_ID("shop_id"),
     PARTY_ID("party_id"),
     CARD_TOKEN("card_token");
 
