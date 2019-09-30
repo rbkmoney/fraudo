@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.utils;
+package com.rbkmoney.fraudo.utils.key.generator;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import lombok.AccessLevel;

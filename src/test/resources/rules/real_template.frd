@@ -1,0 +1,31 @@
+rule:amount_limit70k:amount()>7000000->decline;
+
+rule:grey:inGreyList("card_token","email")->accept;
+
+rule:white:inWhiteList("email","fingerprint","card_token","bin","ip")->accept;
+
+rule:black:inBlackList("email","fingerprint","card_token","bin","ip")->decline;
+
+rule:tur_bin1:in("bin","434528") AND amount()<77000 ->accept;
+
+rule:tur_bin2:in("bin","434528") AND count("card_token",1440,"party_id")<12->accept;
+
+rule:bad_countries:in(countryBy("country_bank"),"AUS","CAN","CHL","COL","JPN","MEX","NZL","GBR","USA")->decline;
+
+rule:amount_country801R:amount()>80100 AND in(countryBy("country_bank"),"HND","JAM","ROU","SWE","ITA","BEL","ARG")->decline;
+
+rule:amount_country2100R:amount()>210000 AND in(countryBy("country_bank"),"DEU","ESP","PHL","SGP","PRT","ISR","IND","RUS")->decline;
+
+rule:amount_country3500R:amount()>350000 AND in(countryBy("country_bank"),"PER","BRA")->decline;
+
+rule:tur_low:count("card_token",1440,"party_id")<21 AND amount()<77000 AND in(countryBy("country_bank"),"TUR","BRA","PRT","CZE","DEU","FRA","POL","BLR","EST","GEO","KAZ","LTU","LVA","UKR","UZB")->accept;
+
+rule:cards_device_count_3:unique("fingerprint","card_token",1440)>3 AND not in(countryBy("country_bank"),"ARM","RUS","AZE","BLR","EST","GEO","KAZ","KGZ","LVA","LTU","MDA","TJK","TKM","UKR","UZB")->decline;
+
+rule:USSRcount:count("card_token",1440,"party_id")<11 AND in(countryBy("country_bank"),"BLR","EST","GEO","KAZ","LTU","LVA","POL","UKR","UZB")->accept;
+
+rule:count11tur:count("card_token",1440,"party_id")<12 AND in(countryBy("country_bank"),"TUR")->accept;
+
+rule:count10:count("card_token",1440,"party_id")<11 AND not in(countryBy("country_bank"),"BRA","PER","HND","JAM","PHL","SGP","IND","ARG")->accept;
+
+rule:count5bra:count("card_token",1440,"party_id")>5->decline;
