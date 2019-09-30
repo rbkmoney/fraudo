@@ -6,15 +6,21 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
-import com.rbkmoney.fraudo.utils.RuleKeyGenerator;
 import com.rbkmoney.fraudo.utils.TextUtil;
+import com.rbkmoney.fraudo.utils.key.generator.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
+
+    private Map<String, Object> localFuncCache = new HashMap<>();
 
     private final CountVisitorImpl countVisitor;
     private final SumVisitorImpl sumVisitor;
@@ -28,6 +34,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
+            log.warn("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());
             }
@@ -111,37 +118,44 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
 
     @Override
     public Object visitCount(FraudoParser.CountContext ctx) {
-        return countVisitor.visitCount(ctx);
+        String key = CountKeyGenerator.generate(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> countVisitor.visitCount(ctx));
     }
 
     @Override
     public Object visitCount_success(FraudoParser.Count_successContext ctx) {
-        return countVisitor.visitCount_success(ctx);
+        String key = CountKeyGenerator.generateSuccessKey(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> countVisitor.visitCount_success(ctx));
     }
 
     @Override
     public Object visitCount_error(FraudoParser.Count_errorContext ctx) {
-        return countVisitor.visitCount_error(ctx);
+        String key = CountKeyGenerator.generateErrorKey(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> countVisitor.visitCount_error(ctx));
     }
 
     @Override
     public Object visitSum(FraudoParser.SumContext ctx) {
-        return sumVisitor.visitSum(ctx);
+        String key = SumKeyGenerator.generate(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> sumVisitor.visitSum(ctx));
     }
 
     @Override
     public Object visitSum_success(FraudoParser.Sum_successContext ctx) {
-        return sumVisitor.visitSum_success(ctx);
+        String key = SumKeyGenerator.generateSuccessKey(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> sumVisitor.visitSum_success(ctx));
     }
 
     @Override
     public Object visitSum_error(FraudoParser.Sum_errorContext ctx) {
-        return sumVisitor.visitSum_error(ctx);
+        String key = SumKeyGenerator.generateErrorKey(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> sumVisitor.visitSum_error(ctx));
     }
 
     @Override
     public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
-        return customFuncVisitor.visitCountry_by(ctx);
+        String key = CountryKeyGenerator.generate(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> customFuncVisitor.visitCountry_by(ctx));
     }
 
     @Override
@@ -156,7 +170,8 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
 
     @Override
     public Object visitUnique(FraudoParser.UniqueContext ctx) {
-        return customFuncVisitor.visitUnique(ctx);
+        String key = UniqueKeyGenerator.generate(ctx);
+        return localFuncCache.computeIfAbsent(key, s -> customFuncVisitor.visitUnique(ctx));
     }
 
     @Override

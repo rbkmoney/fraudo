@@ -11,7 +11,6 @@ import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 @RequiredArgsConstructor
 public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
@@ -29,7 +28,7 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
 
     @Override
     public Object visitIn(FraudoParser.InContext ctx) {
-        String fieldValue = "";
+        final String fieldValue;
         if (ctx.STRING() != null && ctx.STRING().getText() != null && !ctx.STRING().getText().isEmpty()) {
             String field = TextUtil.safeGetText(ctx.STRING());
             fieldValue = FieldResolver.resolveString(field, fraudModel);
@@ -38,12 +37,8 @@ public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
             String value = FieldResolver.resolveString(fieldName, fraudModel);
             fieldValue = countryResolver.resolveCountry(CheckedField.getByValue(fieldName), value);
         }
-        for (TerminalNode string : ctx.string_list().STRING()) {
-            if (fieldValue.equals(TextUtil.safeGetText(string))) {
-                return true;
-            }
-        }
-        return false;
+        return ctx.string_list().STRING().stream()
+                .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));
     }
 
     @Override
