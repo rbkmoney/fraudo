@@ -44,6 +44,29 @@ public class RealTimerTest extends AbstractFraudoTest {
         System.out.println("executionTime=" + executionTime);
     }
 
+    @Test
+    public void timingWithSuccessTest() throws Exception {
+        InputStream resourceAsStream = RealTimerTest.class.getResourceAsStream("/rules/sum_and_count_template.frd");
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        mockAggr(countDownLatch);
+
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+
+        FraudModel model = new FraudModel();
+        model.setAmount(10L);
+        model.setBin("444443");
+
+        long start = System.currentTimeMillis();
+        ResultModel result = invoke(parseContext, model);
+        long executionTime = System.currentTimeMillis() - start;
+
+        System.out.println("executionTime=" + executionTime);
+        System.out.println("result=" + result.getRuleChecked());
+
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        Assert.assertTrue(executionTime < 900);
+    }
+
     private void mockAggr(CountDownLatch countDownLatch) {
         Mockito.when(countAggregator.count(any(), any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
@@ -56,6 +79,39 @@ public class RealTimerTest extends AbstractFraudoTest {
                     Thread.sleep(200L);
                     countDownLatch.countDown();
                     return 1;
+                });
+        Mockito.when(countAggregator.countSuccess(any(), any(), any(), any()))
+                .thenAnswer((Answer<Integer>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    countDownLatch.countDown();
+                    return 1;
+                });
+        Mockito.when(countAggregator.countSuccess(any(), any(), any()))
+                .thenAnswer((Answer<Integer>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    countDownLatch.countDown();
+                    return 1;
+                });
+
+        Mockito.when(sumAggregator.sum(any(), any(), any(), any()))
+                .thenAnswer((Answer<Double>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    return 10000.0;
+                });
+        Mockito.when(sumAggregator.sum(any(), any(), any()))
+                .thenAnswer((Answer<Double>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    return 10000.0;
+                });
+        Mockito.when(sumAggregator.sumSuccess(any(), any(), any(), any()))
+                .thenAnswer((Answer<Double>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    return 10000.0;
+                });
+        Mockito.when(sumAggregator.sumSuccess(any(), any(), any()))
+                .thenAnswer((Answer<Double>) invocationOnMock -> {
+                    Thread.sleep(200L);
+                    return 10000.0;
                 });
 
         Mockito.when(whiteListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
