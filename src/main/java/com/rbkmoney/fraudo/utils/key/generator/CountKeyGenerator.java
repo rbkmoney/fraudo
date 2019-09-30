@@ -10,20 +10,27 @@ public class CountKeyGenerator {
 
     public static String generate(ParserRuleContext context) {
         FraudoParser.CountContext ctx = (FraudoParser.CountContext) context;
-        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(), ctx.children.get(0), ctx.time_window(),
+        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
+                ctx.children.get(0),
+                ctx.time_window(),
                 ctx.group_by());
     }
 
     public static String generateSuccessKey(ParserRuleContext context) {
         FraudoParser.Count_successContext ctx = (FraudoParser.Count_successContext) context;
-        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(), ctx.children.get(0), ctx.time_window(),
+        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
+                ctx.children.get(0),
+                ctx.time_window(),
                 ctx.group_by());
     }
 
     public static String generateErrorKey(ParserRuleContext context) {
         FraudoParser.Count_errorContext ctx = (FraudoParser.Count_errorContext) context;
-        return CommonKeyGenerator.generateKeyGroupedErrorFunction(ctx.STRING(0), ctx.STRING(1), ctx.children.get(0),
-                ctx.time_window(), ctx.group_by());
+        return CommonKeyGenerator.generateKeyGroupedErrorFunction(ctx.STRING(0),
+                ctx.STRING(1),
+                ctx.children.get(0),
+                ctx.time_window(),
+                ctx.group_by());
     }
 
 }

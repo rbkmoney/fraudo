@@ -13,7 +13,9 @@ import org.mockito.stubbing.Answer;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 public class RealTimerTest extends AbstractFraudoTest {
 
@@ -37,9 +39,9 @@ public class RealTimerTest extends AbstractFraudoTest {
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
-        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
-        Assert.assertEquals(0, countDownLatch.getCount());
-        Assert.assertTrue(executionTime < 300);
+        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(0, countDownLatch.getCount());
+        assertTrue(executionTime < 300);
 
         System.out.println("executionTime=" + executionTime);
     }
@@ -63,83 +65,83 @@ public class RealTimerTest extends AbstractFraudoTest {
         System.out.println("executionTime=" + executionTime);
         System.out.println("result=" + result.getRuleChecked());
 
-        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
-        Assert.assertTrue(executionTime < 900);
+        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertTrue(executionTime < 900);
     }
 
     private void mockAggr(CountDownLatch countDownLatch) {
-        Mockito.when(countAggregator.count(any(), any(), any(), any()))
+        when(countAggregator.count(any(), any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(200L);
                     countDownLatch.countDown();
                     return 1;
                 });
-        Mockito.when(countAggregator.count(any(), any(), any()))
+        when(countAggregator.count(any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(200L);
                     countDownLatch.countDown();
                     return 1;
                 });
-        Mockito.when(countAggregator.countSuccess(any(), any(), any(), any()))
+        when(countAggregator.countSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(200L);
                     countDownLatch.countDown();
                     return 1;
                 });
-        Mockito.when(countAggregator.countSuccess(any(), any(), any()))
+        when(countAggregator.countSuccess(any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(200L);
                     countDownLatch.countDown();
                     return 1;
                 });
 
-        Mockito.when(sumAggregator.sum(any(), any(), any(), any()))
+        when(sumAggregator.sum(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(200L);
                     return 10000.0;
                 });
-        Mockito.when(sumAggregator.sum(any(), any(), any()))
+        when(sumAggregator.sum(any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(200L);
                     return 10000.0;
                 });
-        Mockito.when(sumAggregator.sumSuccess(any(), any(), any(), any()))
+        when(sumAggregator.sumSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(200L);
                     return 10000.0;
                 });
-        Mockito.when(sumAggregator.sumSuccess(any(), any(), any()))
+        when(sumAggregator.sumSuccess(any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(200L);
                     return 10000.0;
                 });
 
-        Mockito.when(whiteListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(whiteListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(10L);
                     return false;
                 });
-        Mockito.when(greyListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(greyListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(10L);
                     return false;
                 });
-        Mockito.when(greyListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
+        when(greyListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(10L);
                     return false;
                 });
-        Mockito.when(blackListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
+        when(blackListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(10L);
                     return false;
                 });
-        Mockito.when(blackListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(blackListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(10L);
                     return false;
                 });
-        Mockito.when(countryResolver.resolveCountry(anyObject(), anyString()))
+        when(countryResolver.resolveCountry(anyObject(), anyString()))
                 .thenAnswer((Answer<String>) invocationOnMock -> "RUS");
     }
 }
