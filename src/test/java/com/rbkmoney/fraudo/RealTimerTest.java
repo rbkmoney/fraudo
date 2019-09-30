@@ -32,7 +32,7 @@ public class RealTimerTest extends AbstractFraudoTest {
 
         FraudModel model = new FraudModel();
         model.setAmount(10L);
-        model.setBin("434527");
+        model.setBin("444443");
 
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
