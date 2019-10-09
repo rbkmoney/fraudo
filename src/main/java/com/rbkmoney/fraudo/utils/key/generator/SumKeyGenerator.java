@@ -26,7 +26,7 @@ public class SumKeyGenerator {
 
     public static String generateErrorKey(ParserRuleContext context) {
         FraudoParser.Sum_errorContext ctx = (FraudoParser.Sum_errorContext) context;
-        return CommonKeyGenerator.generateKeyGroupedErrorFunction(ctx.STRING(0),
+        return CommonKeyGenerator.generateKeyGroupedTwoFieldFunction(ctx.STRING(0),
                 ctx.STRING(1),
                 ctx.children.get(0),
                 ctx.time_window(),
