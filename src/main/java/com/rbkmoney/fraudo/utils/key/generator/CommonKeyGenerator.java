@@ -25,13 +25,13 @@ public class CommonKeyGenerator {
                 .toString();
     }
 
-    static String generateKeyGroupedErrorFunction(TerminalNode targetNode,
-                                                  TerminalNode errorCodeNode,
-                                                  ParseTree parseTree,
-                                                  FraudoParser.Time_windowContext timeWindowContext,
-                                                  FraudoParser.Group_byContext groupByContext) {
-        String target = TextUtil.safeGetText(targetNode);
-        String errorCode = TextUtil.safeGetText(errorCodeNode);
+    static String generateKeyGroupedTwoFieldFunction(TerminalNode firstField,
+                                                     TerminalNode secondField,
+                                                     ParseTree parseTree,
+                                                     FraudoParser.Time_windowContext timeWindowContext,
+                                                     FraudoParser.Group_byContext groupByContext) {
+        String target = TextUtil.safeGetText(firstField);
+        String errorCode = TextUtil.safeGetText(secondField);
         return new StringBuilder()
                 .append(parseTree)
                 .append(target)
