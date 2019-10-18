@@ -121,10 +121,12 @@ public class CustomTest extends AbstractFraudoTest {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         FraudModel model = new FraudModel();
         model.setEmail(TEST_GMAIL_RU);
+        model.setBin("553619");
+        model.setPan("9137");
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
 
-        model.setEmail("teeeee");
+        model.setPan("9111");
         result = invoke(parseContext, model);
         assertEquals(ResultStatus.NORMAL, result.getResultStatus());
     }

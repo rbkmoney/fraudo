@@ -20,6 +20,8 @@ public class FieldResolver {
                 return fraudModel.getBinCountryCode();
             case CARD_TOKEN:
                 return fraudModel.getCardToken();
+            case PAN:
+                return fraudModel.getPan();
             default:
                 throw new UnresolvableFieldException(fieldName);
         }
