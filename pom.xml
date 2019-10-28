@@ -67,7 +67,6 @@
                 <configuration>
                     <arguments>
                         <argument>-package</argument>
-                        <argument></argument>
                         <argument>com.rbkmoney.fraudo</argument>
                     </arguments>
                     <listener>false</listener>

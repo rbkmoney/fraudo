@@ -34,8 +34,6 @@ expression
  | STRING                                         #stringExpression
  ;
 
-
-
 comparator
  : GT | GE | LT | LE | EQ
  ;
