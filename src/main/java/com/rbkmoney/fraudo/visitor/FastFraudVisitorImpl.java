@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
+import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.utils.key.generator.*;
@@ -22,7 +23,7 @@ public class FastFraudVisitorImpl extends FraudoBaseVisitor<Object> {
 
     private Map<String, Object> localFuncCache = new HashMap<>();
 
-    private final CountVisitorImpl countVisitor;
+    private final CountVisitorImpl<FraudModel> countVisitor;
     private final SumVisitorImpl sumVisitor;
     private final ListVisitorImpl listVisitor;
     private final CustomFuncVisitorImpl customFuncVisitor;

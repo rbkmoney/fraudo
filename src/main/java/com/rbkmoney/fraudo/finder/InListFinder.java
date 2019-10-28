@@ -10,4 +10,6 @@ public interface InListFinder {
 
     Boolean findInList(String partyId, String shopId, List<CheckedField> fields, List<String> value);
 
+    Boolean findInList(CheckedField field, String value, String... ids);
+
 }

@@ -13,9 +13,9 @@ import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CustomFuncVisitorImpl extends FraudoBaseVisitor<Object> {
+public class CustomFuncVisitorImpl<T extends FraudModel> extends FraudoBaseVisitor<Object> {
 
-    private final FraudModel fraudModel;
+    private final T fraudModel;
     private final UniqueValueAggregator uniqueValueAggregator;
     private final CountryResolver countryResolver;
 

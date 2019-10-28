@@ -20,10 +20,10 @@ public class FastFraudVisitorFactory implements FraudVisitorFactory {
                                                InListFinder blackListFinder,
                                                InListFinder whiteListFinder,
                                                InListFinder greyListFinder) {
-        CountVisitorImpl countVisitor = new CountVisitorImpl(model, countAggregator);
-        SumVisitorImpl sumVisitor = new SumVisitorImpl(model, sumAggregator);
-        ListVisitorImpl listVisitor = new ListVisitorImpl(model, blackListFinder, whiteListFinder, greyListFinder);
-        CustomFuncVisitorImpl customFuncVisitor = new CustomFuncVisitorImpl(model, uniqueValueAggregator, countryResolver);
+        CountVisitorImpl<FraudModel> countVisitor = new CountVisitorImpl<>(model, countAggregator);
+        SumVisitorImpl<FraudModel> sumVisitor = new SumVisitorImpl<>(model, sumAggregator);
+        ListVisitorImpl<FraudModel> listVisitor = new ListVisitorImpl<>(model, blackListFinder, whiteListFinder, greyListFinder);
+        CustomFuncVisitorImpl<FraudModel> customFuncVisitor = new CustomFuncVisitorImpl<>(model, uniqueValueAggregator, countryResolver);
         return new FastFraudVisitorImpl(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
     }
 }

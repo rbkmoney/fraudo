@@ -20,7 +20,7 @@ public class AbstractFraudoTest {
     public static final String TEST_GMAIL_RU = "test@gmail.ru";
 
     @Mock
-    CountAggregator countAggregator;
+    CountAggregator<FraudModel> countAggregator;
     @Mock
     SumAggregator sumAggregator;
     @Mock

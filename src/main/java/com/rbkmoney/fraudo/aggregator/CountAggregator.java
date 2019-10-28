@@ -1,26 +1,25 @@
 package com.rbkmoney.fraudo.aggregator;
 
 import com.rbkmoney.fraudo.constant.CheckedField;
-import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.model.TimeWindow;
 
 import java.util.List;
 
-public interface CountAggregator {
+public interface CountAggregator<T> {
 
     @Deprecated
-    Integer count(CheckedField checkedField, FraudModel model, Long timeInMinutes);
+    Integer count(CheckedField checkedField, T model, Long timeInMinutes);
 
-    Integer count(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, List<CheckedField> fields);
-
-    @Deprecated
-    Integer countSuccess(CheckedField checkedField, FraudModel model, Long timeInMinutes);
-
-    Integer countSuccess(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, List<CheckedField> fields);
+    Integer count(CheckedField checkedField, T model, TimeWindow timeWindow, List<CheckedField> fields);
 
     @Deprecated
-    Integer countError(CheckedField checkedField, FraudModel model, Long timeInMinutes, String errorCode);
+    Integer countSuccess(CheckedField checkedField, T model, Long timeInMinutes);
 
-    Integer countError(CheckedField checkedField, FraudModel model, TimeWindow timeWindow, String errorCode, List<CheckedField> fields);
+    Integer countSuccess(CheckedField checkedField, T model, TimeWindow timeWindow, List<CheckedField> fields);
+
+    @Deprecated
+    Integer countError(CheckedField checkedField, T model, Long timeInMinutes, String errorCode);
+
+    Integer countError(CheckedField checkedField, T model, TimeWindow timeWindow, String errorCode, List<CheckedField> fields);
 
 }
