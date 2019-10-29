@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.visitor;
+package com.rbkmoney.fraudo.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
@@ -6,6 +6,7 @@ import com.rbkmoney.fraudo.resolver.FieldNameResolver;
 import com.rbkmoney.fraudo.resolver.GroupFieldsResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
+import com.rbkmoney.fraudo.visitor.CountVisitor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

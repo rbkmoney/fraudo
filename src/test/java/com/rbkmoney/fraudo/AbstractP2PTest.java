@@ -3,16 +3,16 @@ package com.rbkmoney.fraudo;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.constant.CheckedField;
+import com.rbkmoney.fraudo.constant.P2PCheckedField;
 import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.model.PaymentModel;
+import com.rbkmoney.fraudo.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
+import com.rbkmoney.fraudo.resolver.p2p.P2PModelFieldNameResolver;
+import com.rbkmoney.fraudo.resolver.p2p.P2PModelFieldValueResolver;
 import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldNameResolver;
 import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldPairResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldValueResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -20,31 +20,29 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AbstractFraudoTest {
-
-    public static final String TEST_GMAIL_RU = "test@gmail.ru";
+public class AbstractP2PTest {
 
     @Mock
-    CountAggregator<PaymentModel, CheckedField> countAggregator;
+    CountAggregator<P2PModel, P2PCheckedField> countAggregator;
     @Mock
-    SumAggregator<PaymentModel, CheckedField> sumAggregator;
+    SumAggregator<P2PModel, P2PCheckedField> sumAggregator;
     @Mock
-    UniqueValueAggregator<PaymentModel, CheckedField> uniqueValueAggregator;
+    UniqueValueAggregator<P2PModel, P2PCheckedField> uniqueValueAggregator;
     @Mock
-    CountryResolver<CheckedField> countryResolver;
+    CountryResolver<P2PCheckedField> countryResolver;
     @Mock
-    InListFinder<PaymentModel, CheckedField> whiteListFinder;
+    InListFinder<P2PModel, P2PCheckedField> whiteListFinder;
     @Mock
-    InListFinder<PaymentModel, CheckedField> blackListFinder;
+    InListFinder<P2PModel, P2PCheckedField> blackListFinder;
     @Mock
-    InListFinder<PaymentModel, CheckedField> greyListFinder;
+    InListFinder<P2PModel, P2PCheckedField> greyListFinder;
 
-    private PaymentModelFieldNameResolver paymentModelFieldNameResolver = new PaymentModelFieldNameResolver();
-    private PaymentModelFieldValueResolver payoutModelFieldValueResolver = new PaymentModelFieldValueResolver();
-    private GroupByModelResolver<CheckedField> groupByModelResolver = new GroupByModelResolver<CheckedField>(paymentModelFieldNameResolver);
-    private PaymentModelFieldPairResolver paymentModelFieldPairResolver = new PaymentModelFieldPairResolver(
+    private P2PModelFieldNameResolver paymentModelFieldNameResolver = new P2PModelFieldNameResolver();
+    private P2PModelFieldValueResolver p2PModelFieldValueResolver = new P2PModelFieldValueResolver();
+    private GroupByModelResolver<P2PCheckedField> groupByModelResolver = new GroupByModelResolver<>(paymentModelFieldNameResolver);
+    private PaymentModelFieldPairResolver<P2PModel, P2PCheckedField> paymentModelFieldPairResolver = new PaymentModelFieldPairResolver<>(
             paymentModelFieldNameResolver,
-            payoutModelFieldValueResolver);
+            p2PModelFieldValueResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
@@ -52,12 +50,12 @@ public class AbstractFraudoTest {
     }
 
     ResultModel invokeParse(com.rbkmoney.fraudo.FraudoParser.ParseContext parse) {
-        PaymentModel model = new PaymentModel();
+        P2PModel model = new P2PModel();
         return invoke(parse, model);
     }
 
-    ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FastFraudVisitorFactory()
+    ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, P2PModel model) {
+        return (ResultModel) new FastFraudVisitorFactory<P2PModel, P2PCheckedField>()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,

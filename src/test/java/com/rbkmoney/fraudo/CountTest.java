@@ -2,10 +2,8 @@ package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
@@ -14,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-public class CountTest extends AbstractFraudoTest {
+public class CountTest extends AbstractPaymentTest {
 
     @Before
     public void init() {

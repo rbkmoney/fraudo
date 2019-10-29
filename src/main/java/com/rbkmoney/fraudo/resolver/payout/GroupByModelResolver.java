@@ -16,16 +16,16 @@ public class GroupByModelResolver<U> implements GroupFieldsResolver<U> {
     private final FieldNameResolver<U> payoutModelFieldNameResolver;
 
     public List<U> resolve(FraudoParser.Group_byContext groupByContext) {
-        List<U> checkedFields = new ArrayList<>();
+        List<U> fields = new ArrayList<>();
         if (groupByContext != null
                 && groupByContext.string_list() != null
                 && groupByContext.string_list().STRING() != null
                 && !groupByContext.string_list().STRING().isEmpty()) {
-            checkedFields = groupByContext.string_list().STRING().stream()
+            fields = groupByContext.string_list().STRING().stream()
                     .map(terminalNode -> payoutModelFieldNameResolver.resolve(TextUtil.safeGetText(terminalNode)))
                     .collect(Collectors.toList());
         }
-        return checkedFields;
+        return fields;
     }
 
 }

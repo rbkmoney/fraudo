@@ -13,7 +13,7 @@ import java.io.InputStream;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyObject;
 
-public class ListTest extends AbstractFraudoTest {
+public class ListTest extends AbstractPaymentTest {
 
     @Before
     public void init() {

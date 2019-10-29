@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.visitor;
+package com.rbkmoney.fraudo.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoBaseVisitor;
 import com.rbkmoney.fraudo.FraudoParser;
@@ -10,6 +10,10 @@ import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.utils.key.generator.*;
+import com.rbkmoney.fraudo.visitor.CountVisitor;
+import com.rbkmoney.fraudo.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.visitor.ListVisitor;
+import com.rbkmoney.fraudo.visitor.SumVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -48,12 +52,13 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitFraud_rule(FraudoParser.Fraud_ruleContext ctx) {
-
         try {
             if (asBoolean(ctx.expression())) {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
+            e.printStackTrace();
+
             log.warn("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());

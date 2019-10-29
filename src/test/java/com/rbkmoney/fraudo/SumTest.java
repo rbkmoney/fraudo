@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 import static org.mockito.Matchers.*;
 
-public class SumTest extends AbstractFraudoTest {
+public class SumTest extends AbstractPaymentTest {
 
     @Before
     public void init() {

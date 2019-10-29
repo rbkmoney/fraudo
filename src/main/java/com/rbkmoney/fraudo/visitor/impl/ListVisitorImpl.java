@@ -1,10 +1,11 @@
-package com.rbkmoney.fraudo.visitor;
+package com.rbkmoney.fraudo.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.Pair;
 import com.rbkmoney.fraudo.resolver.FieldPairResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
+import com.rbkmoney.fraudo.visitor.ListVisitor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 

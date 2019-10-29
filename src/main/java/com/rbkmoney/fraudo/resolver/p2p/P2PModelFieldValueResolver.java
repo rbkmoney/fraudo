@@ -1,0 +1,34 @@
+package com.rbkmoney.fraudo.resolver.p2p;
+
+import com.rbkmoney.fraudo.constant.P2PCheckedField;
+import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
+import com.rbkmoney.fraudo.model.P2PModel;
+import com.rbkmoney.fraudo.resolver.FieldValueResolver;
+
+public class P2PModelFieldValueResolver implements FieldValueResolver<P2PModel> {
+
+    @Override
+    public String resolve(String fieldName, P2PModel model) {
+        switch (P2PCheckedField.getByValue(fieldName)) {
+            case BIN:
+                return model.getBin();
+            case IP:
+                return model.getIp();
+            case FINGERPRINT:
+                return model.getFingerprint();
+            case EMAIL:
+                return model.getEmail();
+            case COUNTRY_BANK:
+                return model.getCountry();
+            case CARD_TOKEN_FROM:
+                return model.getCardTokenFrom();
+            case CARD_TOKEN_TO:
+                return model.getCardTokenTo();
+            case PAN:
+                return model.getPan();
+            default:
+                throw new UnresolvableFieldException(fieldName);
+        }
+    }
+
+}

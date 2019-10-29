@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-public class CustomTest extends AbstractFraudoTest {
+public class CustomTest extends AbstractPaymentTest {
 
     public static final String TEST_GMAIL_RU = "test@gmail.ru";
 
