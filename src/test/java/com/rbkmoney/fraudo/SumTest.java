@@ -1,8 +1,6 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Assert;
 import org.junit.Before;

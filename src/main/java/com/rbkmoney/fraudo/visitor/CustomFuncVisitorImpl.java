@@ -1,64 +1,66 @@
 package com.rbkmoney.fraudo.visitor;
 
-import com.rbkmoney.fraudo.FraudoBaseVisitor;
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.constant.CheckedField;
-import com.rbkmoney.fraudo.model.FraudModel;
+import com.rbkmoney.fraudo.model.Pair;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.FieldResolver;
-import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
+import com.rbkmoney.fraudo.resolver.FieldNameResolver;
+import com.rbkmoney.fraudo.resolver.FieldPairResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
+import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CustomFuncVisitorImpl<T extends FraudModel> extends FraudoBaseVisitor<Object> {
+public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
 
-    private final T fraudModel;
-    private final UniqueValueAggregator uniqueValueAggregator;
-    private final CountryResolver countryResolver;
+    private final UniqueValueAggregator<T, U> uniqueValueAggregator;
+    private final CountryResolver<U> countryResolver;
+    private final FieldPairResolver<T, U> fieldPairResolver;
+    private final FieldNameResolver<U> fieldNameResolver;
+    private final GroupByModelResolver<U> groupByModelResolver;
 
     @Override
-    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+    public String visitCountryBy(FraudoParser.Country_byContext ctx, T model) {
         String fieldName = TextUtil.safeGetText(ctx.STRING());
-        String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
-        return countryResolver.resolveCountry(CheckedField.getByValue(fieldName), fieldValue);
+        Pair<U, String> resolve = fieldPairResolver.resolve(fieldName, model);
+        return countryResolver.resolveCountry(resolve.getFirst(), resolve.getSecond());
     }
 
     @Override
-    public Object visitIn(FraudoParser.InContext ctx) {
+    public boolean visitIn(FraudoParser.InContext ctx, T model) {
         final String fieldValue;
         if (ctx.STRING() != null && ctx.STRING().getText() != null && !ctx.STRING().getText().isEmpty()) {
             String field = TextUtil.safeGetText(ctx.STRING());
-            fieldValue = FieldResolver.resolveString(field, fraudModel);
+            fieldValue = fieldPairResolver.resolve(field, model).getSecond();
         } else {
             String fieldName = TextUtil.safeGetText(ctx.country_by().STRING());
-            String value = FieldResolver.resolveString(fieldName, fraudModel);
-            fieldValue = countryResolver.resolveCountry(CheckedField.getByValue(fieldName), value);
+            Pair<U, String> resolve = fieldPairResolver.resolve(fieldName, model);
+            fieldValue = countryResolver.resolveCountry(resolve.getFirst(), resolve.getSecond());
         }
         return ctx.string_list().STRING().stream()
                 .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));
     }
 
     @Override
-    public Object visitLike(FraudoParser.LikeContext ctx) {
+    public boolean visitLike(FraudoParser.LikeContext ctx, T model) {
         String fieldName = TextUtil.safeGetText(ctx.STRING(0));
-        String fieldValue = FieldResolver.resolveString(fieldName, fraudModel);
+        String fieldValue = fieldPairResolver.resolve(fieldName, model).getSecond();
         String pattern = TextUtil.safeGetText(ctx.STRING(1));
         return fieldValue.matches(pattern);
     }
 
     @Override
-    public Object visitUnique(FraudoParser.UniqueContext ctx) {
+    public Integer visitUnique(FraudoParser.UniqueContext ctx, T model) {
         String field = TextUtil.safeGetText(ctx.STRING(0));
         String fieldBy = TextUtil.safeGetText(ctx.STRING(1));
-        return (double) uniqueValueAggregator.countUniqueValue(CheckedField.getByValue(field), fraudModel,
-                CheckedField.getByValue(fieldBy), TimeWindowResolver.resolve(ctx.time_window()), GroupByModelResolver.resolve(ctx.group_by()));
+        return uniqueValueAggregator.countUniqueValue(
+                fieldNameResolver.resolve(field),
+                model,
+                fieldNameResolver.resolve(fieldBy),
+                TimeWindowResolver.resolve(ctx.time_window()),
+                groupByModelResolver.resolve(ctx.group_by())
+        );
     }
 
-    @Override
-    public Object visitAmount(FraudoParser.AmountContext ctx) {
-        return (double) fraudModel.getAmount();
-    }
 }

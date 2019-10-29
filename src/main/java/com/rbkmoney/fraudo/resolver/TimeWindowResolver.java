@@ -3,10 +3,13 @@ package com.rbkmoney.fraudo.resolver;
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.model.TimeWindow;
 import com.rbkmoney.fraudo.utils.TextUtil;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TimeWindowResolver {
 
     public static TimeWindow resolve(FraudoParser.Time_windowContext ctx) {

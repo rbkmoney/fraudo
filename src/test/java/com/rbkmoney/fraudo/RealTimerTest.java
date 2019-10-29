@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.model.FraudModel;
+import com.rbkmoney.fraudo.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class RealTimerTest extends AbstractFraudoTest {
 
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
 
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
         model.setBin("444443");
 
@@ -57,7 +57,7 @@ public class RealTimerTest extends AbstractFraudoTest {
 
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
 
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
         model.setBin("444443");
 
@@ -79,19 +79,7 @@ public class RealTimerTest extends AbstractFraudoTest {
                     countDownLatch.countDown();
                     return 1;
                 });
-        when(countAggregator.count(any(), any(), any()))
-                .thenAnswer((Answer<Integer>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    countDownLatch.countDown();
-                    return 1;
-                });
         when(countAggregator.countSuccess(any(), any(), any(), any()))
-                .thenAnswer((Answer<Integer>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    countDownLatch.countDown();
-                    return 1;
-                });
-        when(countAggregator.countSuccess(any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     countDownLatch.countDown();
@@ -103,43 +91,23 @@ public class RealTimerTest extends AbstractFraudoTest {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     return 10000.0;
                 });
-        when(sumAggregator.sum(any(), any(), any()))
-                .thenAnswer((Answer<Double>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    return 10000.0;
-                });
         when(sumAggregator.sumSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     return 10000.0;
                 });
-        when(sumAggregator.sumSuccess(any(), any(), any()))
-                .thenAnswer((Answer<Double>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    return 10000.0;
-                });
 
-        when(whiteListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(whiteListFinder.findInList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(greyListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(greyListFinder.findInList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(greyListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
-                .thenAnswer((Answer<Boolean>) invocationOnMock -> {
-                    Thread.sleep(MILLISTIME_FAST_FUNC);
-                    return false;
-                });
-        when(blackListFinder.findInList(anyString(), anyString(), anyObject(), anyString()))
-                .thenAnswer((Answer<Boolean>) invocationOnMock -> {
-                    Thread.sleep(MILLISTIME_FAST_FUNC);
-                    return false;
-                });
-        when(blackListFinder.findInList(anyString(), anyString(), anyList(), anyList()))
+        when(blackListFinder.findInList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;

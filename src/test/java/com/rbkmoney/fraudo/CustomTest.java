@@ -2,7 +2,7 @@ package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.model.FraudModel;
+import com.rbkmoney.fraudo.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +79,7 @@ public class CustomTest extends AbstractFraudoTest {
     public void inTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
@@ -91,7 +91,7 @@ public class CustomTest extends AbstractFraudoTest {
         when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
 
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }
@@ -100,7 +100,7 @@ public class CustomTest extends AbstractFraudoTest {
     public void amountTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/amount.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setAmount(56L);
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
@@ -119,7 +119,7 @@ public class CustomTest extends AbstractFraudoTest {
     public void likeTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/like.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         model.setBin("553619");
         model.setPan("9137");
@@ -135,7 +135,7 @@ public class CustomTest extends AbstractFraudoTest {
     public void inNotTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in_not.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        FraudModel model = new FraudModel();
+        PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.NORMAL, result.getResultStatus());
