@@ -6,6 +6,7 @@ import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.constant.CheckedField;
 import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
+import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
@@ -36,11 +37,13 @@ public class AbstractPaymentTest {
     InListFinder<PaymentModel, CheckedField> blackListFinder;
     @Mock
     InListFinder<PaymentModel, CheckedField> greyListFinder;
+    @Mock
+    InNamingListFinder<PaymentModel, CheckedField> inNamingListFinder;
 
     private PaymentModelFieldNameResolver paymentModelFieldNameResolver = new PaymentModelFieldNameResolver();
     private PaymentModelFieldValueResolver payoutModelFieldValueResolver = new PaymentModelFieldValueResolver();
     private GroupByModelResolver<CheckedField> groupByModelResolver = new GroupByModelResolver<CheckedField>(paymentModelFieldNameResolver);
-    private PaymentModelFieldPairResolver paymentModelFieldPairResolver = new PaymentModelFieldPairResolver(
+    private PaymentModelFieldPairResolver paymentModelFieldPairResolver = new PaymentModelFieldPairResolver<>(
             paymentModelFieldNameResolver,
             payoutModelFieldValueResolver);
 
@@ -55,7 +58,7 @@ public class AbstractPaymentTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FastFraudVisitorFactory()
+        return (ResultModel) new FastFraudVisitorFactory<PaymentModel, CheckedField>()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,
@@ -64,6 +67,7 @@ public class AbstractPaymentTest {
                         blackListFinder,
                         whiteListFinder,
                         greyListFinder,
+                        inNamingListFinder,
                         paymentModelFieldNameResolver,
                         paymentModelFieldPairResolver,
                         groupByModelResolver)

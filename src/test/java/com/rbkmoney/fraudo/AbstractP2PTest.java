@@ -6,6 +6,7 @@ import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.constant.P2PCheckedField;
 import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
+import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
@@ -36,6 +37,8 @@ public class AbstractP2PTest {
     InListFinder<P2PModel, P2PCheckedField> blackListFinder;
     @Mock
     InListFinder<P2PModel, P2PCheckedField> greyListFinder;
+    @Mock
+    InNamingListFinder<P2PModel, P2PCheckedField> inNamingListFinder;
 
     private P2PModelFieldNameResolver paymentModelFieldNameResolver = new P2PModelFieldNameResolver();
     private P2PModelFieldValueResolver p2PModelFieldValueResolver = new P2PModelFieldValueResolver();
@@ -64,6 +67,7 @@ public class AbstractP2PTest {
                         blackListFinder,
                         whiteListFinder,
                         greyListFinder,
+                        inNamingListFinder,
                         paymentModelFieldNameResolver,
                         paymentModelFieldPairResolver,
                         groupByModelResolver)

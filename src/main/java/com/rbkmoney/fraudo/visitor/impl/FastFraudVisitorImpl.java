@@ -239,6 +239,11 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
     }
 
     @Override
+    public Object visitIn_list(FraudoParser.In_listContext ctx) {
+        return listVisitor.visitInList(ctx, threadLocalModel.get());
+    }
+
+    @Override
     public Object visitAmount(FraudoParser.AmountContext ctx) {
         return Double.valueOf(threadLocalModel.get().getAmount());
     }

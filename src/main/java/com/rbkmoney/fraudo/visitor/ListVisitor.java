@@ -10,4 +10,6 @@ public interface ListVisitor<T> {
 
     Boolean visitInGreyList(FraudoParser.In_grey_listContext ctx, T model);
 
+    Boolean visitInList(FraudoParser.In_listContext ctx, T model);
+
 }
