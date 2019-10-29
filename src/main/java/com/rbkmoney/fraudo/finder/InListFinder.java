@@ -1,6 +1,7 @@
 package com.rbkmoney.fraudo.finder;
 
-import com.sun.tools.javac.util.Pair;
+
+import com.rbkmoney.fraudo.model.Pair;
 
 import java.util.List;
 
