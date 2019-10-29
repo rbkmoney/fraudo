@@ -102,8 +102,13 @@ public class CustomTest extends AbstractPaymentTest {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setAmount(56L);
+        model.setCurrency("RUB");
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+
+        model.setCurrency("USD");
+        result = invoke(parseContext, model);
+        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
     }
 
     @Test

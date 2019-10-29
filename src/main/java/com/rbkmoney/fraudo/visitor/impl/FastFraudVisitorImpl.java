@@ -243,6 +243,11 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
         return Double.valueOf(threadLocalModel.get().getAmount());
     }
 
+    @Override
+    public Object visitCurrency(FraudoParser.CurrencyContext ctx) {
+        return threadLocalModel.get().getCurrency();
+    }
+
     private boolean asBoolean(FraudoParser.ExpressionContext ctx) {
         return (boolean) visit(ctx);
     }

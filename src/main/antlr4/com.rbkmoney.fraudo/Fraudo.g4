@@ -29,6 +29,7 @@ expression
  | country                                        #countryFunctionExpression
  | country_by                                     #countryByFunctionExpression
  | amount                                         #amountFunctionExpression
+ | currency                                       #currencyFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  | STRING                                         #stringExpression
@@ -48,6 +49,10 @@ bool
 
 amount
  : 'amount' LPAREN RPAREN
+ ;
+
+currency
+ : 'currency' LPAREN RPAREN
  ;
 
 count
