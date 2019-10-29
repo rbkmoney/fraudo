@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudo.factory;
 
-import com.rbkmoney.fraudo.FraudoBaseVisitor;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
@@ -36,6 +35,6 @@ public class FastFraudVisitorFactory implements FraudVisitorFactory<PaymentModel
                 fieldPairResolver,
                 fieldNameResolver,
                 groupByModelResolver);
-        return new FastFraudVisitorImpl(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
+        return new FastFraudVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
     }
 }
