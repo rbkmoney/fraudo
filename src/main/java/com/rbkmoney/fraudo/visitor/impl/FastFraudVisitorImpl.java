@@ -58,11 +58,11 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
-            log.warn("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
+            log.error("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());
             }
-            return ResultStatus.THREE_DS;
+            return ResultStatus.NOTIFY;
         }
         return ResultStatus.NORMAL;
     }
@@ -73,12 +73,12 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
         for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
             ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
             String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
-            if (ResultStatus.NOTIFY.equals(result)) {
-                notifications.add(key);
-            } else if (result != null && !ResultStatus.NORMAL.equals(result)) {
-                return new ResultModel(result, key, notifications);
-            } else if (result == null) {
+            if (result == null) {
                 throw new UnknownResultException(fraudRuleContext.getText());
+            } else if (result == ResultStatus.NOTIFY) {
+                notifications.add(key);
+            } else if (result != ResultStatus.NORMAL) {
+                return new ResultModel(result, key, notifications);
             }
         }
         return new ResultModel(ResultStatus.NORMAL, notifications);
