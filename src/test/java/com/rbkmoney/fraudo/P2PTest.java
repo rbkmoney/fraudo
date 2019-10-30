@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.model.PaymentModel;
+import com.rbkmoney.fraudo.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
-public class RealTimerTest extends AbstractPaymentTest {
+public class P2PTest extends AbstractP2PTest {
 
     public static final long TIME_CALL_AGGR_FUNC = 200L;
     public static final long MILLISTIME_FAST_FUNC = 10L;
@@ -29,47 +29,25 @@ public class RealTimerTest extends AbstractPaymentTest {
 
     @Test
     public void timingTest() throws Exception {
-        InputStream resourceAsStream = RealTimerTest.class.getResourceAsStream("/rules/payment_template.frd");
+        InputStream resourceAsStream = P2PTest.class.getResourceAsStream("/rules/p2p_template.frd");
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
 
-        PaymentModel model = new PaymentModel();
+        P2PModel model = new P2PModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
         model.setBin("444443");
+        model.setCardTokenFrom("13213");
 
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         assertEquals(0, countDownLatch.getCount());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC + 1 + TIME_CALLING);
 
         System.out.println("executionTime=" + executionTime);
-    }
-
-    @Test
-    public void timingWithSuccessTest() throws Exception {
-        InputStream resourceAsStream = RealTimerTest.class.getResourceAsStream("/rules/sum_and_count_template.frd");
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        mockAggr(countDownLatch);
-
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-
-        PaymentModel model = new PaymentModel();
-        model.setAmount(MILLISTIME_FAST_FUNC);
-        model.setBin("444443");
-
-        long start = System.currentTimeMillis();
-        ResultModel result = invoke(parseContext, model);
-        long executionTime = System.currentTimeMillis() - start;
-
-        System.out.println("executionTime=" + executionTime);
-        System.out.println("result=" + result.getRuleChecked());
-
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
-        assertTrue(executionTime < TIME_CALL_AGGR_FUNC * 4 + TIME_CALLING);
     }
 
     private void mockAggr(CountDownLatch countDownLatch) {
@@ -97,22 +75,26 @@ public class RealTimerTest extends AbstractPaymentTest {
                     return 10000.0;
                 });
 
-        when(inListFinder.findInWhiteList(anyList(), anyObject()))
+        when(listFinder.findInBlackList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(inListFinder.findInGreyList(anyList(), anyObject()))
+        when(listFinder.findInWhiteList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(inListFinder.findInBlackList(anyList(), anyObject()))
+        when(listFinder.findInGreyList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-
+        when(listFinder.findInList(anyString(), anyList(), anyObject()))
+                .thenAnswer((Answer<Boolean>) invocationOnMock -> {
+                    Thread.sleep(MILLISTIME_FAST_FUNC);
+                    return false;
+                });
         when(countryResolver.resolveCountry(anyObject(), anyString()))
                 .thenAnswer((Answer<String>) invocationOnMock -> "RUS");
     }

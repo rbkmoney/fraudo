@@ -1,8 +1,6 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.model.FraudModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,7 +12,7 @@ import java.io.InputStream;
 
 import static org.mockito.Matchers.*;
 
-public class SumTest extends AbstractFraudoTest {
+public class SumTest extends AbstractPaymentTest {
 
     @Before
     public void init() {

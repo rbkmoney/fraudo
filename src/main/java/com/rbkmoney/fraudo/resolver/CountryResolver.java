@@ -1,11 +1,9 @@
 package com.rbkmoney.fraudo.resolver;
 
-import com.rbkmoney.fraudo.constant.CheckedField;
-
-public interface CountryResolver {
+public interface CountryResolver<T> {
 
     String UNKNOWN_VALUE = "unknown";
 
-    String resolveCountry(CheckedField checkedField, String value);
+    String resolveCountry(T checkedField, String value);
 
 }

@@ -25,10 +25,12 @@ expression
  | in_white_list                                  #inWhiteListExpression
  | in_black_list                                  #inBlackListExpression
  | in_grey_list                                   #inGreyListExpression
+ | in_list                                        #inListExpression
  | like                                           #likeFunctionExpression
  | country                                        #countryFunctionExpression
  | country_by                                     #countryByFunctionExpression
  | amount                                         #amountFunctionExpression
+ | currency                                       #currencyFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  | STRING                                         #stringExpression
@@ -48,6 +50,10 @@ bool
 
 amount
  : 'amount' LPAREN RPAREN
+ ;
+
+currency
+ : 'currency' LPAREN RPAREN
  ;
 
 count
@@ -92,6 +98,10 @@ in_black_list
 
 in_grey_list
  : 'inGreyList' LPAREN string_list RPAREN
+ ;
+
+in_list
+ : 'inList' LPAREN STRING DELIMETER string_list RPAREN
  ;
 
 like

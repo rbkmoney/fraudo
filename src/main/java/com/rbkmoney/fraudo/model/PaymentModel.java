@@ -1,19 +1,19 @@
 package com.rbkmoney.fraudo.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
-public class FraudModel {
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class PaymentModel extends BaseModel {
 
-    private String ip;
-    private String email;
     private String bin;
     private String pan;
     private String binCountryCode;
     private String cardToken;
-    private String fingerprint;
     private String shopId;
     private String partyId;
-    private Long amount;
 
 }

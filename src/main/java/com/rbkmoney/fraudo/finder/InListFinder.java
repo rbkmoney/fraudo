@@ -1,13 +1,18 @@
 package com.rbkmoney.fraudo.finder;
 
-import com.rbkmoney.fraudo.constant.CheckedField;
+
+import com.rbkmoney.fraudo.model.Pair;
 
 import java.util.List;
 
-public interface InListFinder {
+public interface InListFinder<T, U> {
 
-    Boolean findInList(String partyId, String shopId, CheckedField field, String value);
+    Boolean findInBlackList(List<Pair<U, String>> fields, T model);
 
-    Boolean findInList(String partyId, String shopId, List<CheckedField> fields, List<String> value);
+    Boolean findInWhiteList(List<Pair<U, String>> fields, T model);
+
+    Boolean findInGreyList(List<Pair<U, String>> fields, T model);
+
+    Boolean findInList(String name, List<Pair<U, String>> fields, T model);
 
 }

@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo.utils.key.generator;
 
 import com.rbkmoney.fraudo.FraudoParser;
-import com.rbkmoney.fraudo.constant.CheckedField;
+import com.rbkmoney.fraudo.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class CommonKeyGenerator {
         return new StringBuilder()
                 .append(parseTree)
                 .append(countTarget)
-                .append(CheckedField.getByValue(countTarget))
+                .append(PaymentCheckedField.getByValue(countTarget))
                 .append(timeWindowContext != null ? timeWindowContext.children : "")
                 .append(groupByContext != null ? groupByContext.string_list().children : "")
                 .toString();
@@ -36,7 +36,7 @@ public class CommonKeyGenerator {
                 .append(parseTree)
                 .append(target)
                 .append(errorCode)
-                .append(CheckedField.getByValue(target))
+                .append(PaymentCheckedField.getByValue(target))
                 .append(timeWindowContext != null ? timeWindowContext.children : "")
                 .append(groupByContext != null ? groupByContext.string_list().children : "")
                 .toString();
