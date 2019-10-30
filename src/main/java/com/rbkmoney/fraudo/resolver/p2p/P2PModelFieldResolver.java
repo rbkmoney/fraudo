@@ -3,12 +3,12 @@ package com.rbkmoney.fraudo.resolver.p2p;
 import com.rbkmoney.fraudo.constant.P2PCheckedField;
 import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
 import com.rbkmoney.fraudo.model.P2PModel;
-import com.rbkmoney.fraudo.resolver.FieldValueResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
 
-public class P2PModelFieldValueResolver implements FieldValueResolver<P2PModel> {
+public class P2PModelFieldResolver implements FieldResolver<P2PModel, P2PCheckedField> {
 
     @Override
-    public String resolve(String fieldName, P2PModel model) {
+    public String resolveValue(String fieldName, P2PModel model) {
         switch (P2PCheckedField.getByValue(fieldName)) {
             case BIN:
                 return model.getBin();
@@ -29,6 +29,11 @@ public class P2PModelFieldValueResolver implements FieldValueResolver<P2PModel> 
             default:
                 throw new UnresolvableFieldException(fieldName);
         }
+    }
+
+    @Override
+    public P2PCheckedField resolveName(String fieldName) {
+        return P2PCheckedField.getByValue(fieldName);
     }
 
 }

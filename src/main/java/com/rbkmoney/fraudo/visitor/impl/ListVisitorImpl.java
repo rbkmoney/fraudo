@@ -2,61 +2,56 @@ package com.rbkmoney.fraudo.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.Pair;
-import com.rbkmoney.fraudo.resolver.FieldPairResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.visitor.ListVisitor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ListVisitorImpl<T, U> implements ListVisitor<T> {
 
-    private final InListFinder<T, U> blackListFinder;
-    private final InListFinder<T, U> whiteListFinder;
-    private final InListFinder<T, U> greyListFinder;
-
-    private final InNamingListFinder<T, U> listFinderNew;
-
-    private final FieldPairResolver<T, U> fieldPairResolver;
+    private final InListFinder<T, U> listFinder;
+    private final FieldResolver<T, U> fieldResolver;
 
     @Override
     public Boolean visitInWhiteList(FraudoParser.In_white_listContext ctx, T model) {
-        return findInList(ctx.string_list().STRING(), whiteListFinder, model);
+        return findInList(ctx.string_list().STRING(), model, listFinder::findInWhiteList);
     }
 
     @Override
     public Boolean visitInBlackList(FraudoParser.In_black_listContext ctx, T model) {
-        return findInList(ctx.string_list().STRING(), blackListFinder, model);
+        return findInList(ctx.string_list().STRING(), model, listFinder::findInBlackList);
     }
 
     @Override
     public Boolean visitInGreyList(FraudoParser.In_grey_listContext ctx, T model) {
-        return findInList(ctx.string_list().STRING(), greyListFinder, model);
+        return findInList(ctx.string_list().STRING(), model, listFinder::findInGreyList);
     }
 
     @Override
     public Boolean visitInList(FraudoParser.In_listContext ctx, T model) {
-        List<String> fields = ctx.string_list().STRING().stream()
-                .map(TextUtil::safeGetText)
-                .collect(Collectors.toList());
-        List<Pair<U, String>> checkedFields = fields.stream()
-                .map(s -> fieldPairResolver.resolve(s, model))
-                .collect(Collectors.toList());
+        List<Pair<U, String>> checkedFields = initCheckedFields(model, ctx.string_list().STRING());
         String name = TextUtil.safeGetText(ctx.STRING());
-        return listFinderNew.findInList(name, checkedFields, model);    }
+        return listFinder.findInList(name, checkedFields, model);
+    }
 
-    private Boolean findInList(List<TerminalNode> nodes, InListFinder listFinder, T model) {
-        List<String> fields = nodes.stream()
+    private List<Pair<U, String>> initCheckedFields(T model, List<TerminalNode> string) {
+        List<String> fields = string.stream()
                 .map(TextUtil::safeGetText)
                 .collect(Collectors.toList());
-        List<Pair<U, String>> checkedFields = fields.stream()
-                .map(s -> fieldPairResolver.resolve(s, model))
+        return fields.stream()
+                .map(s -> fieldResolver.resolve(s, model))
                 .collect(Collectors.toList());
-        return listFinder.findInList(checkedFields, model);
+    }
+
+    private Boolean findInList(List<TerminalNode> nodes, T model, BiPredicate<List<Pair<U, String>>, T> biPredicate) {
+        List<Pair<U, String>> checkedFields = initCheckedFields(model, nodes);
+        return biPredicate.test(checkedFields, model);
     }
 }

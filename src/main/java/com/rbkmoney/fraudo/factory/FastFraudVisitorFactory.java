@@ -4,12 +4,10 @@ import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.FieldNameResolver;
-import com.rbkmoney.fraudo.resolver.FieldPairResolver;
-import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
 import com.rbkmoney.fraudo.visitor.CountVisitor;
 import com.rbkmoney.fraudo.visitor.CustomFuncVisitor;
 import com.rbkmoney.fraudo.visitor.ListVisitor;
@@ -24,21 +22,16 @@ public class FastFraudVisitorFactory<T extends BaseModel, U> implements FraudVis
             SumAggregator<T, U> sumAggregator,
             UniqueValueAggregator<T, U> uniqueValueAggregator,
             CountryResolver<U> countryResolver,
-            InListFinder<T, U> blackListFinder,
-            InListFinder<T, U> whiteListFinder,
-            InListFinder<T, U> greyListFinder,
-            InNamingListFinder<T, U> inNamingListFinder,
-            FieldNameResolver<U> fieldNameResolver,
-            FieldPairResolver<T, U> fieldPairResolver,
-            GroupByModelResolver<U> groupByModelResolver) {
-        CountVisitor<T> countVisitor = new CountVisitorImpl<>(countAggregator, fieldNameResolver, groupByModelResolver);
-        SumVisitor<T> sumVisitor = new SumVisitorImpl<>(sumAggregator, fieldNameResolver, groupByModelResolver);
-        ListVisitor<T> listVisitor = new ListVisitorImpl<>(blackListFinder, whiteListFinder, greyListFinder, inNamingListFinder, fieldPairResolver);
+            InListFinder<T, U> listFinder,
+            FieldResolver<T, U> fieldResolver,
+            GroupByModelResolver<T, U> groupByModelResolver) {
+        CountVisitor<T> countVisitor = new CountVisitorImpl<>(countAggregator, fieldResolver, groupByModelResolver);
+        SumVisitor<T> sumVisitor = new SumVisitorImpl<>(sumAggregator, fieldResolver, groupByModelResolver);
+        ListVisitor<T> listVisitor = new ListVisitorImpl<>(listFinder, fieldResolver);
         CustomFuncVisitor<T> customFuncVisitor = new CustomFuncVisitorImpl<>(
                 uniqueValueAggregator,
                 countryResolver,
-                fieldPairResolver,
-                fieldNameResolver,
+                fieldResolver,
                 groupByModelResolver);
         return new FastFraudVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
     }

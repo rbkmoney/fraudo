@@ -6,14 +6,11 @@ import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.constant.P2PCheckedField;
 import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.p2p.P2PModelFieldNameResolver;
-import com.rbkmoney.fraudo.resolver.p2p.P2PModelFieldValueResolver;
-import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldPairResolver;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
+import com.rbkmoney.fraudo.resolver.p2p.P2PModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -32,20 +29,11 @@ public class AbstractP2PTest {
     @Mock
     CountryResolver<P2PCheckedField> countryResolver;
     @Mock
-    InListFinder<P2PModel, P2PCheckedField> whiteListFinder;
-    @Mock
-    InListFinder<P2PModel, P2PCheckedField> blackListFinder;
-    @Mock
-    InListFinder<P2PModel, P2PCheckedField> greyListFinder;
-    @Mock
-    InNamingListFinder<P2PModel, P2PCheckedField> inNamingListFinder;
+    InListFinder<P2PModel, P2PCheckedField> listFinder;
 
-    private P2PModelFieldNameResolver paymentModelFieldNameResolver = new P2PModelFieldNameResolver();
-    private P2PModelFieldValueResolver p2PModelFieldValueResolver = new P2PModelFieldValueResolver();
-    private GroupByModelResolver<P2PCheckedField> groupByModelResolver = new GroupByModelResolver<>(paymentModelFieldNameResolver);
-    private PaymentModelFieldPairResolver<P2PModel, P2PCheckedField> paymentModelFieldPairResolver = new PaymentModelFieldPairResolver<>(
-            paymentModelFieldNameResolver,
-            p2PModelFieldValueResolver);
+    private P2PModelFieldResolver fieldResolver = new P2PModelFieldResolver();
+    private GroupByModelResolver<P2PModel, P2PCheckedField> groupByModelResolver = new GroupByModelResolver<>(fieldResolver);
+
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
@@ -64,12 +52,8 @@ public class AbstractP2PTest {
                         sumAggregator,
                         uniqueValueAggregator,
                         countryResolver,
-                        blackListFinder,
-                        whiteListFinder,
-                        greyListFinder,
-                        inNamingListFinder,
-                        paymentModelFieldNameResolver,
-                        paymentModelFieldPairResolver,
+                        listFinder,
+                        fieldResolver,
                         groupByModelResolver)
                 .visit(parse, model);
     }

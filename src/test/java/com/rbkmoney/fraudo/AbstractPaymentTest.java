@@ -3,17 +3,15 @@ package com.rbkmoney.fraudo;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.constant.CheckedField;
+import com.rbkmoney.fraudo.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.finder.InNamingListFinder;
 import com.rbkmoney.fraudo.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldNameResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldPairResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldValueResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
+import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -24,28 +22,18 @@ import java.io.InputStream;
 public class AbstractPaymentTest {
 
     @Mock
-    CountAggregator<PaymentModel, CheckedField> countAggregator;
+    CountAggregator<PaymentModel, PaymentCheckedField> countAggregator;
     @Mock
-    SumAggregator<PaymentModel, CheckedField> sumAggregator;
+    SumAggregator<PaymentModel, PaymentCheckedField> sumAggregator;
     @Mock
-    UniqueValueAggregator<PaymentModel, CheckedField> uniqueValueAggregator;
+    UniqueValueAggregator<PaymentModel, PaymentCheckedField> uniqueValueAggregator;
     @Mock
-    CountryResolver<CheckedField> countryResolver;
+    CountryResolver<PaymentCheckedField> countryResolver;
     @Mock
-    InListFinder<PaymentModel, CheckedField> whiteListFinder;
-    @Mock
-    InListFinder<PaymentModel, CheckedField> blackListFinder;
-    @Mock
-    InListFinder<PaymentModel, CheckedField> greyListFinder;
-    @Mock
-    InNamingListFinder<PaymentModel, CheckedField> inNamingListFinder;
+    InListFinder<PaymentModel, PaymentCheckedField> inListFinder;
 
-    private PaymentModelFieldNameResolver paymentModelFieldNameResolver = new PaymentModelFieldNameResolver();
-    private PaymentModelFieldValueResolver payoutModelFieldValueResolver = new PaymentModelFieldValueResolver();
-    private GroupByModelResolver<CheckedField> groupByModelResolver = new GroupByModelResolver<CheckedField>(paymentModelFieldNameResolver);
-    private PaymentModelFieldPairResolver paymentModelFieldPairResolver = new PaymentModelFieldPairResolver<>(
-            paymentModelFieldNameResolver,
-            payoutModelFieldValueResolver);
+    private FieldResolver<PaymentModel, PaymentCheckedField> fieldResolver = new PaymentModelFieldResolver();
+    private GroupByModelResolver<PaymentModel, PaymentCheckedField> groupByModelResolver = new GroupByModelResolver<>(fieldResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
@@ -58,18 +46,14 @@ public class AbstractPaymentTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FastFraudVisitorFactory<PaymentModel, CheckedField>()
+        return (ResultModel) new FastFraudVisitorFactory<PaymentModel, PaymentCheckedField>()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,
                         uniqueValueAggregator,
                         countryResolver,
-                        blackListFinder,
-                        whiteListFinder,
-                        greyListFinder,
-                        inNamingListFinder,
-                        paymentModelFieldNameResolver,
-                        paymentModelFieldPairResolver,
+                        inListFinder,
+                        fieldResolver,
                         groupByModelResolver)
                 .visit(parse, model);
     }

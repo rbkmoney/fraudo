@@ -97,21 +97,22 @@ public class RealTimerTest extends AbstractPaymentTest {
                     return 10000.0;
                 });
 
-        when(whiteListFinder.findInList(anyList(), anyObject()))
+        when(inListFinder.findInWhiteList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(greyListFinder.findInList(anyList(), anyObject()))
+        when(inListFinder.findInGreyList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(blackListFinder.findInList(anyList(), anyObject()))
+        when(inListFinder.findInBlackList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
+
         when(countryResolver.resolveCountry(anyObject(), anyString()))
                 .thenAnswer((Answer<String>) invocationOnMock -> "RUS");
     }

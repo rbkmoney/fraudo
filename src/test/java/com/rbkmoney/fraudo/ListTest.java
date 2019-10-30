@@ -24,13 +24,13 @@ public class ListTest extends AbstractPaymentTest {
     public void whiteBlackListTest() throws Exception {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/whitelist.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        Mockito.when(whiteListFinder.findInList(anyList(), anyObject())).thenReturn(true);
+        Mockito.when(inListFinder.findInWhiteList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
 
         resourceAsStream = ListTest.class.getResourceAsStream("/rules/blacklist.frd");
         parseContext = getParseContext(resourceAsStream);
-        Mockito.when(blackListFinder.findInList(anyList(), anyObject())).thenReturn(true);
+        Mockito.when(inListFinder.findInBlackList(anyList(), anyObject())).thenReturn(true);
         result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());
@@ -40,7 +40,7 @@ public class ListTest extends AbstractPaymentTest {
     public void greyListTest() throws Exception {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/greyList.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
-        Mockito.when(greyListFinder.findInList(anyList(), anyObject())).thenReturn(true);
+        Mockito.when(inListFinder.findInGreyList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }

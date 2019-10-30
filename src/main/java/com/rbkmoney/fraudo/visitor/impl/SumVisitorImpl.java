@@ -2,9 +2,9 @@ package com.rbkmoney.fraudo.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
-import com.rbkmoney.fraudo.resolver.FieldNameResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
 import com.rbkmoney.fraudo.resolver.TimeWindowResolver;
-import com.rbkmoney.fraudo.resolver.payout.GroupByModelResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.visitor.SumVisitor;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 public class SumVisitorImpl<T, U> implements SumVisitor<T> {
 
     private final SumAggregator<T, U> sumAggregator;
-    private final FieldNameResolver<U> fieldNameResolver;
-    private final GroupByModelResolver<U> groupByModelResolver;
+    private final FieldResolver<T, U> fieldResolver;
+    private final GroupByModelResolver<T, U> groupByModelResolver;
 
     @Override
     public Double visitSum(FraudoParser.SumContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumAggregator.sum(
-                fieldNameResolver.resolve(countTarget),
+                fieldResolver.resolveName(countTarget),
                 model,
                 TimeWindowResolver.resolve(ctx.time_window()),
                 groupByModelResolver.resolve(ctx.group_by())
@@ -31,7 +31,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     public Double visitSumSuccess(FraudoParser.Sum_successContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumAggregator.sumSuccess(
-                fieldNameResolver.resolve(countTarget),
+                fieldResolver.resolveName(countTarget),
                 model,
                 TimeWindowResolver.resolve(ctx.time_window()),
                 groupByModelResolver.resolve(ctx.group_by()));
@@ -42,7 +42,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
         return sumAggregator.sumError(
-                fieldNameResolver.resolve(countTarget),
+                fieldResolver.resolveName(countTarget),
                 model,
                 TimeWindowResolver.resolve(ctx.time_window()),
                 errorCode,

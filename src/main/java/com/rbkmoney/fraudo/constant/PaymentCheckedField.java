@@ -3,7 +3,7 @@ package com.rbkmoney.fraudo.constant;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum CheckedField {
+public enum PaymentCheckedField {
 
     EMAIL("email"),
     IP("ip"),
@@ -18,19 +18,19 @@ public enum CheckedField {
     CARD_TOKEN("card_token");
 
     private String value;
-    private static Map<String, CheckedField> valueMap = new HashMap<>();
+    private static Map<String, PaymentCheckedField> valueMap = new HashMap<>();
 
     static {
-        for (CheckedField value : CheckedField.values()) {
+        for (PaymentCheckedField value : PaymentCheckedField.values()) {
             valueMap.put(value.value, value);
         }
     }
 
-    CheckedField(String value) {
+    PaymentCheckedField(String value) {
         this.value = value;
     }
 
-    public static CheckedField getByValue(String value) {
+    public static PaymentCheckedField getByValue(String value) {
         return valueMap.get(value);
     }
 

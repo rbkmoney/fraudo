@@ -1,15 +1,15 @@
 package com.rbkmoney.fraudo.resolver.payout;
 
-import com.rbkmoney.fraudo.constant.CheckedField;
+import com.rbkmoney.fraudo.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
 import com.rbkmoney.fraudo.model.PaymentModel;
-import com.rbkmoney.fraudo.resolver.FieldValueResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
 
-public class PaymentModelFieldValueResolver implements FieldValueResolver<PaymentModel> {
+public class PaymentModelFieldResolver implements FieldResolver<PaymentModel, PaymentCheckedField> {
 
     @Override
-    public String resolve(String fieldName, PaymentModel paymentModel) {
-        switch (CheckedField.getByValue(fieldName)) {
+    public String resolveValue(String fieldName, PaymentModel paymentModel) {
+        switch (PaymentCheckedField.getByValue(fieldName)) {
             case BIN:
                 return paymentModel.getBin();
             case IP:
@@ -27,6 +27,11 @@ public class PaymentModelFieldValueResolver implements FieldValueResolver<Paymen
             default:
                 throw new UnresolvableFieldException(fieldName);
         }
+    }
+
+    @Override
+    public PaymentCheckedField resolveName(String fieldName) {
+        return PaymentCheckedField.getByValue(fieldName);
     }
 
 }

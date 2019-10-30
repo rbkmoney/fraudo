@@ -75,17 +75,22 @@ public class P2PTest extends AbstractP2PTest {
                     return 10000.0;
                 });
 
-        when(whiteListFinder.findInList(anyList(), anyObject()))
+        when(listFinder.findInBlackList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(greyListFinder.findInList(anyList(), anyObject()))
+        when(listFinder.findInWhiteList(anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
                 });
-        when(blackListFinder.findInList(anyList(), anyObject()))
+        when(listFinder.findInGreyList(anyList(), anyObject()))
+                .thenAnswer((Answer<Boolean>) invocationOnMock -> {
+                    Thread.sleep(MILLISTIME_FAST_FUNC);
+                    return false;
+                });
+        when(listFinder.findInList(anyString(), anyList(), anyObject()))
                 .thenAnswer((Answer<Boolean>) invocationOnMock -> {
                     Thread.sleep(MILLISTIME_FAST_FUNC);
                     return false;
