@@ -10,8 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
 
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.*;
 
 public class ListTest extends AbstractPaymentTest {
 
@@ -41,6 +40,15 @@ public class ListTest extends AbstractPaymentTest {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/greyList.frd");
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInGreyList(anyList(), anyObject())).thenReturn(true);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
+    public void namingListTest() throws Exception {
+        InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/namingList.frd");
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        Mockito.when(inListFinder.findInList(anyString(), anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }

@@ -1,0 +1,2 @@
+rule: inList("test", "email")
+-> accept;
