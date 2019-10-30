@@ -45,6 +45,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
         threadLocalModel = ThreadLocal.withInitial(() -> model);
 
         Object visit = super.visit(tree);
+
         localFuncCache.remove();
         threadLocalModel.remove();
         return visit;
@@ -57,8 +58,6 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-
             log.warn("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
             if (ctx.catch_result() != null && ctx.catch_result().getText() != null) {
                 return ResultStatus.getByValue(ctx.catch_result().getText());
