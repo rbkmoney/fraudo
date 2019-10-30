@@ -14,10 +14,10 @@ import com.rbkmoney.fraudo.visitor.ListVisitor;
 import com.rbkmoney.fraudo.visitor.SumVisitor;
 import com.rbkmoney.fraudo.visitor.impl.*;
 
-public class FastFraudVisitorFactory<T extends BaseModel, U> implements FraudVisitorFactory<T, U> {
+public class FastFraudVisitorFactory implements FraudVisitorFactory {
 
     @Override
-    public FastFraudVisitorImpl<T> createVisitor(
+    public <T extends BaseModel, U> FastFraudVisitorImpl<T> createVisitor(
             CountAggregator<T, U> countAggregator,
             SumAggregator<T, U> sumAggregator,
             UniqueValueAggregator<T, U> uniqueValueAggregator,
