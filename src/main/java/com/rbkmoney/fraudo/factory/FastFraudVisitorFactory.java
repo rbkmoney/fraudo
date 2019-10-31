@@ -17,7 +17,7 @@ import com.rbkmoney.fraudo.visitor.impl.*;
 public class FastFraudVisitorFactory implements FraudVisitorFactory {
 
     @Override
-    public <T extends BaseModel, U> FastFraudVisitorImpl<T> createVisitor(
+    public <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(
             CountAggregator<T, U> countAggregator,
             SumAggregator<T, U> sumAggregator,
             UniqueValueAggregator<T, U> uniqueValueAggregator,
@@ -33,7 +33,7 @@ public class FastFraudVisitorFactory implements FraudVisitorFactory {
                 countryResolver,
                 fieldResolver,
                 groupByModelResolver);
-        return new FastFraudVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
+        return new FirstFindVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
     }
 
 }

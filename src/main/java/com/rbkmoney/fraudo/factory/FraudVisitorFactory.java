@@ -8,11 +8,11 @@ import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
-import com.rbkmoney.fraudo.visitor.impl.FastFraudVisitorImpl;
+import com.rbkmoney.fraudo.visitor.impl.FirstFindVisitorImpl;
 
 public interface FraudVisitorFactory {
 
-    <T extends BaseModel, U> FastFraudVisitorImpl createVisitor(CountAggregator<T, U> countAggregator,
+    <T extends BaseModel, U> FirstFindVisitorImpl createVisitor(CountAggregator<T, U> countAggregator,
                                                                 SumAggregator<T, U> sumAggregator,
                                                                 UniqueValueAggregator<T, U> uniqueValueAggregator,
                                                                 CountryResolver<U> countryResolver,

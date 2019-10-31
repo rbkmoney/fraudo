@@ -1,9 +1,9 @@
-package com.rbkmoney.fraudo.resolver.p2p;
+package com.rbkmoney.fraudo.test.p2p;
 
-import com.rbkmoney.fraudo.constant.P2PCheckedField;
 import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
-import com.rbkmoney.fraudo.model.P2PModel;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.test.constant.P2PCheckedField;
+import com.rbkmoney.fraudo.test.model.P2PModel;
 
 public class P2PModelFieldResolver implements FieldResolver<P2PModel, P2PCheckedField> {
 

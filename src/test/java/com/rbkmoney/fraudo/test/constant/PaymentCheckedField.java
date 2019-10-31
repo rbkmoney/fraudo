@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.constant;
+package com.rbkmoney.fraudo.test.constant;
 
 import java.util.HashMap;
 import java.util.Map;
