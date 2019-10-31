@@ -14,7 +14,7 @@ import com.rbkmoney.fraudo.visitor.ListVisitor;
 import com.rbkmoney.fraudo.visitor.SumVisitor;
 import com.rbkmoney.fraudo.visitor.impl.*;
 
-public class FastFraudVisitorFactory implements FraudVisitorFactory {
+public class FirstFraudVisitorFactory implements FraudVisitorFactory {
 
     @Override
     public <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(

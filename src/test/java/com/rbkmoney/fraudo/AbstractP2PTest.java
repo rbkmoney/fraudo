@@ -4,7 +4,7 @@ import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.test.constant.P2PCheckedField;
-import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
+import com.rbkmoney.fraudo.factory.FirstFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.test.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
@@ -46,7 +46,7 @@ public class AbstractP2PTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, P2PModel model) {
-        return (ResultModel) new FastFraudVisitorFactory()
+        return (ResultModel) new FirstFraudVisitorFactory()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,
