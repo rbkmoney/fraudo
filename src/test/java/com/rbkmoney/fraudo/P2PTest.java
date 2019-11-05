@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.model.P2PModel;
+import com.rbkmoney.fraudo.test.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;

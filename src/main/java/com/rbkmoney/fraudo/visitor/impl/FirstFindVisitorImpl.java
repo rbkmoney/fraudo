@@ -8,12 +8,10 @@ import com.rbkmoney.fraudo.exception.NotValidContextException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.utils.key.generator.*;
-import com.rbkmoney.fraudo.visitor.CountVisitor;
-import com.rbkmoney.fraudo.visitor.CustomFuncVisitor;
-import com.rbkmoney.fraudo.visitor.ListVisitor;
-import com.rbkmoney.fraudo.visitor.SumVisitor;
+import com.rbkmoney.fraudo.visitor.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -25,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor<Object> {
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor <T>{
 
     private ThreadLocal<Map<String, Object>> localFuncCache;
     private ThreadLocal<T> threadLocalModel;
@@ -34,7 +32,9 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
     private final SumVisitor<T> sumVisitor;
     private final ListVisitor<T> listVisitor;
     private final CustomFuncVisitor<T> customFuncVisitor;
+    private final FieldResolver<T, U> fieldResolver;
 
+    @Override
     public Object visit(ParseTree tree, T model) {
         if (model == null) {
             log.error("Model is not init!");
@@ -142,7 +142,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitCount(FraudoParser.CountContext ctx) {
-        String key = CountKeyGenerator.generate(ctx);
+        String key = CountKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(countVisitor.visitCount(ctx, threadLocalModel.get()))
@@ -151,7 +151,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitCount_success(FraudoParser.Count_successContext ctx) {
-        String key = CountKeyGenerator.generateSuccessKey(ctx);
+        String key = CountKeyGenerator.generateSuccessKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(countVisitor.visitCountSuccess(ctx, threadLocalModel.get()))
@@ -160,7 +160,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitCount_error(FraudoParser.Count_errorContext ctx) {
-        String key = CountKeyGenerator.generateErrorKey(ctx);
+        String key = CountKeyGenerator.generateErrorKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(countVisitor.visitCountError(ctx, threadLocalModel.get()))
@@ -169,7 +169,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitSum(FraudoParser.SumContext ctx) {
-        String key = SumKeyGenerator.generate(ctx);
+        String key = SumKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> sumVisitor.visitSum(ctx, threadLocalModel.get())
@@ -178,7 +178,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitSum_success(FraudoParser.Sum_successContext ctx) {
-        String key = SumKeyGenerator.generateSuccessKey(ctx);
+        String key = SumKeyGenerator.generateSuccessKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> sumVisitor.visitSumSuccess(ctx, threadLocalModel.get())
@@ -187,7 +187,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitSum_error(FraudoParser.Sum_errorContext ctx) {
-        String key = SumKeyGenerator.generateErrorKey(ctx);
+        String key = SumKeyGenerator.generateErrorKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> sumVisitor.visitSumError(ctx, threadLocalModel.get())
@@ -215,7 +215,7 @@ public class FastFraudVisitorImpl<T extends BaseModel> extends FraudoBaseVisitor
 
     @Override
     public Object visitUnique(FraudoParser.UniqueContext ctx) {
-        String key = UniqueKeyGenerator.generate(ctx);
+        String key = UniqueKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(customFuncVisitor.visitUnique(ctx, threadLocalModel.get()))

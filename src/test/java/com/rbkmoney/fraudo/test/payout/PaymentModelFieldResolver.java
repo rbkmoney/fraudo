@@ -1,9 +1,9 @@
-package com.rbkmoney.fraudo.resolver.payout;
+package com.rbkmoney.fraudo.test.payout;
 
-import com.rbkmoney.fraudo.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
-import com.rbkmoney.fraudo.model.PaymentModel;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 
 public class PaymentModelFieldResolver implements FieldResolver<PaymentModel, PaymentCheckedField> {
 

@@ -3,15 +3,15 @@ package com.rbkmoney.fraudo;
 import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.constant.PaymentCheckedField;
-import com.rbkmoney.fraudo.factory.FastFraudVisitorFactory;
+import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
+import com.rbkmoney.fraudo.factory.FirstFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.model.PaymentModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
-import com.rbkmoney.fraudo.resolver.payout.PaymentModelFieldResolver;
+import com.rbkmoney.fraudo.test.payout.PaymentModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -46,7 +46,7 @@ public class AbstractPaymentTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FastFraudVisitorFactory<PaymentModel, PaymentCheckedField>()
+        return (ResultModel) new FirstFraudVisitorFactory()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,

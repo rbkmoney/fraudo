@@ -2,7 +2,7 @@ package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.model.PaymentModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;

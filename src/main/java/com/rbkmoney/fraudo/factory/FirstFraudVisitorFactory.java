@@ -14,10 +14,10 @@ import com.rbkmoney.fraudo.visitor.ListVisitor;
 import com.rbkmoney.fraudo.visitor.SumVisitor;
 import com.rbkmoney.fraudo.visitor.impl.*;
 
-public class FastFraudVisitorFactory<T extends BaseModel, U> implements FraudVisitorFactory<T, U> {
+public class FirstFraudVisitorFactory implements FraudVisitorFactory {
 
     @Override
-    public FastFraudVisitorImpl<T> createVisitor(
+    public <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(
             CountAggregator<T, U> countAggregator,
             SumAggregator<T, U> sumAggregator,
             UniqueValueAggregator<T, U> uniqueValueAggregator,
@@ -33,7 +33,7 @@ public class FastFraudVisitorFactory<T extends BaseModel, U> implements FraudVis
                 countryResolver,
                 fieldResolver,
                 groupByModelResolver);
-        return new FastFraudVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor);
+        return new FirstFindVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
     }
 
 }

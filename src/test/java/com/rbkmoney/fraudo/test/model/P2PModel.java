@@ -1,5 +1,6 @@
-package com.rbkmoney.fraudo.model;
+package com.rbkmoney.fraudo.test.model;
 
+import com.rbkmoney.fraudo.model.BaseModel;
 import lombok.Data;
 
 @Data

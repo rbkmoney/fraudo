@@ -1,42 +1,45 @@
 package com.rbkmoney.fraudo.utils.key.generator;
 
 import com.rbkmoney.fraudo.FraudoParser;
-import com.rbkmoney.fraudo.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.function.Function;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommonKeyGenerator {
 
-    static String generateKeyGroupedFunction(TerminalNode string,
-                                             ParseTree parseTree,
-                                             FraudoParser.Time_windowContext timeWindowContext,
-                                             FraudoParser.Group_byContext groupByContext) {
+    static <T> String generateKeyGroupedFunction(TerminalNode string,
+                                                 ParseTree parseTree,
+                                                 FraudoParser.Time_windowContext timeWindowContext,
+                                                 FraudoParser.Group_byContext groupByContext,
+                                                 Function<String, T> resolve) {
         String countTarget = TextUtil.safeGetText(string);
         return new StringBuilder()
                 .append(parseTree)
                 .append(countTarget)
-                .append(PaymentCheckedField.getByValue(countTarget))
+                .append(resolve.apply(countTarget))
                 .append(timeWindowContext != null ? timeWindowContext.children : "")
                 .append(groupByContext != null ? groupByContext.string_list().children : "")
                 .toString();
     }
 
-    static String generateKeyGroupedTwoFieldFunction(TerminalNode firstField,
-                                                     TerminalNode secondField,
-                                                     ParseTree parseTree,
-                                                     FraudoParser.Time_windowContext timeWindowContext,
-                                                     FraudoParser.Group_byContext groupByContext) {
+    static <T> String generateKeyGroupedTwoFieldFunction(TerminalNode firstField,
+                                                         TerminalNode secondField,
+                                                         ParseTree parseTree,
+                                                         FraudoParser.Time_windowContext timeWindowContext,
+                                                         FraudoParser.Group_byContext groupByContext,
+                                                         Function<String, T> resolve) {
         String target = TextUtil.safeGetText(firstField);
         String errorCode = TextUtil.safeGetText(secondField);
         return new StringBuilder()
                 .append(parseTree)
                 .append(target)
                 .append(errorCode)
-                .append(PaymentCheckedField.getByValue(target))
+                .append(resolve.apply(target))
                 .append(timeWindowContext != null ? timeWindowContext.children : "")
                 .append(groupByContext != null ? groupByContext.string_list().children : "")
                 .toString();
