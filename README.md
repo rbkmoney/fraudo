@@ -90,13 +90,13 @@ rule:
 in(countryBy("bin"), "AS", "SD", "TR", "WE", "SD", "CD", "KL", "EW", "VF", "XZ", "CD") -> decline; # эти страны блочим всегда
 
 rule:
-amount() > 1000 AND in(countryBy("bin"), "DS", "LA", "AS") -> decline; # лимит суммы платежа 30 баксов для Германии, Испании, Филиппин
+amount() > 1000 AND in(countryBy("bin"), "DS", "LA", "AS") -> decline; # лимит суммы платежа 10 баксов для 
 
 rule:
-amount() > 1000 AND in(countryBy("bin"), "VC", "WE") -> decline;# лимит суммы платежа 50 баксов для Бразилии, Израиля
+amount() > 1000 AND in(countryBy("bin"), "VC", "WE") -> decline;# лимит суммы платежа 10 баксов для некоторых стран
 
 rule:
-amount() > 10000 -> decline;# лимит суммы платежа 500 баксов для всех остальных
+amount() > 10000 -> decline;# лимит суммы платежа 100 баксов для всех остальных
 
 rule:
 count("card", 1440) > 10 AND in (countryBy("bin"), "TR", "WE", "SD", "CD", "KL", "EW") -> decline;# этим странам 10 попыток с одной карты в сутки
