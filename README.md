@@ -1,6 +1,9 @@
-# fraudo
+# Fraudo DSL
 
-![alt text](logo.jpg)
+Language for describing antifraud patterns
+
+Provides the ability to describe the required set of rules for characteristics
+and treggers for attempts at fraudulent actions
 
 #### Syntax
 
@@ -8,22 +11,24 @@
 
 ##### OPERATIONS:
 ~~~~
-*   count("group_field", time_in_minutes)
-*   countSuccess("group_field", time_in_minutes)
-*   countError("group_field", time_in_minutes, "error_code")
-*   sum("group_field", time_in_minutes)
-*   sumSuccess("group_field", time_in_minutes)
-*   sumError(("group_field", time_in_minutes, "error_code")
-*   unique(("group_field", "by_field")
+*   count("group_field", time_in_minutes|[from_offset, to_offset], ["group_by_additional_fields"])
+*   countSuccess("group_field", time_in_minutes|[from_offset, to_offset], ["group_by_additional_fields"])
+*   countError("group_field", time_in_minutes|[from_offset, to_offset], "error_code", ["group_by_additional_fields"])
+*   sum("group_field", time_in_minutes|[from_offset, to_offset], ["group_by_additional_fields"])
+*   sumSuccess("group_field", time_in_minutes|[from_offset, to_offset], ["group_by_additional_fields"])
+*   sumError(("group_field", time_in_minutes|[from_offset, to_offset], "error_code", ["group_by_additional_fields"])
+*   unique(("group_field", "by_field",time_in_minutes|[from_offset, to_offset], ["group_by_additional_fields"])
 *   in(("field", "first", "second", ...)
 *   inWhiteList("field")
 *   inBlackList("field")
+*   inList("test", "email")
+*   inGreyList("email")
 *   like("field", "regexp_in_java_style"[1])
 *   amount()
 *   country() - this function can return result "unknown", you must remember it!
 ~~~~
 
-##### group_field:
+### group_field:
   *  email,
   *  ip,
   *  fingerprint,
@@ -33,7 +38,7 @@
   *  card_token
     
 1. [regexp_in_java_style](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
-##### RESULTS:
+### RESULTS:
 ~~~~
 *   accept 
 *   3ds
@@ -41,7 +46,7 @@
 *   notify
 *   normal
 ~~~~
-##### EXAMPLES:
+### EXAMPLES:
 ###### Simple:
 ~~~~
 rule: 3 > 2 AND 1 = 1
@@ -75,9 +80,33 @@ rule: amount() < 100
 ~~~~
 ###### Combined check:
 ~~~~
-rule: 3 > 2 AND 1 > 1
--> decline;
+rule:
+inWhiteList("email", "fingerprint", "card", "bin", "ip") -> accept; # принимаем платеж, если хотя бы один из указанных параметров находится в вайтлисте
 
-rule: count("email", 10) <= 10 AND count("ip", 1444) = 10
--> 3ds;
+rule:
+inBlackList("email", "fingerprint", "card", "bin", "ip") -> decline; # отклоняем платеж, если хотя бы один из указанных параметров находится в блэклисте
+
+rule:
+in(countryBy("bin"), "AS", "SD", "TR", "WE", "SD", "CD", "KL", "EW", "VF", "XZ", "CD") -> decline; # эти страны блочим всегда
+
+rule:
+amount() > 1000 AND in(countryBy("bin"), "DS", "LA", "AS") -> decline; # лимит суммы платежа 30 баксов для Германии, Испании, Филиппин
+
+rule:
+amount() > 1000 AND in(countryBy("bin"), "VC", "WE") -> decline;# лимит суммы платежа 50 баксов для Бразилии, Израиля
+
+rule:
+amount() > 10000 -> decline;# лимит суммы платежа 500 баксов для всех остальных
+
+rule:
+count("card", 1440) > 10 AND in (countryBy("bin"), "TR", "WE", "SD", "CD", "KL", "EW") -> decline;# этим странам 10 попыток с одной карты в сутки
+
+rule:
+count("card", 1440) > 5 -> decline;# остальным странам 5 попыток с одной карты в сутки
+
+rule:
+unique("card", "email", 1440) > 3 -> decline; # лимит 3 уникальных карты на емэйл за сутки
+
+rule:
+unique("card", "fingerprint", 1440) > 3 -> decline; # лимит 3 уникальных карты на девайс за сутки
 ~~~~
