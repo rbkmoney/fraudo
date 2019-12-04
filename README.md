@@ -3,7 +3,7 @@
 Language for describing antifraud patterns
 
 Provides the ability to describe the required set of rules for characteristics
-and treggers for attempts at fraudulent actions
+and triggers for attempts at fraudulent actions
 
 #### Syntax
 
