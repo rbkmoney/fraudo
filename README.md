@@ -78,6 +78,12 @@ rule: country() = "RU"
 rule: amount() < 100
 -> accept;
 ~~~~
+###### Catch:
+~~~~
+rule: unique("email", "ip") < 4
+-> accept
+catch: decline;
+~~~~
 ###### Combined check:
 ~~~~
 rule:
