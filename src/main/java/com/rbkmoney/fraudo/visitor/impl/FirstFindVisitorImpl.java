@@ -34,6 +34,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     private final CustomFuncVisitor<T> customFuncVisitor;
     private final FieldResolver<T, U> fieldResolver;
 
+    @Override
     public void close() {
         localFuncCache.remove();
         threadLocalModel.remove();
