@@ -23,10 +23,10 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor <T>{
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor<T> {
 
-    private ThreadLocal<Map<String, Object>> localFuncCache;
-    private ThreadLocal<T> threadLocalModel;
+    private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
+    private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
 
     private final CountVisitor<T> countVisitor;
     private final SumVisitor<T> sumVisitor;
@@ -34,21 +34,27 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     private final CustomFuncVisitor<T> customFuncVisitor;
     private final FieldResolver<T, U> fieldResolver;
 
+    public void close() {
+        localFuncCache.remove();
+        threadLocalModel.remove();
+    }
+
     @Override
     public Object visit(ParseTree tree, T model) {
+        try {
+            validateModel(model);
+            threadLocalModel.set(model);
+            return super.visit(tree);
+        } finally {
+            localFuncCache.get().clear();
+        }
+    }
+
+    private void validateModel(T model) {
         if (model == null) {
             log.error("Model is not init!");
             throw new NotValidContextException();
         }
-
-        localFuncCache = ThreadLocal.withInitial(HashMap::new);
-        threadLocalModel = ThreadLocal.withInitial(() -> model);
-
-        Object visit = super.visit(tree);
-
-        localFuncCache.remove();
-        threadLocalModel.remove();
-        return visit;
     }
 
     @Override

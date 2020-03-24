@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -92,6 +93,7 @@ public class CustomTest extends AbstractPaymentTest {
 
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
+        model.setAmount(500L);
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }
