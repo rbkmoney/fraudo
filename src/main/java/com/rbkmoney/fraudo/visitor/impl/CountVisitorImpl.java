@@ -29,7 +29,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
 
     @Override
     public Integer visitCountSuccess(FraudoParser.Count_successContext ctx, T model) {
-        String countTarget = ctx.STRING().getText();
+        String countTarget = TextUtil.safeGetText(ctx.STRING());
         return countAggregator.countSuccess(
                 fieldResolver.resolveName(countTarget),
                 model,
