@@ -17,9 +17,13 @@ expression
  | count                                          #countExpression
  | count_success                                  #countSuccessExpression
  | count_error                                    #countErrorExpression
+ | count_chargeback                               #countChargebackExpression
+ | count_refund                                   #countRefundExpression
  | sum                                            #sumExpression
  | sum_success                                    #sumSuccessExpression
  | sum_error                                      #sumErrorExpression
+ | sum_chargeback                                 #sumChargebackExpression
+ | sum_refund                                     #sumRefundExpression
  | unique                                         #uniqueExpression
  | in                                             #inFunctionExpression
  | in_white_list                                  #inWhiteListExpression
@@ -68,6 +72,14 @@ count_error
  : 'countError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
  ;
 
+count_chargeback
+ : 'countChargeback' LPAREN STRING time_window (group_by)? RPAREN
+ ;
+
+count_refund
+ : 'countRefund' LPAREN STRING time_window (group_by)? RPAREN
+ ;
+
 sum
  : 'sum' LPAREN STRING time_window (group_by)? RPAREN
  ;
@@ -78,6 +90,14 @@ sum_success
 
 sum_error
  : 'sumError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
+ ;
+
+sum_chargeback
+ : 'sumChargeback' LPAREN STRING time_window (group_by)? RPAREN
+ ;
+
+sum_refund
+ : 'sumRefund' LPAREN STRING time_window (group_by)? RPAREN
  ;
 
 unique

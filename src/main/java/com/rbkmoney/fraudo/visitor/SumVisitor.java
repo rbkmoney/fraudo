@@ -10,4 +10,8 @@ public interface SumVisitor<T> {
 
     Double visitSumError(FraudoParser.Sum_errorContext ctx, T model);
 
+    Double visitSumChargeback(FraudoParser.Sum_chargebackContext ctx, T model);
+
+    Double visitSumRefund(FraudoParser.Sum_refundContext ctx, T model);
+
 }

@@ -12,4 +12,8 @@ public interface SumAggregator<T, U> {
 
     Double sumError(U checkedField, T model, TimeWindow timeWindow, String errorCode, List<U> fields);
 
+    Double sumChargeback(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
+
+    Double sumRefund(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
+
 }

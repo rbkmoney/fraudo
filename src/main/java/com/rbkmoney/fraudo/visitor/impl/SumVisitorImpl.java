@@ -49,4 +49,26 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
                 groupByModelResolver.resolve(ctx.group_by()));
     }
 
+    @Override
+    public Double visitSumChargeback(FraudoParser.Sum_chargebackContext ctx, T model) {
+        String countTarget = TextUtil.safeGetText(ctx.STRING());
+        return sumAggregator.sumChargeback(
+                fieldResolver.resolveName(countTarget),
+                model,
+                TimeWindowResolver.resolve(ctx.time_window()),
+                groupByModelResolver.resolve(ctx.group_by())
+        );
+    }
+
+    @Override
+    public Double visitSumRefund(FraudoParser.Sum_refundContext ctx, T model) {
+        String countTarget = TextUtil.safeGetText(ctx.STRING());
+        return sumAggregator.sumRefund(
+                fieldResolver.resolveName(countTarget),
+                model,
+                TimeWindowResolver.resolve(ctx.time_window()),
+                groupByModelResolver.resolve(ctx.group_by())
+        );
+    }
+
 }

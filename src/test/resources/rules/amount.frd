@@ -1,2 +1,2 @@
-rule: amount() < 100 AND currency() == "RUB"
+rule: amount() < 100 AND currency() = "RUB"
 -> accept;

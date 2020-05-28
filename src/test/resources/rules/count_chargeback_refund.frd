@@ -1,0 +1,2 @@
+rule: countChargeback("ip", 1444) > 3 OR countRefund("ip", 1444) > 1
+-> decline;

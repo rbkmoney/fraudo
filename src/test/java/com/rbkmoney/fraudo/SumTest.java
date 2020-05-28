@@ -40,6 +40,16 @@ public class SumTest extends AbstractPaymentTest {
     }
 
     @Test
+    public void sumChargeRefundTest() throws Exception {
+        InputStream resourceAsStream = SumTest.class.getResourceAsStream("/rules/sum_chargeback_refund.frd");
+        Mockito.when(sumAggregator.sumChargeback(anyObject(), any(), any(), any())).thenReturn(10000.60);
+        Mockito.when(sumAggregator.sumRefund(anyObject(), any(), any(), any())).thenReturn(10000.60);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void sumGroupByTest() throws Exception {
         InputStream resourceAsStream = SumTest.class.getResourceAsStream("/rules/sumGroupBy.frd");
         Mockito.when(sumAggregator.sum(anyObject(), any(), any(), any())).thenReturn(10500.60);

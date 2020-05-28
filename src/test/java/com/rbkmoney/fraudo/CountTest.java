@@ -25,6 +25,8 @@ public class CountTest extends AbstractPaymentTest {
         when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         when(countAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
         when(countAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(4);
+        when(countAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(0);
+        when(countAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(1);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -36,6 +38,17 @@ public class CountTest extends AbstractPaymentTest {
 
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+    }
+
+    @Test
+    public void countCargeRefundTest() throws Exception {
+        InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/count_chargeback_refund.frd");
+        when(countAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(3);
+        when(countAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(5);
+        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals("1", result.getRuleChecked());
     }
 
     @Test

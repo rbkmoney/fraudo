@@ -1,0 +1,2 @@
+rule: sumChargeback("ip", 1444) < 10500.50 AND sumRefund("ip", 1444) < 10500.50
+-> accept;

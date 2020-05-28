@@ -175,6 +175,24 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
+    public Object visitCount_chargeback(FraudoParser.Count_chargebackContext ctx) {
+        String key = CountKeyGenerator.generateChargebackKey(ctx, fieldResolver::resolveName);
+        return localFuncCache.get().computeIfAbsent(
+                key,
+                s -> Double.valueOf(countVisitor.visitCountChargeback(ctx, threadLocalModel.get()))
+        );
+    }
+
+    @Override
+    public Object visitCount_refund(FraudoParser.Count_refundContext ctx) {
+        String key = CountKeyGenerator.generateRefundKey(ctx, fieldResolver::resolveName);
+        return localFuncCache.get().computeIfAbsent(
+                key,
+                s -> Double.valueOf(countVisitor.visitCountRefund(ctx, threadLocalModel.get()))
+        );
+    }
+
+    @Override
     public Object visitSum(FraudoParser.SumContext ctx) {
         String key = SumKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
@@ -198,6 +216,24 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> sumVisitor.visitSumError(ctx, threadLocalModel.get())
+        );
+    }
+
+    @Override
+    public Object visitSum_chargeback(FraudoParser.Sum_chargebackContext ctx) {
+        String key = SumKeyGenerator.generateChargebackKey(ctx, fieldResolver::resolveName);
+        return localFuncCache.get().computeIfAbsent(
+                key,
+                s -> sumVisitor.visitSumChargeback(ctx, threadLocalModel.get())
+        );
+    }
+
+    @Override
+    public Object visitSum_refund(FraudoParser.Sum_refundContext ctx) {
+        String key = SumKeyGenerator.generateRefundKey(ctx, fieldResolver::resolveName);
+        return localFuncCache.get().computeIfAbsent(
+                key,
+                s -> sumVisitor.visitSumRefund(ctx, threadLocalModel.get())
         );
     }
 
