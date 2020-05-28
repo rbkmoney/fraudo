@@ -51,4 +51,26 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
         );
     }
 
+    @Override
+    public Integer visitCountChargeback(FraudoParser.Count_chargebackContext ctx, T model) {
+        String countTarget = TextUtil.safeGetText(ctx.STRING());
+        return countAggregator.countChargeback(
+                fieldResolver.resolveName(countTarget),
+                model,
+                TimeWindowResolver.resolve(ctx.time_window()),
+                groupFieldsResolver.resolve(ctx.group_by())
+        );
+    }
+
+    @Override
+    public Integer visitCountRefund(FraudoParser.Count_refundContext ctx, T model) {
+        String countTarget = TextUtil.safeGetText(ctx.STRING());
+        return countAggregator.countRefund(
+                fieldResolver.resolveName(countTarget),
+                model,
+                TimeWindowResolver.resolve(ctx.time_window()),
+                groupFieldsResolver.resolve(ctx.group_by())
+        );
+    }
+
 }

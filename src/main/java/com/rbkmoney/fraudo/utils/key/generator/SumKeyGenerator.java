@@ -38,4 +38,22 @@ public class SumKeyGenerator {
                 resolve);
     }
 
+    public static <T> String generateChargebackKey(ParserRuleContext context, Function<String, T> resolve) {
+        FraudoParser.Sum_chargebackContext ctx = (FraudoParser.Sum_chargebackContext) context;
+        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
+                ctx.children.get(0),
+                ctx.time_window(),
+                ctx.group_by(),
+                resolve);
+    }
+
+    public static <T> String generateRefundKey(ParserRuleContext context, Function<String, T> resolve) {
+        FraudoParser.Sum_refundContext ctx = (FraudoParser.Sum_refundContext) context;
+        return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
+                ctx.children.get(0),
+                ctx.time_window(),
+                ctx.group_by(),
+                resolve);
+    }
+
 }

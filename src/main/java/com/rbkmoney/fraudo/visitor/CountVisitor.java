@@ -10,4 +10,8 @@ public interface CountVisitor<T> {
 
     Integer visitCountError(FraudoParser.Count_errorContext ctx, T model);
 
+    Integer visitCountChargeback(FraudoParser.Count_chargebackContext ctx, T model);
+
+    Integer visitCountRefund(FraudoParser.Count_refundContext ctx, T model);
+
 }
