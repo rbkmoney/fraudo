@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.2</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>fraudo</artifactId>
