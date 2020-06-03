@@ -1,15 +1,16 @@
 package com.rbkmoney.fraudo;
 
-import com.rbkmoney.fraudo.aggregator.CountAggregator;
-import com.rbkmoney.fraudo.aggregator.SumAggregator;
-import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.test.constant.P2PCheckedField;
-import com.rbkmoney.fraudo.factory.FirstFraudVisitorFactory;
+import com.rbkmoney.fraudo.payment.aggregator.CountAggregator;
+import com.rbkmoney.fraudo.payment.aggregator.SumAggregator;
+import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.test.model.P2PModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
+import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
+import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
+import com.rbkmoney.fraudo.test.constant.P2PCheckedField;
+import com.rbkmoney.fraudo.test.model.P2PModel;
 import com.rbkmoney.fraudo.test.p2p.P2PModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -30,9 +31,11 @@ public class AbstractP2PTest {
     CountryResolver<P2PCheckedField> countryResolver;
     @Mock
     InListFinder<P2PModel, P2PCheckedField> listFinder;
+    @Mock
+    PaymentTimeWindowResolver timeWindowResolver;
 
     private P2PModelFieldResolver fieldResolver = new P2PModelFieldResolver();
-    private GroupByModelResolver<P2PModel, P2PCheckedField> groupByModelResolver = new GroupByModelResolver<>(fieldResolver);
+    private PaymentGroupResolver<P2PModel, P2PCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
 
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
@@ -46,7 +49,7 @@ public class AbstractP2PTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, P2PModel model) {
-        return (ResultModel) new FirstFraudVisitorFactory()
+        return (ResultModel) new FraudVisitorFactoryImpl()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,
@@ -54,7 +57,8 @@ public class AbstractP2PTest {
                         countryResolver,
                         listFinder,
                         fieldResolver,
-                        groupByModelResolver)
+                        paymentGroupResolver,
+                        timeWindowResolver)
                 .visit(parse, model);
     }
 

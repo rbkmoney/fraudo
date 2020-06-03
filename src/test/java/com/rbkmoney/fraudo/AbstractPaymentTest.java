@@ -1,16 +1,17 @@
 package com.rbkmoney.fraudo;
 
-import com.rbkmoney.fraudo.aggregator.CountAggregator;
-import com.rbkmoney.fraudo.aggregator.SumAggregator;
-import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
-import com.rbkmoney.fraudo.factory.FirstFraudVisitorFactory;
+import com.rbkmoney.fraudo.payment.aggregator.CountAggregator;
+import com.rbkmoney.fraudo.payment.aggregator.SumAggregator;
+import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
+import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
+import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
-import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
+import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.test.payout.PaymentModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -31,9 +32,11 @@ public class AbstractPaymentTest {
     CountryResolver<PaymentCheckedField> countryResolver;
     @Mock
     InListFinder<PaymentModel, PaymentCheckedField> inListFinder;
+    @Mock
+    PaymentTimeWindowResolver timeWindowResolver;
 
     private FieldResolver<PaymentModel, PaymentCheckedField> fieldResolver = new PaymentModelFieldResolver();
-    private GroupByModelResolver<PaymentModel, PaymentCheckedField> groupByModelResolver = new GroupByModelResolver<>(fieldResolver);
+    private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
         com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
@@ -46,7 +49,7 @@ public class AbstractPaymentTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FirstFraudVisitorFactory()
+        return (ResultModel) new FraudVisitorFactoryImpl()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,
@@ -54,7 +57,8 @@ public class AbstractPaymentTest {
                         countryResolver,
                         inListFinder,
                         fieldResolver,
-                        groupByModelResolver)
+                        paymentGroupResolver,
+                        timeWindowResolver)
                 .visit(parse, model);
     }
 
