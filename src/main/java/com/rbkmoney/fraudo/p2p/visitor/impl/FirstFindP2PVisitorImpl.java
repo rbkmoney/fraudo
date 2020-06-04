@@ -9,9 +9,13 @@ import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.p2p.generator.*;
-import com.rbkmoney.fraudo.p2p.visitor.*;
+import com.rbkmoney.fraudo.p2p.visitor.CountP2PVisitor;
+import com.rbkmoney.fraudo.p2p.visitor.CustomP2PFuncVisitor;
+import com.rbkmoney.fraudo.p2p.visitor.ListP2PVisitor;
+import com.rbkmoney.fraudo.p2p.visitor.SumP2PVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
+import com.rbkmoney.fraudo.visitor.TemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -23,10 +27,10 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBaseVisitor<Object> implements TemplateP2PVisitor<T> {
+public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
 
-    private final ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
-    private final ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
+    private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
+    private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
 
     private final CountP2PVisitor<T> countVisitor;
     private final SumP2PVisitor<T> sumVisitor;
@@ -41,11 +45,11 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
     }
 
     @Override
-    public Object visit(ParseTree tree, T model) {
+    public ResultModel visit(ParseTree tree, T model) {
         try {
             validateModel(model);
             threadLocalModel.set(model);
-            return super.visit(tree);
+            return (ResultModel) visit(tree);
         } finally {
             localFuncCache.get().clear();
         }
@@ -62,7 +66,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
     public Object visitFraud_rule(FraudoP2PParser.Fraud_ruleContext ctx) {
         try {
             if (asBoolean(ctx.expression())) {
-                return ResultStatus.getByValue((String) super.visit(ctx.result()));
+                return ResultStatus.getByValue((String) visit(ctx.result()));
             }
         } catch (Exception e) {
             log.error("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
@@ -108,18 +112,18 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Object visitNotExpression(FraudoP2PParser.NotExpressionContext ctx) {
-        return !((Boolean) this.visit(ctx.expression()));
+        return !((Boolean) visit(ctx.expression()));
     }
 
     @Override
     public Object visitParenExpression(FraudoP2PParser.ParenExpressionContext ctx) {
-        return super.visit(ctx.expression());
+        return visit(ctx.expression());
     }
 
     @Override
     public Object visitComparatorExpression(FraudoP2PParser.ComparatorExpressionContext ctx) {
         if (ctx.op.EQ() != null) {
-            return this.visit(ctx.left).equals(this.visit(ctx.right));
+            return visit(ctx.left).equals(visit(ctx.right));
         } else if (ctx.op.LE() != null) {
             return asDouble(ctx.left) <= asDouble(ctx.right);
         } else if (ctx.op.GE() != null) {

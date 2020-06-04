@@ -18,7 +18,7 @@ import com.rbkmoney.fraudo.resolver.FieldResolver;
 public class FraudVisitorFactoryImpl implements FraudVisitorFactory {
 
     @Override
-    public <T extends BaseModel, U> FirstFindVisitorImpl createVisitor(
+    public <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(
             CountPaymentAggregator<T, U> countPaymentAggregator,
             SumPaymentAggregator<T, U> sumPaymentAggregator,
             UniqueValueAggregator<T, U> uniqueValueAggregator,

@@ -9,13 +9,17 @@ import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.payment.generator.RuleKeyGenerator;
-import com.rbkmoney.fraudo.payment.visitor.*;
+import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
+import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
+import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.utils.key.generator.CountKeyGenerator;
 import com.rbkmoney.fraudo.utils.key.generator.CountryKeyGenerator;
 import com.rbkmoney.fraudo.utils.key.generator.SumKeyGenerator;
 import com.rbkmoney.fraudo.utils.key.generator.UniqueKeyGenerator;
+import com.rbkmoney.fraudo.visitor.TemplateVisitor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -27,7 +31,7 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor<T> {
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
 
     private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
@@ -45,11 +49,11 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visit(ParseTree tree, T model) {
+    public ResultModel visit(ParseTree tree, T model) {
         try {
             validateModel(model);
             threadLocalModel.set(model);
-            return super.visit(tree);
+            return (ResultModel) super.visit(tree);
         } finally {
             localFuncCache.get().clear();
         }
