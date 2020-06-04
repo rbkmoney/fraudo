@@ -22,19 +22,19 @@ public class CountTest extends AbstractPaymentTest {
     @Test
     public void countTest() throws Exception {
         InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/count.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
-        when(countAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
-        when(countAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(4);
-        when(countAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(0);
-        when(countAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(1);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
+        when(countPaymentAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(4);
+        when(countPaymentAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(0);
+        when(countPaymentAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(1);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         assertEquals("1", result.getRuleChecked());
 
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(9);
-        when(countAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
-        when(countAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(6);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(9);
+        when(countPaymentAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
+        when(countPaymentAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(6);
 
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -43,8 +43,8 @@ public class CountTest extends AbstractPaymentTest {
     @Test
     public void countCargeRefundTest() throws Exception {
         InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/count_chargeback_refund.frd");
-        when(countAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(3);
-        when(countAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(5);
+        when(countPaymentAggregator.countChargeback(anyObject(), any(), any(), any())).thenReturn(3);
+        when(countPaymentAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(5);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -54,13 +54,13 @@ public class CountTest extends AbstractPaymentTest {
     @Test
     public void countGroupByTest() throws Exception {
         InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/countGroupBy.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         assertEquals("1", result.getRuleChecked());
 
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.NORMAL, result.getResultStatus());
     }
@@ -68,18 +68,18 @@ public class CountTest extends AbstractPaymentTest {
     @Test
     public void countTimeWindowGroupByTest() throws Exception {
         InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/countTimeWindowGroupBy.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         assertEquals("1", result.getRuleChecked());
 
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.NORMAL, result.getResultStatus());
 
         resourceAsStream = CountTest.class.getResourceAsStream("/rules/countTimeWindowGroupBy_2.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         parseContext = getParseContext(resourceAsStream);
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -89,12 +89,12 @@ public class CountTest extends AbstractPaymentTest {
     @Test
     public void countCardTokenTest() throws Exception {
         InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/count_card_token.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
 
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        verify(countAggregator, times(1)).count(anyObject(), any(), any(), any());
+        verify(countPaymentAggregator, times(1)).count(anyObject(), any(), any(), any());
     }
 
 }

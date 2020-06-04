@@ -3,12 +3,12 @@ package com.rbkmoney.fraudo.payment.visitor.impl;
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.model.Pair;
-import com.rbkmoney.fraudo.resolver.CountryResolver;
-import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
-import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.resolver.CountryResolver;
+import com.rbkmoney.fraudo.resolver.FieldResolver;
+import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

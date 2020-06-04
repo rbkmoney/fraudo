@@ -1,10 +1,10 @@
 package com.rbkmoney.fraudo;
 
-import com.rbkmoney.fraudo.payment.aggregator.CountAggregator;
-import com.rbkmoney.fraudo.payment.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
+import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
 import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
@@ -23,9 +23,9 @@ import java.io.InputStream;
 public class AbstractPaymentTest {
 
     @Mock
-    CountAggregator<PaymentModel, PaymentCheckedField> countAggregator;
+    CountPaymentAggregator<PaymentModel, PaymentCheckedField> countPaymentAggregator;
     @Mock
-    SumAggregator<PaymentModel, PaymentCheckedField> sumAggregator;
+    SumPaymentAggregator<PaymentModel, PaymentCheckedField> sumPaymentAggregator;
     @Mock
     UniqueValueAggregator<PaymentModel, PaymentCheckedField> uniqueValueAggregator;
     @Mock
@@ -51,8 +51,8 @@ public class AbstractPaymentTest {
     ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
         return (ResultModel) new FraudVisitorFactoryImpl()
                 .createVisitor(
-                        countAggregator,
-                        sumAggregator,
+                        countPaymentAggregator,
+                        sumPaymentAggregator,
                         uniqueValueAggregator,
                         countryResolver,
                         inListFinder,

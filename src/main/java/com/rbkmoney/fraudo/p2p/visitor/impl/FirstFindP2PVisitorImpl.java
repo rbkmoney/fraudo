@@ -12,7 +12,6 @@ import com.rbkmoney.fraudo.p2p.generator.*;
 import com.rbkmoney.fraudo.p2p.visitor.*;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
-import com.rbkmoney.fraudo.utils.key.generator.UniqueKeyGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;

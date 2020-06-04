@@ -4,7 +4,6 @@ import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CountryKeyGenerator {

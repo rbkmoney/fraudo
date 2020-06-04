@@ -3,9 +3,9 @@ package com.rbkmoney.fraudo.payment.visitor.impl;
 import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.Pair;
+import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
-import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
 import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.tree.TerminalNode;
 

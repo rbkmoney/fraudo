@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoParser;
-import com.rbkmoney.fraudo.payment.aggregator.CountAggregator;
+import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CountVisitorImpl<T, U> implements CountVisitor<T> {
 
-    private final CountAggregator<T, U> countAggregator;
+    private final CountPaymentAggregator<T, U> countPaymentAggregator;
     private final FieldResolver<T, U> fieldResolver;
     private final PaymentGroupResolver<T, U> groupResolver;
     private final PaymentTimeWindowResolver timeWindowResolver;
@@ -20,7 +20,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     @Override
     public Integer visitCount(FraudoParser.CountContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
-        return countAggregator.count(
+        return countPaymentAggregator.count(
                 fieldResolver.resolveName(countTarget),
                 model,
                 timeWindowResolver.resolve(ctx.time_window()),
@@ -31,7 +31,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     @Override
     public Integer visitCountSuccess(FraudoParser.Count_successContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
-        return countAggregator.countSuccess(
+        return countPaymentAggregator.countSuccess(
                 fieldResolver.resolveName(countTarget),
                 model,
                 timeWindowResolver.resolve(ctx.time_window()),
@@ -43,7 +43,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     public Integer visitCountError(FraudoParser.Count_errorContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
-        return countAggregator.countError(
+        return countPaymentAggregator.countError(
                 fieldResolver.resolveName(countTarget),
                 model,
                 timeWindowResolver.resolve(ctx.time_window()),
@@ -55,7 +55,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     @Override
     public Integer visitCountChargeback(FraudoParser.Count_chargebackContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
-        return countAggregator.countChargeback(
+        return countPaymentAggregator.countChargeback(
                 fieldResolver.resolveName(countTarget),
                 model,
                 timeWindowResolver.resolve(ctx.time_window()),
@@ -66,7 +66,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     @Override
     public Integer visitCountRefund(FraudoParser.Count_refundContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
-        return countAggregator.countRefund(
+        return countPaymentAggregator.countRefund(
                 fieldResolver.resolveName(countTarget),
                 model,
                 timeWindowResolver.resolve(ctx.time_window()),

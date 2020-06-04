@@ -1,12 +1,11 @@
 package com.rbkmoney.fraudo.payment.aggregator;
 
+import com.rbkmoney.fraudo.aggragator.SumAggregator;
 import com.rbkmoney.fraudo.model.TimeWindow;
 
 import java.util.List;
 
-public interface SumAggregator<T, U> {
-
-    Double sum(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
+public interface SumPaymentAggregator<T, U> extends SumAggregator<T, U> {
 
     Double sumSuccess(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
 

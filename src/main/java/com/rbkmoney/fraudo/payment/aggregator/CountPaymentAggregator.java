@@ -1,12 +1,11 @@
 package com.rbkmoney.fraudo.payment.aggregator;
 
+import com.rbkmoney.fraudo.aggragator.CountAggregator;
 import com.rbkmoney.fraudo.model.TimeWindow;
 
 import java.util.List;
 
-public interface CountAggregator<T, U> {
-
-    Integer count(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
+public interface CountPaymentAggregator<T, U> extends CountAggregator<T, U> {
 
     Integer countSuccess(U checkedField, T model, TimeWindow timeWindow, List<U> fields);
 

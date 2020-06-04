@@ -2,13 +2,12 @@ package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +26,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void threeDsTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/three_ds.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
     }
@@ -35,7 +34,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void highRiskTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/highRisk.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.HIGH_RISK, result.getResultStatus());
     }

@@ -3,7 +3,6 @@ package com.rbkmoney.fraudo.utils.key.generator;
 import com.rbkmoney.fraudo.FraudoParser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.function.Function;
 

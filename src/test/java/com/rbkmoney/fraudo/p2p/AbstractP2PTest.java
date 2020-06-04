@@ -1,10 +1,10 @@
 package com.rbkmoney.fraudo.p2p;
 
+import com.rbkmoney.fraudo.aggragator.CountAggregator;
+import com.rbkmoney.fraudo.aggragator.SumAggregator;
 import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.ResultModel;
-import com.rbkmoney.fraudo.p2p.aggragator.CountP2PAggregator;
-import com.rbkmoney.fraudo.p2p.aggragator.SumP2PAggregator;
 import com.rbkmoney.fraudo.p2p.factory.P2PFraudVisitorFactory;
 import com.rbkmoney.fraudo.p2p.resolver.P2PGroupResolver;
 import com.rbkmoney.fraudo.p2p.resolver.P2PTimeWindowResolver;
@@ -22,9 +22,9 @@ import java.io.InputStream;
 public class AbstractP2PTest {
 
     @Mock
-    CountP2PAggregator<P2PModel, P2PCheckedField> countAggregator;
+    CountAggregator<P2PModel, P2PCheckedField> countAggregator;
     @Mock
-    SumP2PAggregator<P2PModel, P2PCheckedField> sumAggregator;
+    SumAggregator<P2PModel, P2PCheckedField> sumAggregator;
     @Mock
     UniqueValueAggregator<P2PModel, P2PCheckedField> uniqueValueAggregator;
     @Mock
