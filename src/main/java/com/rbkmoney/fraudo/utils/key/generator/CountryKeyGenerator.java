@@ -9,8 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CountryKeyGenerator {
 
-    public static String generate(ParserRuleContext context) {
-        FraudoParser.Country_byContext ctx = (FraudoParser.Country_byContext) context;
+    public static String generate(FraudoParser.Country_byContext ctx) {
         String fieldName = TextUtil.safeGetText(ctx.STRING());
         return new StringBuilder()
                 .append(ctx.children.get(0))

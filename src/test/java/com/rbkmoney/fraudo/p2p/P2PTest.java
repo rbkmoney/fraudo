@@ -29,7 +29,7 @@ public class P2PTest extends AbstractP2PTest {
 
     @Test
     public void timingTest() throws Exception {
-        InputStream resourceAsStream = P2PTest.class.getResourceAsStream("/rules/p2p_template.frd");
+        InputStream resourceAsStream = P2PTest.class.getResourceAsStream("/rules/p2p/p2p_template.frd");
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
