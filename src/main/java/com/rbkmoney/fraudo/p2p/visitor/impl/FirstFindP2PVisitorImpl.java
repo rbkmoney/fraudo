@@ -8,13 +8,10 @@ import com.rbkmoney.fraudo.exception.NotValidContextException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
-import com.rbkmoney.fraudo.p2p.generator.RuleP2PKeyGenerator;
+import com.rbkmoney.fraudo.p2p.generator.*;
 import com.rbkmoney.fraudo.p2p.visitor.*;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
-import com.rbkmoney.fraudo.utils.key.generator.CountKeyGenerator;
-import com.rbkmoney.fraudo.utils.key.generator.CountryKeyGenerator;
-import com.rbkmoney.fraudo.utils.key.generator.SumKeyGenerator;
 import com.rbkmoney.fraudo.utils.key.generator.UniqueKeyGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -153,7 +150,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Object visitCount(FraudoP2PParser.CountContext ctx) {
-        String key = CountKeyGenerator.generate(ctx, fieldResolver::resolveName);
+        String key = CountP2PKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(countVisitor.visitCount(ctx, threadLocalModel.get()))
@@ -162,7 +159,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Object visitSum(FraudoP2PParser.SumContext ctx) {
-        String key = SumKeyGenerator.generate(ctx, fieldResolver::resolveName);
+        String key = SumP2PKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> sumVisitor.visitSum(ctx, threadLocalModel.get())
@@ -171,7 +168,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Object visitCountry_by(FraudoP2PParser.Country_byContext ctx) {
-        String key = CountryKeyGenerator.generate(ctx);
+        String key = CountryP2PKeyGenerator.generate(ctx);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> customFuncVisitor.visitCountryBy(ctx, threadLocalModel.get())
@@ -190,7 +187,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Object visitUnique(FraudoP2PParser.UniqueContext ctx) {
-        String key = UniqueKeyGenerator.generate(ctx, fieldResolver::resolveName);
+        String key = UniqueP2PKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
                 s -> Double.valueOf(customFuncVisitor.visitUnique(ctx, threadLocalModel.get()))

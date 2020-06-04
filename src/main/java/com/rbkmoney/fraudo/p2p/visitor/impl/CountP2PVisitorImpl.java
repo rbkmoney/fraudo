@@ -15,7 +15,7 @@ public class CountP2PVisitorImpl<T, U> implements CountP2PVisitor<T> {
 
     private final CountP2PAggregator<T, U> countAggregator;
     private final FieldResolver<T, U> fieldResolver;
-    private final P2PGroupResolver<U> groupResolver;
+    private final P2PGroupResolver<T, U> groupResolver;
     private final P2PTimeWindowResolver timeWindowResolver;
 
     @Override

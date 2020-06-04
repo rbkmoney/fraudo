@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 import static com.rbkmoney.fraudo.FraudoP2PParser.Group_byContext;
 
 @RequiredArgsConstructor
-public class P2PGroupResolver<U> implements GroupFieldsResolver<Group_byContext, U> {
+public class P2PGroupResolver<T, U> implements GroupFieldsResolver<Group_byContext, U> {
 
-    private final FieldResolver<Group_byContext, U> fieldResolver;
+    private final FieldResolver<T, U> fieldResolver;
 
     public List<U> resolve(Group_byContext groupByContext) {
         List<U> fields = new ArrayList<>();

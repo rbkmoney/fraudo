@@ -17,7 +17,7 @@ public class SumP2PVisitorImpl<T, U> implements SumP2PVisitor<T> {
 
     private final SumP2PAggregator<T, U> sumAggregator;
     private final FieldResolver<T, U> fieldResolver;
-    private final P2PGroupResolver<U> paymentGroupResolver;
+    private final P2PGroupResolver<T, U> paymentGroupResolver;
     private final TimeWindowResolver<Time_windowContext> timeWindowResolver;
 
     @Override

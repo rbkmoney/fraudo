@@ -19,7 +19,7 @@ public interface FraudP2PVisitorFactory {
                                                                    CountryResolver<U> countryResolver,
                                                                    InListFinder<T, U> listFinder,
                                                                    FieldResolver<T, U> fieldPairResolver,
-                                                                   P2PGroupResolver<U> paymentGroupResolver,
+                                                                   P2PGroupResolver<T, U> paymentGroupResolver,
                                                                    P2PTimeWindowResolver timeWindowResolver);
 
 }

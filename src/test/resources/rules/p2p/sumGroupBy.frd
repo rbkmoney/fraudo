@@ -1,0 +1,2 @@
+rule: sum("ip", 1444, "party_id") >= 10500.50
+-> notify;

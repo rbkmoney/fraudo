@@ -25,7 +25,7 @@ public class P2PFraudVisitorFactory implements FraudP2PVisitorFactory {
             CountryResolver<U> countryResolver,
             InListFinder<T, U> listFinder,
             FieldResolver<T, U> fieldResolver,
-            P2PGroupResolver<U> groupResolver,
+            P2PGroupResolver<T, U> groupResolver,
             P2PTimeWindowResolver timeWindowResolver) {
         CountP2PVisitor<T> countVisitor = new CountP2PVisitorImpl<>(countAggregator, fieldResolver, groupResolver, timeWindowResolver);
         SumP2PVisitor<T> sumVisitor = new SumP2PVisitorImpl<>(sumAggregator, fieldResolver, groupResolver, timeWindowResolver);

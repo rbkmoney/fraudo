@@ -18,7 +18,7 @@ public class CustomP2PFuncVisitorImpl<T, U> implements CustomP2PFuncVisitor<T> {
     private final UniqueValueAggregator<T, U> uniqueValueAggregator;
     private final CountryResolver<U> countryResolver;
     private final FieldResolver<T, U> fieldResolver;
-    private final P2PGroupResolver<U> groupResolver;
+    private final P2PGroupResolver<T, U> groupResolver;
     private final P2PTimeWindowResolver timeWindowResolver;
 
     @Override

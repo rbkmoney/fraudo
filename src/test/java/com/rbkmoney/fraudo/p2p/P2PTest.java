@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo;
+package com.rbkmoney.fraudo.p2p;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.test.model.P2PModel;
@@ -33,7 +33,7 @@ public class P2PTest extends AbstractP2PTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        com.rbkmoney.fraudo.FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
 
         P2PModel model = new P2PModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
@@ -57,19 +57,8 @@ public class P2PTest extends AbstractP2PTest {
                     countDownLatch.countDown();
                     return 1;
                 });
-        when(countAggregator.countSuccess(any(), any(), any(), any()))
-                .thenAnswer((Answer<Integer>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    countDownLatch.countDown();
-                    return 1;
-                });
 
         when(sumAggregator.sum(any(), any(), any(), any()))
-                .thenAnswer((Answer<Double>) invocationOnMock -> {
-                    Thread.sleep(TIME_CALL_AGGR_FUNC);
-                    return 10000.0;
-                });
-        when(sumAggregator.sumSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     return 10000.0;

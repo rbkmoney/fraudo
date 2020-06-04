@@ -1,0 +1,2 @@
+rule: in("email", "testgmail", "test@g")
+-> notify;

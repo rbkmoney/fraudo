@@ -1,0 +1,2 @@
+rule: count("ip", 1444) >= 10
+-> decline;
