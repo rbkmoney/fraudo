@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.rbkmoney.fraudo.FraudoParser.Group_byContext;
+import static com.rbkmoney.fraudo.FraudoPaymentParser.Group_byContext;
 
 @RequiredArgsConstructor
 public class PaymentGroupResolver<T, U> implements GroupFieldsResolver<Group_byContext, U> {

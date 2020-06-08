@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.Pair;
 import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
+
 @RequiredArgsConstructor
 public class ListVisitorImpl<T, U> implements ListVisitor<T> {
 
@@ -20,22 +21,22 @@ public class ListVisitorImpl<T, U> implements ListVisitor<T> {
     private final FieldResolver<T, U> fieldResolver;
 
     @Override
-    public Boolean visitInWhiteList(FraudoParser.In_white_listContext ctx, T model) {
+    public Boolean visitInWhiteList(In_white_listContext ctx, T model) {
         return findInList(ctx.string_list().STRING(), model, listFinder::findInWhiteList);
     }
 
     @Override
-    public Boolean visitInBlackList(FraudoParser.In_black_listContext ctx, T model) {
+    public Boolean visitInBlackList(In_black_listContext ctx, T model) {
         return findInList(ctx.string_list().STRING(), model, listFinder::findInBlackList);
     }
 
     @Override
-    public Boolean visitInGreyList(FraudoParser.In_grey_listContext ctx, T model) {
+    public Boolean visitInGreyList(In_grey_listContext ctx, T model) {
         return findInList(ctx.string_list().STRING(), model, listFinder::findInGreyList);
     }
 
     @Override
-    public Boolean visitInList(FraudoParser.In_listContext ctx, T model) {
+    public Boolean visitInList(In_listContext ctx, T model) {
         List<Pair<U, String>> checkedFields = initCheckedFields(model, ctx.string_list().STRING());
         String name = TextUtil.safeGetText(ctx.STRING());
         return listFinder.findInList(name, checkedFields, model);

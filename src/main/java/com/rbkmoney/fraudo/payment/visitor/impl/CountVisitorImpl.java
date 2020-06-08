@@ -1,6 +1,7 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
-import com.rbkmoney.fraudo.FraudoParser;
+import com.rbkmoney.fraudo.FraudoPaymentParser;
+import com.rbkmoney.fraudo.FraudoPaymentParser;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
@@ -18,7 +19,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     private final PaymentTimeWindowResolver timeWindowResolver;
 
     @Override
-    public Integer visitCount(FraudoParser.CountContext ctx, T model) {
+    public Integer visitCount(FraudoPaymentParser.CountContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return countPaymentAggregator.count(
                 fieldResolver.resolveName(countTarget),
@@ -29,7 +30,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     }
 
     @Override
-    public Integer visitCountSuccess(FraudoParser.Count_successContext ctx, T model) {
+    public Integer visitCountSuccess(FraudoPaymentParser.Count_successContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return countPaymentAggregator.countSuccess(
                 fieldResolver.resolveName(countTarget),
@@ -40,7 +41,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     }
 
     @Override
-    public Integer visitCountError(FraudoParser.Count_errorContext ctx, T model) {
+    public Integer visitCountError(FraudoPaymentParser.Count_errorContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
         return countPaymentAggregator.countError(
@@ -53,7 +54,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     }
 
     @Override
-    public Integer visitCountChargeback(FraudoParser.Count_chargebackContext ctx, T model) {
+    public Integer visitCountChargeback(FraudoPaymentParser.Count_chargebackContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return countPaymentAggregator.countChargeback(
                 fieldResolver.resolveName(countTarget),
@@ -64,7 +65,7 @@ public class CountVisitorImpl<T, U> implements CountVisitor<T> {
     }
 
     @Override
-    public Integer visitCountRefund(FraudoParser.Count_refundContext ctx, T model) {
+    public Integer visitCountRefund(FraudoPaymentParser.Count_refundContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return countPaymentAggregator.countRefund(
                 fieldResolver.resolveName(countTarget),

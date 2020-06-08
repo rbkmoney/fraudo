@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
@@ -8,6 +7,8 @@ import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
+
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 @RequiredArgsConstructor
 public class SumVisitorImpl<T, U> implements SumVisitor<T> {
@@ -18,7 +19,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     private final PaymentTimeWindowResolver timeWindowResolver;
 
     @Override
-    public Double visitSum(FraudoParser.SumContext ctx, T model) {
+    public Double visitSum(SumContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumPaymentAggregator.sum(
                 fieldResolver.resolveName(countTarget),
@@ -29,7 +30,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     }
 
     @Override
-    public Double visitSumSuccess(FraudoParser.Sum_successContext ctx, T model) {
+    public Double visitSumSuccess(Sum_successContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumPaymentAggregator.sumSuccess(
                 fieldResolver.resolveName(countTarget),
@@ -39,7 +40,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     }
 
     @Override
-    public Double visitSumError(FraudoParser.Sum_errorContext ctx, T model) {
+    public Double visitSumError(Sum_errorContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING(0));
         String errorCode = TextUtil.safeGetText(ctx.STRING(1));
         return sumPaymentAggregator.sumError(
@@ -51,7 +52,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     }
 
     @Override
-    public Double visitSumChargeback(FraudoParser.Sum_chargebackContext ctx, T model) {
+    public Double visitSumChargeback(Sum_chargebackContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumPaymentAggregator.sumChargeback(
                 fieldResolver.resolveName(countTarget),
@@ -62,7 +63,7 @@ public class SumVisitorImpl<T, U> implements SumVisitor<T> {
     }
 
     @Override
-    public Double visitSumRefund(FraudoParser.Sum_refundContext ctx, T model) {
+    public Double visitSumRefund(Sum_refundContext ctx, T model) {
         String countTarget = TextUtil.safeGetText(ctx.STRING());
         return sumPaymentAggregator.sumRefund(
                 fieldResolver.resolveName(countTarget),

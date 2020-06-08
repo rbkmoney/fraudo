@@ -1,5 +1,6 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Assert;
@@ -22,7 +23,7 @@ public class ListTest extends AbstractPaymentTest {
     @Test
     public void whiteBlackListTest() throws Exception {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/whitelist.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInWhiteList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
@@ -38,7 +39,7 @@ public class ListTest extends AbstractPaymentTest {
     @Test
     public void greyListTest() throws Exception {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/greyList.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInGreyList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
@@ -47,7 +48,7 @@ public class ListTest extends AbstractPaymentTest {
     @Test
     public void namingListTest() throws Exception {
         InputStream resourceAsStream = ListTest.class.getResourceAsStream("/rules/namingList.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInList(anyString(), anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());

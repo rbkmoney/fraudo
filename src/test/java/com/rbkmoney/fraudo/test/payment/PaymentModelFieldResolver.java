@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.test.payout;
+package com.rbkmoney.fraudo.test.payment;
 
 import com.rbkmoney.fraudo.exception.UnresolvableFieldException;
 import com.rbkmoney.fraudo.resolver.FieldResolver;

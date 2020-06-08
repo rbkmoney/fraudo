@@ -1,5 +1,6 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Assert;
@@ -25,7 +26,7 @@ public class SumTest extends AbstractPaymentTest {
         Mockito.when(sumPaymentAggregator.sum(anyObject(), any(), any(), any())).thenReturn(10500.60);
         Mockito.when(sumPaymentAggregator.sumError(anyObject(), any(), any(), anyString(), any())).thenReturn(524.0);
         Mockito.when(sumPaymentAggregator.sumSuccess(anyObject(), any(), any(), any())).thenReturn(4.0);
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());
@@ -44,7 +45,7 @@ public class SumTest extends AbstractPaymentTest {
         InputStream resourceAsStream = SumTest.class.getResourceAsStream("/rules/sum_chargeback_refund.frd");
         Mockito.when(sumPaymentAggregator.sumChargeback(anyObject(), any(), any(), any())).thenReturn(10000.60);
         Mockito.when(sumPaymentAggregator.sumRefund(anyObject(), any(), any(), any())).thenReturn(10000.60);
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }
@@ -55,7 +56,7 @@ public class SumTest extends AbstractPaymentTest {
         Mockito.when(sumPaymentAggregator.sum(anyObject(), any(), any(), any())).thenReturn(10500.60);
         Mockito.when(sumPaymentAggregator.sumError(anyObject(), any(), any(), anyString(), any())).thenReturn(524.0);
         Mockito.when(sumPaymentAggregator.sumSuccess(anyObject(), any(), any(), any())).thenReturn(4.0);
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
         Assert.assertEquals(1, result.getNotificationsRule().size());

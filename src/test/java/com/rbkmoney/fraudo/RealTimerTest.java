@@ -1,5 +1,6 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.PaymentModel;
@@ -33,7 +34,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
 
         PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
@@ -55,7 +56,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
 
         PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);

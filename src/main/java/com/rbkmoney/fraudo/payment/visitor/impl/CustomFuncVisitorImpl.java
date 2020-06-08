@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.model.Pair;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
@@ -10,6 +9,8 @@ import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.RequiredArgsConstructor;
+
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 @RequiredArgsConstructor
 public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
@@ -21,14 +22,14 @@ public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
     private final PaymentTimeWindowResolver timeWindowResolver;
 
     @Override
-    public String visitCountryBy(FraudoParser.Country_byContext ctx, T model) {
+    public String visitCountryBy(Country_byContext ctx, T model) {
         String fieldName = TextUtil.safeGetText(ctx.STRING());
         Pair<U, String> resolve = fieldResolver.resolve(fieldName, model);
         return countryResolver.resolveCountry(resolve.getFirst(), resolve.getSecond());
     }
 
     @Override
-    public boolean visitIn(FraudoParser.InContext ctx, T model) {
+    public boolean visitIn(InContext ctx, T model) {
         final String fieldValue;
         if (ctx.STRING() != null && ctx.STRING().getText() != null && !ctx.STRING().getText().isEmpty()) {
             String field = TextUtil.safeGetText(ctx.STRING());
@@ -43,7 +44,7 @@ public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
     }
 
     @Override
-    public boolean visitLike(FraudoParser.LikeContext ctx, T model) {
+    public boolean visitLike(LikeContext ctx, T model) {
         String fieldName = TextUtil.safeGetText(ctx.STRING(0));
         String fieldValue = fieldResolver.resolve(fieldName, model).getSecond();
         String pattern = TextUtil.safeGetText(ctx.STRING(1));
@@ -51,7 +52,7 @@ public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
     }
 
     @Override
-    public Integer visitUnique(FraudoParser.UniqueContext ctx, T model) {
+    public Integer visitUnique(UniqueContext ctx, T model) {
         String field = TextUtil.safeGetText(ctx.STRING(0));
         String fieldBy = TextUtil.safeGetText(ctx.STRING(1));
         return uniqueValueAggregator.countUniqueValue(

@@ -49,7 +49,7 @@ public class AbstractP2PTest {
     }
 
     ResultModel invoke(com.rbkmoney.fraudo.FraudoP2PParser.ParseContext parse, P2PModel model) {
-        return (ResultModel) new P2PFraudVisitorFactory()
+        return new P2PFraudVisitorFactory()
                 .createVisitor(
                         countAggregator,
                         sumAggregator,

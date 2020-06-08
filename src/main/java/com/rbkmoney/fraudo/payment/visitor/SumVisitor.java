@@ -1,17 +1,17 @@
 package com.rbkmoney.fraudo.payment.visitor;
 
-import com.rbkmoney.fraudo.FraudoParser;
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 public interface SumVisitor<T> {
 
-    Double visitSum(FraudoParser.SumContext ctx, T model);
+    Double visitSum(SumContext ctx, T model);
 
-    Double visitSumSuccess(FraudoParser.Sum_successContext ctx, T model);
+    Double visitSumSuccess(Sum_successContext ctx, T model);
 
-    Double visitSumError(FraudoParser.Sum_errorContext ctx, T model);
+    Double visitSumError(Sum_errorContext ctx, T model);
 
-    Double visitSumChargeback(FraudoParser.Sum_chargebackContext ctx, T model);
+    Double visitSumChargeback(Sum_chargebackContext ctx, T model);
 
-    Double visitSumRefund(FraudoParser.Sum_refundContext ctx, T model);
+    Double visitSumRefund(Sum_refundContext ctx, T model);
 
 }

@@ -16,6 +16,8 @@ import static org.mockito.Mockito.*;
 
 public class CountP2PTest extends AbstractP2PTest {
 
+    public static final String FIRST_RULE_INDEX = "0";
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -28,7 +30,7 @@ public class CountP2PTest extends AbstractP2PTest {
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("1", result.getRuleChecked());
+        assertEquals(FIRST_RULE_INDEX, result.getRuleChecked());
 
         when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(14);
 
@@ -43,7 +45,7 @@ public class CountP2PTest extends AbstractP2PTest {
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("1", result.getRuleChecked());
+        assertEquals(FIRST_RULE_INDEX, result.getRuleChecked());
 
         when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
@@ -57,7 +59,7 @@ public class CountP2PTest extends AbstractP2PTest {
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("1", result.getRuleChecked());
+        assertEquals(FIRST_RULE_INDEX, result.getRuleChecked());
 
         when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
@@ -68,7 +70,7 @@ public class CountP2PTest extends AbstractP2PTest {
         parseContext = getParseContext(resourceAsStream);
         result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("1", result.getRuleChecked());
+        assertEquals(FIRST_RULE_INDEX, result.getRuleChecked());
     }
 
     @Test

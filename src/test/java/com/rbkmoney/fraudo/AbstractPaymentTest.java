@@ -1,5 +1,6 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.ResultModel;
@@ -12,7 +13,7 @@ import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
 import com.rbkmoney.fraudo.test.model.PaymentModel;
-import com.rbkmoney.fraudo.test.payout.PaymentModelFieldResolver;
+import com.rbkmoney.fraudo.test.payment.PaymentModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -39,17 +40,17 @@ public class AbstractPaymentTest {
     private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
+        ParseContext parse = getParseContext(resourceAsStream);
         return invokeParse(parse);
     }
 
-    ResultModel invokeParse(com.rbkmoney.fraudo.FraudoParser.ParseContext parse) {
+    ResultModel invokeParse(ParseContext parse) {
         PaymentModel model = new PaymentModel();
         return invoke(parse, model);
     }
 
-    ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FraudVisitorFactoryImpl()
+    ResultModel invoke(ParseContext parse, PaymentModel model) {
+        return new FraudVisitorFactoryImpl()
                 .createVisitor(
                         countPaymentAggregator,
                         sumPaymentAggregator,
@@ -62,10 +63,9 @@ public class AbstractPaymentTest {
                 .visit(parse, model);
     }
 
-    com.rbkmoney.fraudo.FraudoParser.ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoLexer lexer = new com.rbkmoney.fraudo.FraudoLexer(new ANTLRInputStream(resourceAsStream));
-        com.rbkmoney.fraudo.FraudoParser parser = new com.rbkmoney.fraudo.FraudoParser(new CommonTokenStream(lexer));
-
+    ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
+        com.rbkmoney.fraudo.FraudoPaymentLexer lexer = new com.rbkmoney.fraudo.FraudoPaymentLexer(new ANTLRInputStream(resourceAsStream));
+        com.rbkmoney.fraudo.FraudoPaymentParser parser = new com.rbkmoney.fraudo.FraudoPaymentParser(new CommonTokenStream(lexer));
         return parser.parse();
     }
 

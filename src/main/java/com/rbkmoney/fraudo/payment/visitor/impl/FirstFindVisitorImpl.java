@@ -1,7 +1,6 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
-import com.rbkmoney.fraudo.FraudoBaseVisitor;
-import com.rbkmoney.fraudo.FraudoParser;
+import com.rbkmoney.fraudo.FraudoPaymentBaseVisitor;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.NotValidContextException;
@@ -29,9 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
+
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
 
     private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
@@ -67,7 +68,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitFraud_rule(FraudoParser.Fraud_ruleContext ctx) {
+    public Object visitFraud_rule(Fraud_ruleContext ctx) {
         try {
             if (asBoolean(ctx.expression())) {
                 return ResultStatus.getByValue((String) super.visit(ctx.result()));
@@ -83,11 +84,12 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitParse(FraudoParser.ParseContext ctx) {
+    public Object visitParse(ParseContext ctx) {
         List<String> notifications = new ArrayList<>();
-        for (FraudoParser.Fraud_ruleContext fraudRuleContext : ctx.fraud_rule()) {
+        for (int i = 0; i < ctx.fraud_rule().size(); i++) {
+            Fraud_ruleContext fraudRuleContext = ctx.fraud_rule().get(i);
             ResultStatus result = (ResultStatus) visitFraud_rule(fraudRuleContext);
-            String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext);
+            String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext, i);
             if (result == null) {
                 throw new UnknownResultException(fraudRuleContext.getText());
             } else if (result == ResultStatus.NOTIFY) {
@@ -100,32 +102,32 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitResult(FraudoParser.ResultContext ctx) {
+    public Object visitResult(ResultContext ctx) {
         return ctx.getText();
     }
 
     @Override
-    public Object visitDecimalExpression(FraudoParser.DecimalExpressionContext ctx) {
+    public Object visitDecimalExpression(DecimalExpressionContext ctx) {
         return Double.valueOf(ctx.DECIMAL().getText());
     }
 
     @Override
-    public Object visitStringExpression(FraudoParser.StringExpressionContext ctx) {
+    public Object visitStringExpression(StringExpressionContext ctx) {
         return TextUtil.safeGetText(ctx.STRING());
     }
 
     @Override
-    public Object visitNotExpression(FraudoParser.NotExpressionContext ctx) {
+    public Object visitNotExpression(NotExpressionContext ctx) {
         return !((Boolean) this.visit(ctx.expression()));
     }
 
     @Override
-    public Object visitParenExpression(FraudoParser.ParenExpressionContext ctx) {
+    public Object visitParenExpression(ParenExpressionContext ctx) {
         return super.visit(ctx.expression());
     }
 
     @Override
-    public Object visitComparatorExpression(FraudoParser.ComparatorExpressionContext ctx) {
+    public Object visitComparatorExpression(ComparatorExpressionContext ctx) {
         if (ctx.op.EQ() != null) {
             return this.visit(ctx.left).equals(this.visit(ctx.right));
         } else if (ctx.op.LE() != null) {
@@ -141,7 +143,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitBinaryExpression(FraudoParser.BinaryExpressionContext ctx) {
+    public Object visitBinaryExpression(BinaryExpressionContext ctx) {
         if (ctx.op.AND() != null) {
             return asBoolean(ctx.left) && asBoolean(ctx.right);
         } else if (ctx.op.OR() != null) {
@@ -151,12 +153,12 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitBoolExpression(FraudoParser.BoolExpressionContext ctx) {
+    public Object visitBoolExpression(BoolExpressionContext ctx) {
         return Boolean.valueOf(ctx.getText());
     }
 
     @Override
-    public Object visitCount(FraudoParser.CountContext ctx) {
+    public Object visitCount(CountContext ctx) {
         String key = CountKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -165,7 +167,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitCount_success(FraudoParser.Count_successContext ctx) {
+    public Object visitCount_success(Count_successContext ctx) {
         String key = CountKeyGenerator.generateSuccessKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -174,7 +176,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitCount_error(FraudoParser.Count_errorContext ctx) {
+    public Object visitCount_error(Count_errorContext ctx) {
         String key = CountKeyGenerator.generateErrorKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -183,7 +185,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitCount_chargeback(FraudoParser.Count_chargebackContext ctx) {
+    public Object visitCount_chargeback(Count_chargebackContext ctx) {
         String key = CountKeyGenerator.generateChargebackKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -192,7 +194,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitCount_refund(FraudoParser.Count_refundContext ctx) {
+    public Object visitCount_refund(Count_refundContext ctx) {
         String key = CountKeyGenerator.generateRefundKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -201,7 +203,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitSum(FraudoParser.SumContext ctx) {
+    public Object visitSum(SumContext ctx) {
         String key = SumKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -210,7 +212,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitSum_success(FraudoParser.Sum_successContext ctx) {
+    public Object visitSum_success(Sum_successContext ctx) {
         String key = SumKeyGenerator.generateSuccessKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -219,7 +221,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitSum_error(FraudoParser.Sum_errorContext ctx) {
+    public Object visitSum_error(Sum_errorContext ctx) {
         String key = SumKeyGenerator.generateErrorKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -228,7 +230,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitSum_chargeback(FraudoParser.Sum_chargebackContext ctx) {
+    public Object visitSum_chargeback(Sum_chargebackContext ctx) {
         String key = SumKeyGenerator.generateChargebackKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -237,7 +239,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitSum_refund(FraudoParser.Sum_refundContext ctx) {
+    public Object visitSum_refund(Sum_refundContext ctx) {
         String key = SumKeyGenerator.generateRefundKey(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -246,7 +248,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitCountry_by(FraudoParser.Country_byContext ctx) {
+    public Object visitCountry_by(Country_byContext ctx) {
         String key = CountryKeyGenerator.generate(ctx);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -255,17 +257,17 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitIn(FraudoParser.InContext ctx) {
+    public Object visitIn(InContext ctx) {
         return customFuncVisitor.visitIn(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitLike(FraudoParser.LikeContext ctx) {
+    public Object visitLike(LikeContext ctx) {
         return customFuncVisitor.visitLike(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitUnique(FraudoParser.UniqueContext ctx) {
+    public Object visitUnique(UniqueContext ctx) {
         String key = UniqueKeyGenerator.generate(ctx, fieldResolver::resolveName);
         return localFuncCache.get().computeIfAbsent(
                 key,
@@ -274,40 +276,40 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoBaseVisi
     }
 
     @Override
-    public Object visitIn_white_list(FraudoParser.In_white_listContext ctx) {
+    public Object visitIn_white_list(In_white_listContext ctx) {
         return listVisitor.visitInWhiteList(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitIn_black_list(FraudoParser.In_black_listContext ctx) {
+    public Object visitIn_black_list(In_black_listContext ctx) {
         return listVisitor.visitInBlackList(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitIn_grey_list(FraudoParser.In_grey_listContext ctx) {
+    public Object visitIn_grey_list(In_grey_listContext ctx) {
         return listVisitor.visitInGreyList(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitIn_list(FraudoParser.In_listContext ctx) {
+    public Object visitIn_list(In_listContext ctx) {
         return listVisitor.visitInList(ctx, threadLocalModel.get());
     }
 
     @Override
-    public Object visitAmount(FraudoParser.AmountContext ctx) {
+    public Object visitAmount(AmountContext ctx) {
         return Double.valueOf(threadLocalModel.get().getAmount());
     }
 
     @Override
-    public Object visitCurrency(FraudoParser.CurrencyContext ctx) {
+    public Object visitCurrency(CurrencyContext ctx) {
         return threadLocalModel.get().getCurrency();
     }
 
-    private boolean asBoolean(FraudoParser.ExpressionContext ctx) {
+    private boolean asBoolean(ExpressionContext ctx) {
         return (boolean) visit(ctx);
     }
 
-    private double asDouble(FraudoParser.ExpressionContext ctx) {
+    private double asDouble(ExpressionContext ctx) {
         return (double) visit(ctx);
     }
 }

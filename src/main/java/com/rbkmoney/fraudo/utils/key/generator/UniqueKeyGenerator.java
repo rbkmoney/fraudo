@@ -1,15 +1,16 @@
 package com.rbkmoney.fraudo.utils.key.generator;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.function.Function;
 
+import static com.rbkmoney.fraudo.FraudoPaymentParser.UniqueContext;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UniqueKeyGenerator {
 
-    public static <T> String generate(FraudoParser.UniqueContext ctx, Function<String, T> resolve) {
+    public static <T> String generate(UniqueContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedTwoFieldFunction(
                 ctx.STRING(0),
                 ctx.STRING(1),
