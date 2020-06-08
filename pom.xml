@@ -7,11 +7,30 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
     </parent>
 
     <artifactId>fraudo</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <version>0.0.14-SNAPSHOT</version>
+
+    <name>Fraudo</name>
+    <description>Language for describing antifraud patterns</description>
+    <url>https://github.com/rbkmoney/fraudo.git</url>
+
+    <developers>
+        <developer>
+            <name>Konstantin Struzhkin</name>
+            <email>k.struzhkin@rbk.money</email>
+            <organization>RBK.money</organization>
+            <organizationUrl>https://rbk.money</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/rbkmoney/fraudo.git</connection>
+        <developerConnection>scm:git:ssh://github.com/rbkmoney/fraudo.git</developerConnection>
+        <url>https://github.com/rbkmoney/fraudo/tree/master</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
