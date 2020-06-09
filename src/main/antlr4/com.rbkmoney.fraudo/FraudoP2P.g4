@@ -30,7 +30,7 @@ stringExpression
     ;
 
 relationalExpression
-    : unaryExpression ( (LT | LE | GT | GE | EQ | NEQ) unaryExpression)?
+    : unaryExpression (LT | LE | GT | GE | EQ | NEQ) unaryExpression
     | in
     | in_white_list
     | in_black_list
