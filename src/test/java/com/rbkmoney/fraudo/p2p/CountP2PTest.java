@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
@@ -27,6 +28,9 @@ public class CountP2PTest extends AbstractP2PTest {
     public void countTest() throws Exception {
         InputStream resourceAsStream = CountP2PTest.class.getResourceAsStream("/rules/p2p/count.frd");
         when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        Mockito.when(sumAggregator.sum(anyObject(), any(), any(), any())).thenReturn(10500.60);
+        Mockito.when(listFinder.findInWhiteList(any(), any())).thenReturn(true);
+
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());

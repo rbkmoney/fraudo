@@ -36,6 +36,7 @@ expression
  | currency                                       #currencyFunctionExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
+ | INTEGER                                        #integerExpression
  | STRING                                         #stringExpression
  ;
 

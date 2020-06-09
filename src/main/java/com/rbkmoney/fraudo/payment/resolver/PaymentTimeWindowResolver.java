@@ -13,7 +13,7 @@ public class PaymentTimeWindowResolver implements TimeWindowResolver<FraudoPayme
     @Override
     public TimeWindow resolve(FraudoPaymentParser.Time_windowContext ctx) {
         TimeWindow.TimeWindowBuilder builder = TimeWindow.builder();
-        List<TerminalNode> times = ctx.DECIMAL();
+        List<TerminalNode> times = ctx.INTEGER();
         String startWindow = TextUtil.safeGetText(times.get(0));
         if (times.size() == 2) {
             String endWindow = TextUtil.safeGetText(times.get(1));
