@@ -8,25 +8,25 @@ parse
  ;
 
 expression
-    :   booleanAndExpression ( OR booleanAndExpression )*
+    : booleanAndExpression ( OR booleanAndExpression )*
     ;
 
 booleanAndExpression
-    :    equalityExpression ( AND equalityExpression )*
+    : equalityExpression ( AND equalityExpression )*
     ;
 
 equalityExpression
-    :    relationalExpression
-    |    stringExpression ( (EQ | NEQ) stringExpression)?
-    |    NOT expression
-    |    LPAREN expression RPAREN
+    : relationalExpression
+    | stringExpression ( (EQ | NEQ) stringExpression)?
+    | NOT expression
+    | LPAREN expression RPAREN
     ;
 
 stringExpression
-    :   country
-    |   country_by
-    |   currency
-    |   STRING
+    : country
+    | country_by
+    | currency
+    | STRING
     ;
 
 relationalExpression
@@ -40,19 +40,19 @@ relationalExpression
     ;
 
 unaryExpression
-    :    integerExpression
-    |    floatExpression
+    : integerExpression
+    | floatExpression
     ;
 
 integerExpression
-    :   count
-    |   unique
-    |   INTEGER
+    : count
+    | unique
+    | INTEGER
     ;
 
 floatExpression
-    :   sum
-    |   amount
-    |   INTEGER
-    |   DECIMAL
+    : sum
+    | amount
+    | INTEGER
+    | DECIMAL
     ;
