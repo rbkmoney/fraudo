@@ -6,8 +6,6 @@ public interface CustomP2PFuncVisitor<T> {
 
     String visitCountryBy(FraudoP2PParser.Country_byContext ctx, T model);
 
-    boolean visitIn(FraudoP2PParser.InContext ctx, T model);
-
     boolean visitLike(FraudoP2PParser.LikeContext ctx, T model);
 
     Integer visitUnique(FraudoP2PParser.UniqueContext ctx, T model);

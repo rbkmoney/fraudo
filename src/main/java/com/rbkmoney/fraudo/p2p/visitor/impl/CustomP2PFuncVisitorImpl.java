@@ -29,21 +29,6 @@ public class CustomP2PFuncVisitorImpl<T, U> implements CustomP2PFuncVisitor<T> {
     }
 
     @Override
-    public boolean visitIn(InContext ctx, T model) {
-        final String fieldValue;
-        if (ctx.STRING() != null && ctx.STRING().getText() != null && !ctx.STRING().getText().isEmpty()) {
-            String field = TextUtil.safeGetText(ctx.STRING());
-            fieldValue = fieldResolver.resolve(field, model).getSecond();
-        } else {
-            String fieldName = TextUtil.safeGetText(ctx.country_by().STRING());
-            Pair<U, String> resolve = fieldResolver.resolve(fieldName, model);
-            fieldValue = countryResolver.resolveCountry(resolve.getFirst(), resolve.getSecond());
-        }
-        return ctx.string_list().STRING().stream()
-                .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));
-    }
-
-    @Override
     public boolean visitLike(LikeContext ctx, T model) {
         String fieldName = TextUtil.safeGetText(ctx.STRING(0));
         String fieldValue = fieldResolver.resolve(fieldName, model).getSecond();

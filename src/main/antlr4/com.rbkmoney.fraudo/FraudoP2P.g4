@@ -24,6 +24,7 @@ equalityExpression
 stringExpression
     :   country
     |   country_by
+    |   currency
     |   STRING
     ;
 
@@ -44,11 +45,13 @@ unaryExpression
 
 integerExpression
     :   count
+    |   unique
     |   INTEGER
     ;
 
 floatExpression
     :   sum
+    |   amount
     |   INTEGER
     |   DECIMAL
     ;

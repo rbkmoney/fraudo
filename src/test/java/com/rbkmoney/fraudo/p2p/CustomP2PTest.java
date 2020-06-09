@@ -79,9 +79,12 @@ public class CustomP2PTest extends AbstractP2PTest {
     @Test
     public void inTest() throws Exception {
         InputStream resourceAsStream = CustomP2PTest.class.getResourceAsStream("/rules/p2p/in.frd");
+        when(countryResolver.resolveCountry(any(), anyString())).thenReturn("SD");
+
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         P2PModel model = new P2PModel();
         model.setEmail(TEST_GMAIL_RU);
+        model.setBin("123213");
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }
@@ -182,6 +185,7 @@ public class CustomP2PTest extends AbstractP2PTest {
         resourceAsStream = CustomP2PTest.class.getResourceAsStream("/rules/p2p/eq_country.frd");
         result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertEquals(0, result.getNotificationsRule().size());
 
         resourceAsStream = CustomP2PTest.class.getResourceAsStream("/rules/p2p/accept_with_notify.frd");
         result = parseAndVisit(resourceAsStream);
