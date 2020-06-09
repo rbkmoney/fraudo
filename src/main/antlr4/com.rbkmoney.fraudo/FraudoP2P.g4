@@ -17,7 +17,7 @@ booleanAndExpression
 
 equalityExpression
     : relationalExpression
-    | stringExpression ( (EQ | NEQ) stringExpression)?
+    | stringExpression (EQ | NEQ) stringExpression
     | NOT expression
     | LPAREN expression RPAREN
     ;
