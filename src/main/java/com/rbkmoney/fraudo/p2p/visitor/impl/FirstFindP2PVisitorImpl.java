@@ -98,7 +98,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Boolean visitExpression(ExpressionContext ctx) {
-        if (ctx.OR() != null && ctx.OR().size() > 0) {
+        if (ctx.OR() != null && !ctx.OR().isEmpty()) {
             boolean result = false;
             for (BooleanAndExpressionContext booleanAndExpressionContext : ctx.booleanAndExpression()) {
                 result = result || (Boolean) visit(booleanAndExpressionContext);
@@ -113,7 +113,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Boolean visitBooleanAndExpression(BooleanAndExpressionContext ctx) {
-        if (ctx.AND() != null && ctx.AND().size() > 0) {
+        if (ctx.AND() != null && !ctx.AND().isEmpty()) {
             boolean result = true;
             for (EqualityExpressionContext equalityExpressionContext : ctx.equalityExpression()) {
                 result = result && visitEqualityExpression(equalityExpressionContext);
@@ -136,6 +136,10 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
             } else if (ctx.NEQ() != null) {
                 return !left.equals(right);
             }
+        } else if (ctx.NOT() != null) {
+            return !(Boolean) visit(ctx.expression());
+        } else if (ctx.LPAREN() != null) {
+            return (Boolean) visit(ctx.expression());
         }
         return visitRelationalExpression(ctx.relationalExpression());
     }

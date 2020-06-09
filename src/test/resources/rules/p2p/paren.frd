@@ -1,0 +1,2 @@
+rule: (count("email", 10) <= 10 AND NOT (count("ip", 1444) != 10.0 AND count("ip", 1444) != 10.0))
+-> decline;

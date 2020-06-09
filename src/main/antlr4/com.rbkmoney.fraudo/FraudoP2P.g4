@@ -8,17 +8,18 @@ parse
  ;
 
 expression
-    :    booleanAndExpression ( OR booleanAndExpression )*
+    :   booleanAndExpression ( OR booleanAndExpression )*
     ;
 
 booleanAndExpression
     :    equalityExpression ( AND equalityExpression )*
     ;
 
-
 equalityExpression
     :    relationalExpression
     |    stringExpression ( (EQ | NEQ) stringExpression)?
+    |    NOT expression
+    |    LPAREN expression RPAREN
     ;
 
 stringExpression
