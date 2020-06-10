@@ -68,10 +68,6 @@ like
  : 'like' LPAREN STRING DELIMETER STRING RPAREN
  ;
 
-country
- : 'country' LPAREN RPAREN
- ;
-
 country_by
  : 'countryBy' LPAREN STRING RPAREN
  ;

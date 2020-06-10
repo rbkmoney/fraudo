@@ -8,37 +8,61 @@ parse
  ;
 
 expression
- : LPAREN expression RPAREN                       #parenExpression
- | NOT expression                                 #notExpression
- | left=expression op=comparator right=expression #comparatorExpression
- | left=expression op=binary right=expression     #binaryExpression
- | bool                                           #boolExpression
- | count                                          #countExpression
- | count_success                                  #countSuccessExpression
- | count_error                                    #countErrorExpression
- | count_chargeback                               #countChargebackExpression
- | count_refund                                   #countRefundExpression
- | sum                                            #sumExpression
- | sum_success                                    #sumSuccessExpression
- | sum_error                                      #sumErrorExpression
- | sum_chargeback                                 #sumChargebackExpression
- | sum_refund                                     #sumRefundExpression
- | unique                                         #uniqueExpression
- | in                                             #inFunctionExpression
- | in_white_list                                  #inWhiteListExpression
- | in_black_list                                  #inBlackListExpression
- | in_grey_list                                   #inGreyListExpression
- | in_list                                        #inListExpression
- | like                                           #likeFunctionExpression
- | country                                        #countryFunctionExpression
- | country_by                                     #countryByFunctionExpression
- | amount                                         #amountFunctionExpression
- | currency                                       #currencyFunctionExpression
- | IDENTIFIER                                     #identifierExpression
- | DECIMAL                                        #decimalExpression
- | INTEGER                                        #integerExpression
- | STRING                                         #stringExpression
- ;
+    : booleanAndExpression ( OR booleanAndExpression )*
+    ;
+
+booleanAndExpression
+    : equalityExpression ( AND equalityExpression )*
+    ;
+
+equalityExpression
+    : relationalExpression
+    | stringExpression (EQ | NEQ) stringExpression
+    | NOT expression
+    | LPAREN expression RPAREN
+    ;
+
+stringExpression
+    : country_by
+    | currency
+    | STRING
+    ;
+
+relationalExpression
+    : unaryExpression (LT | LE | GT | GE | EQ | NEQ) unaryExpression
+    | in
+    | in_white_list
+    | in_black_list
+    | in_grey_list
+    | in_list
+    | like
+    ;
+
+unaryExpression
+    : integerExpression
+    | floatExpression
+    ;
+
+integerExpression
+    : count
+    | count_success
+    | count_error
+    | count_chargeback
+    | count_refund
+    | unique
+    | INTEGER
+    ;
+
+floatExpression
+    : sum
+    | sum_success
+    | sum_error
+    | sum_chargeback
+    | sum_refund
+    | amount
+    | INTEGER
+    | DECIMAL
+    ;
 
 count_success
  : 'countSuccess' LPAREN STRING time_window (group_by)? RPAREN

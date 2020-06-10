@@ -23,8 +23,7 @@ equalityExpression
     ;
 
 stringExpression
-    : country
-    | country_by
+    : country_by
     | currency
     | STRING
     ;

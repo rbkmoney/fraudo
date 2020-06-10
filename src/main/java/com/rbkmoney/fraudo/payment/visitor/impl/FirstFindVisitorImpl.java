@@ -50,28 +50,10 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     }
 
     @Override
-    public ResultModel visit(ParseTree tree, T model) {
-        try {
-            validateModel(model);
-            threadLocalModel.set(model);
-            return (ResultModel) super.visit(tree);
-        } finally {
-            localFuncCache.get().clear();
-        }
-    }
-
-    private void validateModel(T model) {
-        if (model == null) {
-            log.error("Model is not init!");
-            throw new NotValidContextException();
-        }
-    }
-
-    @Override
     public ResultStatus visitFraud_rule(Fraud_ruleContext ctx) {
         try {
-            if (asBoolean(ctx.expression())) {
-                return ResultStatus.getByValue((String) super.visit(ctx.result()));
+            if (visitExpression(ctx.expression())) {
+                return ResultStatus.getByValue(ctx.result().getText());
             }
         } catch (Exception e) {
             log.error("Error when FastFraudVisitorImpl visitFraud_rule e: ", e);
@@ -88,7 +70,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
         List<String> notifications = new ArrayList<>();
         for (int i = 0; i < ctx.fraud_rule().size(); i++) {
             Fraud_ruleContext fraudRuleContext = ctx.fraud_rule().get(i);
-            ResultStatus result = visitFraud_rule(fraudRuleContext);
+            ResultStatus result = (ResultStatus) visit(fraudRuleContext);
             String key = RuleKeyGenerator.generateRuleKey(fraudRuleContext, i);
             if (result == null) {
                 throw new UnknownResultException(fraudRuleContext.getText());
@@ -102,108 +84,238 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     }
 
     @Override
-    public String visitResult(ResultContext ctx) {
-        return ctx.getText();
+    public ResultModel visit(ParseTree tree, T model) {
+        try {
+            validateModel(model);
+            threadLocalModel.set(model);
+            return (ResultModel) visit(tree);
+        } finally {
+            localFuncCache.get().clear();
+        }
+    }
+
+    private void validateModel(T model) {
+        if (model == null) {
+            log.error("Model is not init!");
+            throw new NotValidContextException();
+        }
     }
 
     @Override
-    public Double visitDecimalExpression(DecimalExpressionContext ctx) {
-        return Double.valueOf(ctx.DECIMAL().getText());
+    public Boolean visitExpression(ExpressionContext ctx) {
+        if (ctx.OR() != null && !ctx.OR().isEmpty()) {
+            boolean result = false;
+            for (BooleanAndExpressionContext booleanAndExpressionContext : ctx.booleanAndExpression()) {
+                result = result || (Boolean) visit(booleanAndExpressionContext);
+                if (result) {
+                    return result;
+                }
+            }
+            return result;
+        }
+        return visitBooleanAndExpression(ctx.booleanAndExpression(0));
     }
 
     @Override
-    public Double visitIntegerExpression(IntegerExpressionContext ctx) {
-        return Double.valueOf(ctx.INTEGER().getText());
+    public Boolean visitBooleanAndExpression(BooleanAndExpressionContext ctx) {
+        if (ctx.AND() != null && !ctx.AND().isEmpty()) {
+            boolean result = true;
+            for (EqualityExpressionContext equalityExpressionContext : ctx.equalityExpression()) {
+                result = result && visitEqualityExpression(equalityExpressionContext);
+                if (!result) {
+                    return result;
+                }
+            }
+            return result;
+        }
+        return visitEqualityExpression(ctx.equalityExpression(0));
+    }
+
+    @Override
+    public Boolean visitEqualityExpression(EqualityExpressionContext ctx) {
+        if (ctx.stringExpression() != null && !ctx.stringExpression().isEmpty()) {
+            String left = visitStringExpression(ctx.stringExpression(0));
+            String right = visitStringExpression(ctx.stringExpression(1));
+            if (ctx.EQ() != null) {
+                return left.equals(right);
+            } else if (ctx.NEQ() != null) {
+                return !left.equals(right);
+            }
+        } else if (ctx.NOT() != null) {
+            return !(Boolean) visit(ctx.expression());
+        } else if (ctx.LPAREN() != null) {
+            return (Boolean) visit(ctx.expression());
+        }
+        return visitRelationalExpression(ctx.relationalExpression());
+    }
+
+    @Override
+    public Boolean visitRelationalExpression(RelationalExpressionContext ctx) {
+
+        if (ctx.unaryExpression() != null && !ctx.unaryExpression().isEmpty()) {
+            Double left = visitUnaryExpression(ctx.unaryExpression(0));
+            Double right = visitUnaryExpression(ctx.unaryExpression(1));
+            if (ctx.EQ() != null) {
+                return left.equals(right);
+            } else if (ctx.NEQ() != null) {
+                return !left.equals(right);
+            } else if (ctx.GE() != null) {
+                return left >= right;
+            } else if (ctx.LT() != null) {
+                return left < right;
+            } else if (ctx.GT() != null) {
+                return left > right;
+            } else if (ctx.LE() != null) {
+                return left <= right;
+            }
+        }
+        return (Boolean) visitChildren(ctx);
+    }
+
+    @Override
+    public Double visitUnaryExpression(UnaryExpressionContext ctx) {
+        if (ctx.floatExpression() != null) {
+            return visitFloatExpression(ctx.floatExpression());
+        } else if (ctx.integerExpression() != null) {
+            return Double.valueOf(visitIntegerExpression(ctx.integerExpression()));
+        }
+        throw new NotImplementedOperatorException(ctx.getText());
+    }
+
+    @Override
+    public Double visitFloatExpression(FloatExpressionContext ctx) {
+        if (ctx.INTEGER() != null) {
+            return Double.valueOf(TextUtil.safeGetText(ctx.INTEGER()));
+        } else if (ctx.DECIMAL() != null) {
+            return Double.valueOf(TextUtil.safeGetText(ctx.DECIMAL()));
+        }
+        return (Double) visitChildren(ctx);
+    }
+
+    @Override
+    public Integer visitIntegerExpression(IntegerExpressionContext ctx) {
+        if (ctx.INTEGER() != null) {
+            return Integer.valueOf(TextUtil.safeGetText(ctx.INTEGER()));
+        }
+        return (Integer) visitChildren(ctx);
     }
 
     @Override
     public String visitStringExpression(StringExpressionContext ctx) {
-        return TextUtil.safeGetText(ctx.STRING());
-    }
-
-    @Override
-    public Boolean visitNotExpression(NotExpressionContext ctx) {
-        return !((Boolean) visit(ctx.expression()));
-    }
-
-    @Override
-    public Object visitParenExpression(ParenExpressionContext ctx) {
-        return visit(ctx.expression());
-    }
-
-    @Override
-    public Boolean visitComparatorExpression(ComparatorExpressionContext ctx) {
-        if (ctx.op.EQ() != null) {
-            return visit(ctx.left).equals(visit(ctx.right));
-        } else if (ctx.op.LE() != null) {
-            return asDouble(ctx.left) <= asDouble(ctx.right);
-        } else if (ctx.op.GE() != null) {
-            return asDouble(ctx.left) >= asDouble(ctx.right);
-        } else if (ctx.op.LT() != null) {
-            return asDouble(ctx.left) < asDouble(ctx.right);
-        } else if (ctx.op.GT() != null) {
-            return asDouble(ctx.left) > asDouble(ctx.right);
+        if (ctx.STRING() != null) {
+            return TextUtil.safeGetText(ctx.STRING());
         }
-        throw new NotImplementedOperatorException(ctx.op.getText());
+        return (String) visitChildren(ctx);
     }
 
     @Override
-    public Boolean visitBinaryExpression(BinaryExpressionContext ctx) {
-        if (ctx.op.AND() != null) {
-            return asBoolean(ctx.left) && asBoolean(ctx.right);
-        } else if (ctx.op.OR() != null) {
-            return asBoolean(ctx.left) || asBoolean(ctx.right);
+    public Double visitAmount(AmountContext ctx) {
+        return Double.valueOf(threadLocalModel.get().getAmount());
+    }
+
+    @Override
+    public String visitCurrency(CurrencyContext ctx) {
+        return threadLocalModel.get().getCurrency();
+    }
+
+    @Override
+    public Boolean visitIn_white_list(In_white_listContext ctx) {
+        return listVisitor.visitInWhiteList(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public Boolean visitIn_black_list(In_black_listContext ctx) {
+        return listVisitor.visitInBlackList(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public Boolean visitIn_grey_list(In_grey_listContext ctx) {
+        return listVisitor.visitInGreyList(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public Boolean visitIn_list(In_listContext ctx) {
+        return listVisitor.visitInList(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public Boolean visitIn(InContext ctx) {
+        String fieldValue;
+        if (ctx.STRING() != null) {
+            String field = TextUtil.safeGetText(ctx.STRING());
+            fieldValue = fieldResolver.resolve(field, threadLocalModel.get()).getSecond();
+        } else {
+            fieldValue = visitCountry_by(ctx.country_by());
         }
-        throw new NotImplementedOperatorException(ctx.op.getText());
+        return ctx.string_list().STRING().stream()
+                .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));
     }
 
     @Override
-    public Boolean visitBoolExpression(BoolExpressionContext ctx) {
-        return Boolean.valueOf(ctx.getText());
+    public Integer visitUnique(UniqueContext ctx) {
+        String key = UniqueKeyGenerator.generate(ctx, fieldResolver::resolveName);
+        return (Integer) localFuncCache.get().computeIfAbsent(
+                key,
+                s -> customFuncVisitor.visitUnique(ctx, threadLocalModel.get())
+        );
     }
 
     @Override
-    public Double visitCount(CountContext ctx) {
+    public Boolean visitLike(LikeContext ctx) {
+        return customFuncVisitor.visitLike(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public String visitCountry_by(Country_byContext ctx) {
+        String key = CountryKeyGenerator.generate(ctx);
+        return (String) localFuncCache.get().computeIfAbsent(
+                key,
+                s -> customFuncVisitor.visitCountryBy(ctx, threadLocalModel.get())
+        );
+    }
+
+    @Override
+    public Integer visitCount(CountContext ctx) {
         String key = CountKeyGenerator.generate(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
+        return (Integer) localFuncCache.get().computeIfAbsent(
                 key,
-                s -> Double.valueOf(countVisitor.visitCount(ctx, threadLocalModel.get()))
+                s -> countVisitor.visitCount(ctx, threadLocalModel.get())
         );
     }
 
     @Override
-    public Double visitCount_success(Count_successContext ctx) {
+    public Integer visitCount_success(Count_successContext ctx) {
         String key = CountKeyGenerator.generateSuccessKey(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
+        return (Integer) localFuncCache.get().computeIfAbsent(
                 key,
-                s -> Double.valueOf(countVisitor.visitCountSuccess(ctx, threadLocalModel.get()))
+                s -> countVisitor.visitCountSuccess(ctx, threadLocalModel.get())
         );
     }
 
     @Override
-    public Double visitCount_error(Count_errorContext ctx) {
+    public Integer visitCount_error(Count_errorContext ctx) {
         String key = CountKeyGenerator.generateErrorKey(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
+        return (Integer) localFuncCache.get().computeIfAbsent(
                 key,
-                s -> Double.valueOf(countVisitor.visitCountError(ctx, threadLocalModel.get()))
+                s -> countVisitor.visitCountError(ctx, threadLocalModel.get())
         );
     }
 
     @Override
-    public Double visitCount_chargeback(Count_chargebackContext ctx) {
+    public Integer visitCount_chargeback(Count_chargebackContext ctx) {
         String key = CountKeyGenerator.generateChargebackKey(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
+        return (Integer) localFuncCache.get().computeIfAbsent(
                 key,
-                s -> Double.valueOf(countVisitor.visitCountChargeback(ctx, threadLocalModel.get()))
+                s -> countVisitor.visitCountChargeback(ctx, threadLocalModel.get())
         );
     }
 
     @Override
-    public Double visitCount_refund(Count_refundContext ctx) {
+    public Integer visitCount_refund(Count_refundContext ctx) {
         String key = CountKeyGenerator.generateRefundKey(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
+        return (Integer) localFuncCache.get().computeIfAbsent(
                 key,
-                s -> Double.valueOf(countVisitor.visitCountRefund(ctx, threadLocalModel.get()))
+                s -> countVisitor.visitCountRefund(ctx, threadLocalModel.get())
         );
     }
 
@@ -252,69 +364,4 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
         );
     }
 
-    @Override
-    public String visitCountry_by(Country_byContext ctx) {
-        String key = CountryKeyGenerator.generate(ctx);
-        return (String) localFuncCache.get().computeIfAbsent(
-                key,
-                s -> customFuncVisitor.visitCountryBy(ctx, threadLocalModel.get())
-        );
-    }
-
-    @Override
-    public Boolean visitIn(InContext ctx) {
-        return customFuncVisitor.visitIn(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Boolean visitLike(LikeContext ctx) {
-        return customFuncVisitor.visitLike(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Double visitUnique(UniqueContext ctx) {
-        String key = UniqueKeyGenerator.generate(ctx, fieldResolver::resolveName);
-        return (Double) localFuncCache.get().computeIfAbsent(
-                key,
-                s -> Double.valueOf(customFuncVisitor.visitUnique(ctx, threadLocalModel.get()))
-        );
-    }
-
-    @Override
-    public Boolean visitIn_white_list(In_white_listContext ctx) {
-        return listVisitor.visitInWhiteList(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Boolean visitIn_black_list(In_black_listContext ctx) {
-        return listVisitor.visitInBlackList(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Boolean visitIn_grey_list(In_grey_listContext ctx) {
-        return listVisitor.visitInGreyList(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Boolean visitIn_list(In_listContext ctx) {
-        return listVisitor.visitInList(ctx, threadLocalModel.get());
-    }
-
-    @Override
-    public Double visitAmount(AmountContext ctx) {
-        return Double.valueOf(threadLocalModel.get().getAmount());
-    }
-
-    @Override
-    public String visitCurrency(CurrencyContext ctx) {
-        return threadLocalModel.get().getCurrency();
-    }
-
-    private boolean asBoolean(ExpressionContext ctx) {
-        return (boolean) visit(ctx);
-    }
-
-    private double asDouble(ExpressionContext ctx) {
-        return (double) visit(ctx);
-    }
 }
