@@ -1,8 +1,8 @@
 package com.rbkmoney.fraudo.p2p.factory;
 
-import com.rbkmoney.fraudo.aggragator.CountAggregator;
-import com.rbkmoney.fraudo.aggragator.SumAggregator;
-import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
+import com.rbkmoney.fraudo.aggregator.CountAggregator;
+import com.rbkmoney.fraudo.aggregator.SumAggregator;
+import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.p2p.resolver.P2PGroupResolver;

@@ -1,6 +1,6 @@
 package com.rbkmoney.fraudo.payment.aggregator;
 
-import com.rbkmoney.fraudo.aggragator.CountAggregator;
+import com.rbkmoney.fraudo.aggregator.CountAggregator;
 import com.rbkmoney.fraudo.model.TimeWindow;
 
 import java.util.List;

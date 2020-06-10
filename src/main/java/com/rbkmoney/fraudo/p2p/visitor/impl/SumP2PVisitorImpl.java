@@ -1,6 +1,6 @@
 package com.rbkmoney.fraudo.p2p.visitor.impl;
 
-import com.rbkmoney.fraudo.aggragator.SumAggregator;
+import com.rbkmoney.fraudo.aggregator.SumAggregator;
 import com.rbkmoney.fraudo.p2p.resolver.P2PGroupResolver;
 import com.rbkmoney.fraudo.p2p.visitor.SumP2PVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;

@@ -1,4 +1,4 @@
-package com.rbkmoney.fraudo.aggragator;
+package com.rbkmoney.fraudo.aggregator;
 
 import com.rbkmoney.fraudo.model.TimeWindow;
 

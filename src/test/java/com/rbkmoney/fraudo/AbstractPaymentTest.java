@@ -1,7 +1,7 @@
 package com.rbkmoney.fraudo;
 
 import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
-import com.rbkmoney.fraudo.aggragator.UniqueValueAggregator;
+import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
