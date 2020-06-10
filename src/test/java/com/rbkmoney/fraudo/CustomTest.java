@@ -1,14 +1,14 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
-import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +27,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void threeDsTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/three_ds.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
     }
@@ -35,7 +35,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void highRiskTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/highRisk.frd");
-        when(countAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.HIGH_RISK, result.getResultStatus());
     }
@@ -79,7 +79,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void inTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
@@ -91,7 +91,7 @@ public class CustomTest extends AbstractPaymentTest {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in_country.frd");
         when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setAmount(500L);
         ResultModel result = invoke(parseContext, model);
@@ -99,9 +99,20 @@ public class CustomTest extends AbstractPaymentTest {
     }
 
     @Test
+    public void inCurrencyTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in_currency.frd");
+
+        ParseContext parseContext = getParseContext(resourceAsStream);
+        PaymentModel model = new PaymentModel();
+        model.setCurrency("EUR");
+        ResultModel result = invoke(parseContext, model);
+        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void amountTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/amount.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setAmount(56L);
         model.setCurrency("RUB");
@@ -117,7 +128,7 @@ public class CustomTest extends AbstractPaymentTest {
     public void catchTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/catch.frd");
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
     }
@@ -125,7 +136,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void likeTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/like.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         model.setBin("553619");
@@ -141,7 +152,7 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void inNotTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in_not.frd");
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
@@ -152,7 +163,7 @@ public class CustomTest extends AbstractPaymentTest {
     public void uniqCountTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/count_uniq.frd");
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenReturn(2);
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
     }
@@ -161,7 +172,7 @@ public class CustomTest extends AbstractPaymentTest {
     public void uniqCountGroupByTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/count_uniqGroupBy_window.frd");
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenReturn(2);
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
 
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());

@@ -1,0 +1,2 @@
+rule: amount() < 100 AND currency() = "RUB"
+-> accept;

@@ -1,0 +1,2 @@
+rule: count("ip", 1444) >= 10 AND count("ip", 1444) < 10 OR sum("ip", 1444) >= 10500.50 AND inWhiteList("email")
+-> decline;

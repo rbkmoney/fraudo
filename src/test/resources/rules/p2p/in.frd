@@ -1,0 +1,2 @@
+rule: in("email", "test@gmail", "test@gmail.ru") and in(countryBy("bin"), "AS", "SD", "TR", "WE", "SD", "CD", "KL", "EW", "VF", "XZ", "CD")
+-> accept;

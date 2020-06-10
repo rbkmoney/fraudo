@@ -1,17 +1,16 @@
 package com.rbkmoney.fraudo.utils.key.generator;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.function.Function;
+
+import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SumKeyGenerator {
 
-    public static <T> String generate(ParserRuleContext context, Function<String, T> resolve) {
-        FraudoParser.SumContext ctx = (FraudoParser.SumContext) context;
+    public static <T> String generate(SumContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
                 ctx.children.get(0),
                 ctx.time_window(),
@@ -19,8 +18,7 @@ public class SumKeyGenerator {
                 resolve);
     }
 
-    public static <T> String generateSuccessKey(ParserRuleContext context, Function<String, T> resolve) {
-        FraudoParser.Sum_successContext ctx = (FraudoParser.Sum_successContext) context;
+    public static <T> String generateSuccessKey(Sum_successContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
                 ctx.children.get(0),
                 ctx.time_window(),
@@ -28,8 +26,7 @@ public class SumKeyGenerator {
                 resolve);
     }
 
-    public static <T> String generateErrorKey(ParserRuleContext context, Function<String, T> resolve) {
-        FraudoParser.Sum_errorContext ctx = (FraudoParser.Sum_errorContext) context;
+    public static <T> String generateErrorKey(Sum_errorContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedTwoFieldFunction(ctx.STRING(0),
                 ctx.STRING(1),
                 ctx.children.get(0),
@@ -38,8 +35,7 @@ public class SumKeyGenerator {
                 resolve);
     }
 
-    public static <T> String generateChargebackKey(ParserRuleContext context, Function<String, T> resolve) {
-        FraudoParser.Sum_chargebackContext ctx = (FraudoParser.Sum_chargebackContext) context;
+    public static <T> String generateChargebackKey(Sum_chargebackContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
                 ctx.children.get(0),
                 ctx.time_window(),
@@ -47,8 +43,7 @@ public class SumKeyGenerator {
                 resolve);
     }
 
-    public static <T> String generateRefundKey(ParserRuleContext context, Function<String, T> resolve) {
-        FraudoParser.Sum_refundContext ctx = (FraudoParser.Sum_refundContext) context;
+    public static <T> String generateRefundKey(Sum_refundContext ctx, Function<String, T> resolve) {
         return CommonKeyGenerator.generateKeyGroupedFunction(ctx.STRING(),
                 ctx.children.get(0),
                 ctx.time_window(),

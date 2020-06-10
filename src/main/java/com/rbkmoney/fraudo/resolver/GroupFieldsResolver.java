@@ -1,11 +1,9 @@
 package com.rbkmoney.fraudo.resolver;
 
-import com.rbkmoney.fraudo.FraudoParser;
-
 import java.util.List;
 
-public interface GroupFieldsResolver<T> {
+public interface GroupFieldsResolver<T, R> {
 
-    List<T> resolve(FraudoParser.Group_byContext groupByContext);
+    List<R> resolve(T groupByContext);
 
 }

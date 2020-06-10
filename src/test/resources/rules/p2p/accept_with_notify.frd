@@ -1,0 +1,8 @@
+rule: 12 > 3
+-> notify;
+
+rule: 12 > 3
+-> notify;
+
+rule: 12 > 3
+-> accept;

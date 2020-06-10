@@ -1,8 +1,9 @@
 package com.rbkmoney.fraudo;
 
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
-import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -33,7 +34,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
 
         PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
@@ -55,7 +56,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         mockAggr(countDownLatch);
 
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        ParseContext parseContext = getParseContext(resourceAsStream);
 
         PaymentModel model = new PaymentModel();
         model.setAmount(MILLISTIME_FAST_FUNC);
@@ -73,25 +74,25 @@ public class RealTimerTest extends AbstractPaymentTest {
     }
 
     private void mockAggr(CountDownLatch countDownLatch) {
-        when(countAggregator.count(any(), any(), any(), any()))
+        when(countPaymentAggregator.count(any(), any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     countDownLatch.countDown();
                     return 1;
                 });
-        when(countAggregator.countSuccess(any(), any(), any(), any()))
+        when(countPaymentAggregator.countSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Integer>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     countDownLatch.countDown();
                     return 1;
                 });
 
-        when(sumAggregator.sum(any(), any(), any(), any()))
+        when(sumPaymentAggregator.sum(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     return 10000.0;
                 });
-        when(sumAggregator.sumSuccess(any(), any(), any(), any()))
+        when(sumPaymentAggregator.sumSuccess(any(), any(), any(), any()))
                 .thenAnswer((Answer<Double>) invocationOnMock -> {
                     Thread.sleep(TIME_CALL_AGGR_FUNC);
                     return 10000.0;

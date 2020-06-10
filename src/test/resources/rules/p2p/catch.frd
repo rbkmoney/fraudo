@@ -1,0 +1,3 @@
+rule: unique("email", "ip") < 4
+-> accept
+catch: decline;

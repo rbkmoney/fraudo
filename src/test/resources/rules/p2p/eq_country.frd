@@ -1,0 +1,2 @@
+rule: countryBy("ip") = "RU"
+-> notify;

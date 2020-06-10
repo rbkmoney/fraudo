@@ -1,12 +1,12 @@
 package com.rbkmoney.fraudo.visitor;
 
-import com.rbkmoney.fraudo.model.BaseModel;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.Closeable;
+import java.util.Map;
 
-public interface TemplateVisitor<T extends BaseModel> extends Closeable {
+public interface TemplateVisitor<T, R> extends Closeable {
 
-    Object visit(ParseTree tree, T model);
+    R visit(ParseTree tree, T model);
 
 }

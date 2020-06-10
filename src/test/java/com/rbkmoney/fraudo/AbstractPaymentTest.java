@@ -1,17 +1,19 @@
 package com.rbkmoney.fraudo;
 
-import com.rbkmoney.fraudo.aggregator.CountAggregator;
-import com.rbkmoney.fraudo.aggregator.SumAggregator;
+import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
-import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
-import com.rbkmoney.fraudo.factory.FirstFraudVisitorFactory;
 import com.rbkmoney.fraudo.finder.InListFinder;
-import com.rbkmoney.fraudo.test.model.PaymentModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
+import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
+import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
+import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
+import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
-import com.rbkmoney.fraudo.resolver.GroupByModelResolver;
-import com.rbkmoney.fraudo.test.payout.PaymentModelFieldResolver;
+import com.rbkmoney.fraudo.test.constant.PaymentCheckedField;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
+import com.rbkmoney.fraudo.test.payment.PaymentModelFieldResolver;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.mockito.Mock;
@@ -22,46 +24,48 @@ import java.io.InputStream;
 public class AbstractPaymentTest {
 
     @Mock
-    CountAggregator<PaymentModel, PaymentCheckedField> countAggregator;
+    CountPaymentAggregator<PaymentModel, PaymentCheckedField> countPaymentAggregator;
     @Mock
-    SumAggregator<PaymentModel, PaymentCheckedField> sumAggregator;
+    SumPaymentAggregator<PaymentModel, PaymentCheckedField> sumPaymentAggregator;
     @Mock
     UniqueValueAggregator<PaymentModel, PaymentCheckedField> uniqueValueAggregator;
     @Mock
     CountryResolver<PaymentCheckedField> countryResolver;
     @Mock
     InListFinder<PaymentModel, PaymentCheckedField> inListFinder;
+    @Mock
+    PaymentTimeWindowResolver timeWindowResolver;
 
     private FieldResolver<PaymentModel, PaymentCheckedField> fieldResolver = new PaymentModelFieldResolver();
-    private GroupByModelResolver<PaymentModel, PaymentCheckedField> groupByModelResolver = new GroupByModelResolver<>(fieldResolver);
+    private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoParser.ParseContext parse = getParseContext(resourceAsStream);
+        ParseContext parse = getParseContext(resourceAsStream);
         return invokeParse(parse);
     }
 
-    ResultModel invokeParse(com.rbkmoney.fraudo.FraudoParser.ParseContext parse) {
+    ResultModel invokeParse(ParseContext parse) {
         PaymentModel model = new PaymentModel();
         return invoke(parse, model);
     }
 
-    ResultModel invoke(com.rbkmoney.fraudo.FraudoParser.ParseContext parse, PaymentModel model) {
-        return (ResultModel) new FirstFraudVisitorFactory()
+    ResultModel invoke(ParseContext parse, PaymentModel model) {
+        return new FraudVisitorFactoryImpl()
                 .createVisitor(
-                        countAggregator,
-                        sumAggregator,
+                        countPaymentAggregator,
+                        sumPaymentAggregator,
                         uniqueValueAggregator,
                         countryResolver,
                         inListFinder,
                         fieldResolver,
-                        groupByModelResolver)
+                        paymentGroupResolver,
+                        timeWindowResolver)
                 .visit(parse, model);
     }
 
-    com.rbkmoney.fraudo.FraudoParser.ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoLexer lexer = new com.rbkmoney.fraudo.FraudoLexer(new ANTLRInputStream(resourceAsStream));
-        com.rbkmoney.fraudo.FraudoParser parser = new com.rbkmoney.fraudo.FraudoParser(new CommonTokenStream(lexer));
-
+    ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
+        com.rbkmoney.fraudo.FraudoPaymentLexer lexer = new com.rbkmoney.fraudo.FraudoPaymentLexer(new ANTLRInputStream(resourceAsStream));
+        com.rbkmoney.fraudo.FraudoPaymentParser parser = new com.rbkmoney.fraudo.FraudoPaymentParser(new CommonTokenStream(lexer));
         return parser.parse();
     }
 

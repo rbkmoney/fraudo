@@ -1,0 +1,2 @@
+rule: count("ip", 1444, "party_id") >= 10
+           -> decline;

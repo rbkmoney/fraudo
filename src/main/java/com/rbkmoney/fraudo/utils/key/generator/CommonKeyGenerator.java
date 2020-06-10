@@ -1,6 +1,5 @@
 package com.rbkmoney.fraudo.utils.key.generator;
 
-import com.rbkmoney.fraudo.FraudoParser;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -9,13 +8,16 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.function.Function;
 
+import static com.rbkmoney.fraudo.FraudoPaymentParser.Group_byContext;
+import static com.rbkmoney.fraudo.FraudoPaymentParser.Time_windowContext;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommonKeyGenerator {
 
     static <T> String generateKeyGroupedFunction(TerminalNode string,
                                                  ParseTree parseTree,
-                                                 FraudoParser.Time_windowContext timeWindowContext,
-                                                 FraudoParser.Group_byContext groupByContext,
+                                                 Time_windowContext timeWindowContext,
+                                                 Group_byContext groupByContext,
                                                  Function<String, T> resolve) {
         String countTarget = TextUtil.safeGetText(string);
         return new StringBuilder()
@@ -30,8 +32,8 @@ public class CommonKeyGenerator {
     static <T> String generateKeyGroupedTwoFieldFunction(TerminalNode firstField,
                                                          TerminalNode secondField,
                                                          ParseTree parseTree,
-                                                         FraudoParser.Time_windowContext timeWindowContext,
-                                                         FraudoParser.Group_byContext groupByContext,
+                                                         Time_windowContext timeWindowContext,
+                                                         Group_byContext groupByContext,
                                                          Function<String, T> resolve) {
         String target = TextUtil.safeGetText(firstField);
         String errorCode = TextUtil.safeGetText(secondField);
