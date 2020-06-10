@@ -99,6 +99,17 @@ public class CustomTest extends AbstractPaymentTest {
     }
 
     @Test
+    public void inCurrencyTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/in_currency.frd");
+
+        ParseContext parseContext = getParseContext(resourceAsStream);
+        PaymentModel model = new PaymentModel();
+        model.setCurrency("EUR");
+        ResultModel result = invoke(parseContext, model);
+        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+
+    @Test
     public void amountTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/amount.frd");
         ParseContext parseContext = getParseContext(resourceAsStream);

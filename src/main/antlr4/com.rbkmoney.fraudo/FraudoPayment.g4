@@ -95,3 +95,7 @@ sum_chargeback
 sum_refund
  : 'sumRefund' LPAREN STRING time_window (group_by)? RPAREN
  ;
+
+in
+ : 'in' LPAREN (stringExpression) DELIMETER string_list RPAREN
+ ;

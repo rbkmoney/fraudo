@@ -241,11 +241,12 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     @Override
     public Boolean visitIn(InContext ctx) {
         String fieldValue;
-        if (ctx.STRING() != null) {
-            String field = TextUtil.safeGetText(ctx.STRING());
+        if (ctx.stringExpression().STRING() != null && ctx.stringExpression().getText() != null
+                && !ctx.stringExpression().STRING().getText().isEmpty()) {
+            String field = TextUtil.safeGetText(ctx.stringExpression().STRING());
             fieldValue = fieldResolver.resolve(field, threadLocalModel.get()).getSecond();
         } else {
-            fieldValue = visitCountry_by(ctx.country_by());
+            fieldValue = (String) visitChildren(ctx.stringExpression());
         }
         return ctx.string_list().STRING().stream()
                 .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));

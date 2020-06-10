@@ -55,3 +55,7 @@ floatExpression
     | INTEGER
     | DECIMAL
     ;
+
+in
+ : 'in' LPAREN (stringExpression) DELIMETER string_list RPAREN
+ ;

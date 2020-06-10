@@ -1,10 +1,13 @@
 package com.rbkmoney.fraudo.p2p;
 
+import com.rbkmoney.fraudo.CustomTest;
 import com.rbkmoney.fraudo.FraudoP2PParser;
+import com.rbkmoney.fraudo.FraudoPaymentParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.P2PModel;
+import com.rbkmoney.fraudo.test.model.PaymentModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -85,6 +88,17 @@ public class CustomP2PTest extends AbstractP2PTest {
         P2PModel model = new P2PModel();
         model.setEmail(TEST_GMAIL_RU);
         model.setBin("123213");
+        ResultModel result = invoke(parseContext, model);
+        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+    }
+    
+    @Test
+    public void inCurrencyTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/p2p/in_currency.frd");
+
+        FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
+        P2PModel model = new P2PModel();
+        model.setCurrency("EUR");
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
     }

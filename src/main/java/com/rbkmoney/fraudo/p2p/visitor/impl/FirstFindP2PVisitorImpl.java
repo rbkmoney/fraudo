@@ -2,6 +2,7 @@ package com.rbkmoney.fraudo.p2p.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoP2PBaseVisitor;
 import com.rbkmoney.fraudo.FraudoP2PParser.*;
+import com.rbkmoney.fraudo.FraudoPaymentParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.NotValidContextException;
@@ -254,11 +255,12 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
     @Override
     public Boolean visitIn(InContext ctx) {
         String fieldValue;
-        if (ctx.STRING() != null) {
-            String field = TextUtil.safeGetText(ctx.STRING());
+        if (ctx.stringExpression().STRING() != null && ctx.stringExpression().getText() != null
+                && !ctx.stringExpression().STRING().getText().isEmpty()) {
+            String field = TextUtil.safeGetText(ctx.stringExpression().STRING());
             fieldValue = fieldResolver.resolve(field, threadLocalModel.get()).getSecond();
         } else {
-            fieldValue = visitCountry_by(ctx.country_by());
+            fieldValue = (String) visitChildren(ctx.stringExpression());
         }
         return ctx.string_list().STRING().stream()
                 .anyMatch(s -> fieldValue.equals(TextUtil.safeGetText(s)));
