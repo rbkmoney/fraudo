@@ -60,7 +60,6 @@ floatExpression
     | sum_chargeback
     | sum_refund
     | amount
-    | INTEGER
     | DECIMAL
     ;
 

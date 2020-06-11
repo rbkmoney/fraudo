@@ -52,7 +52,6 @@ integerExpression
 floatExpression
     : sum
     | amount
-    | INTEGER
     | DECIMAL
     ;
 
