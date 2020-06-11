@@ -180,9 +180,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public Double visitFloatExpression(FloatExpressionContext ctx) {
-        if (ctx.INTEGER() != null) {
-            return Double.valueOf(TextUtil.safeGetText(ctx.INTEGER()));
-        } else if (ctx.DECIMAL() != null) {
+        if (ctx.DECIMAL() != null) {
             return Double.valueOf(TextUtil.safeGetText(ctx.DECIMAL()));
         }
         return (Double) visitChildren(ctx);
