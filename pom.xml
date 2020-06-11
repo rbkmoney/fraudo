@@ -7,15 +7,15 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <artifactId>fraudo</artifactId>
-    <version>0.0.15</version>
+    <version>0.0.16</version>
 
     <name>Fraudo</name>
     <description>Language for describing antifraud patterns</description>
-    <url>https://github.com/rbkmoney/fraudo.git</url>
+    <url>https://github.com/rbkmoney/fraudo</url>
 
     <developers>
         <developer>
@@ -33,9 +33,6 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
     </properties>
