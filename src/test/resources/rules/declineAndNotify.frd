@@ -1,2 +1,2 @@
 rule:test_11: 3 > 2 AND 1 = 1
--> decline;
+-> declineAndNotify;
