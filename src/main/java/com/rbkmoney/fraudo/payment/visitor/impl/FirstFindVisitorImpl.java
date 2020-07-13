@@ -77,6 +77,9 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
             } else if (result == ResultStatus.NOTIFY) {
                 notifications.add(key);
             } else if (result != ResultStatus.NORMAL) {
+                if (result == ResultStatus.DECLINE_AND_NOTIFY || result == ResultStatus.ACCEPT_AND_NOTIFY) {
+                    notifications.add(key);
+                }
                 return new ResultModel(result, key, notifications);
             }
         }

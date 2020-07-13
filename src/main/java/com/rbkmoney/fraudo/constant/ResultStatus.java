@@ -6,8 +6,10 @@ import java.util.Map;
 public enum ResultStatus {
 
     ACCEPT("accept"),
+    ACCEPT_AND_NOTIFY("acceptAndNotify"),
     THREE_DS("3ds"),
     DECLINE("decline"),
+    DECLINE_AND_NOTIFY("declineAndNotify"),
     HIGH_RISK("highRisk"),
     NORMAL("normal"),
     NOTIFY("notify");
