@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.PaymentModel;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 public class CustomTest extends AbstractPaymentTest {
 
     public static final String TEST_GMAIL_RU = "test@gmail.ru";
@@ -54,6 +56,17 @@ public class CustomTest extends AbstractPaymentTest {
         ResultModel result = parseAndVisit(resourceAsStream);
         assertEquals(ResultStatus.DECLINE, result.getResultStatus());
         assertEquals("test_11", result.getRuleChecked());
+    }
+
+    @Test
+    public void declineAndNotifyTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/declineAndNotify.frd");
+        ResultModel result = parseAndVisit(resourceAsStream);
+        assertEquals(ResultStatus.DECLINE_AND_NOTIFY, result.getResultStatus());
+        assertEquals("test_11", result.getRuleChecked());
+        assertEquals(1, result.getNotificationsRule().size());
+
+        System.out.println(result.getNotificationsRule());
     }
 
     @Test
