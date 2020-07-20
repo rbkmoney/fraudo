@@ -3,6 +3,7 @@ package com.rbkmoney.fraudo;
 import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -10,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -30,15 +32,15 @@ public class CountTest extends AbstractPaymentTest {
         when(countPaymentAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(1);
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("0", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("0", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
 
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(9);
         when(countPaymentAggregator.countError(anyObject(), any(), any(), anyString(), any())).thenReturn(6);
         when(countPaymentAggregator.countSuccess(anyObject(), any(), any(), any())).thenReturn(6);
 
         result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -48,8 +50,8 @@ public class CountTest extends AbstractPaymentTest {
         when(countPaymentAggregator.countRefund(anyObject(), any(), any(), any())).thenReturn(5);
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("0", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("0", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
     }
 
     @Test
@@ -58,12 +60,12 @@ public class CountTest extends AbstractPaymentTest {
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("0", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("0", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
 
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
     }
 
     @Test
@@ -72,19 +74,19 @@ public class CountTest extends AbstractPaymentTest {
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("0", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("0", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
 
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(1);
         result = invokeParse(parseContext);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
 
         resourceAsStream = CountTest.class.getResourceAsStream("/rules/countTimeWindowGroupBy_2.frd");
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         parseContext = getParseContext(resourceAsStream);
         result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("0", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("0", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
     }
 
     @Test
@@ -94,7 +96,7 @@ public class CountTest extends AbstractPaymentTest {
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
 
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         verify(countPaymentAggregator, times(1)).count(anyObject(), any(), any(), any());
     }
 

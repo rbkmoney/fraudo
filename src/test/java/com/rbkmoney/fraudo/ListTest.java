@@ -3,6 +3,7 @@ package com.rbkmoney.fraudo;
 import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.InputStream;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.*;
 
 public class ListTest extends AbstractPaymentTest {
@@ -26,14 +28,15 @@ public class ListTest extends AbstractPaymentTest {
         ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInWhiteList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
-        Assert.assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        Assert.assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
 
         resourceAsStream = ListTest.class.getResourceAsStream("/rules/blacklist.frd");
         parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInBlackList(anyList(), anyObject())).thenReturn(true);
         result = invokeParse(parseContext);
-        Assert.assertEquals(ResultStatus.NORMAL, result.getResultStatus());
-        Assert.assertEquals(1, result.getNotificationsRule().size());
+
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
+        Assert.assertEquals(1, ResultUtils.getNotifications(result).size());
     }
 
     @Test
@@ -42,7 +45,7 @@ public class ListTest extends AbstractPaymentTest {
         ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInGreyList(anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
-        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        Assert.assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -51,6 +54,6 @@ public class ListTest extends AbstractPaymentTest {
         ParseContext parseContext = getParseContext(resourceAsStream);
         Mockito.when(inListFinder.findInList(anyString(), anyList(), anyObject())).thenReturn(true);
         ResultModel result = invokeParse(parseContext);
-        Assert.assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        Assert.assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 }
