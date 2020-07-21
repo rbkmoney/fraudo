@@ -7,6 +7,7 @@ import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
 import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
+import com.rbkmoney.fraudo.payment.factory.FullVisitorFactoryImpl;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.resolver.CountryResolver;
@@ -51,6 +52,20 @@ public class AbstractPaymentTest {
 
     ResultModel invoke(ParseContext parse, PaymentModel model) {
         return new FraudVisitorFactoryImpl()
+                .createVisitor(
+                        countPaymentAggregator,
+                        sumPaymentAggregator,
+                        uniqueValueAggregator,
+                        countryResolver,
+                        inListFinder,
+                        fieldResolver,
+                        paymentGroupResolver,
+                        timeWindowResolver)
+                .visit(parse, model);
+    }
+
+    ResultModel invokeFullVisitor(ParseContext parse, PaymentModel model) {
+        return new FullVisitorFactoryImpl()
                 .createVisitor(
                         countPaymentAggregator,
                         sumPaymentAggregator,

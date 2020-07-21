@@ -51,6 +51,9 @@ public class RealTimerTest extends AbstractPaymentTest {
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC + 1 + TIME_CALLING);
 
         System.out.println("executionTime=" + executionTime);
+
+        result = invokeFullVisitor(parseContext, model);
+        assertEquals(2, result.getRuleResults().size());
     }
 
     @Test

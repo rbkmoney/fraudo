@@ -13,4 +13,4 @@ rule:cards_test_count_3:unique("fingerprint","card_token",1440)>3 AND not in(cou
 rule:USSRcount:count("card_token",1440,"party_id")<11 AND in(countryBy("country_bank"),"UZB")->accept;
 rule:count11tur:count("card_token",1440,"party_id")<12 AND in(countryBy("country_bank"),"TUR")->accept;
 rule:count10:count("card_token",1440,"party_id")<11 AND not in(countryBy("country_bank"),"ARG")->accept;
-rule:count5bra:count("card_token",1440,"party_id")>5->decline;
+rule:count5bra:count("card_token",1440,"party_id")>0->decline;
