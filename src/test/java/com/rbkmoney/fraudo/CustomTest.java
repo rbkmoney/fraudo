@@ -5,7 +5,9 @@ import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.PaymentModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -13,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -31,7 +34,7 @@ public class CustomTest extends AbstractPaymentTest {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/three_ds.frd");
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.THREE_DS, result.getResultStatus());
+        assertEquals(ResultStatus.THREE_DS, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -39,48 +42,46 @@ public class CustomTest extends AbstractPaymentTest {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/highRisk.frd");
         when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.HIGH_RISK, result.getResultStatus());
+        assertEquals(ResultStatus.HIGH_RISK, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
     public void notifyTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/notify.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
-        assertEquals(1, result.getNotificationsRule().size());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
+        assertEquals(1, ResultUtils.getNotifications(result).size());
     }
 
     @Test
     public void declineTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/decline.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
-        assertEquals("test_11", result.getRuleChecked());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("test_11", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
     }
 
     @Test
     public void declineAndNotifyTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/declineAndNotify.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.DECLINE_AND_NOTIFY, result.getResultStatus());
-        assertEquals("test_11", result.getRuleChecked());
-        assertEquals(1, result.getNotificationsRule().size());
-
-        System.out.println(result.getNotificationsRule());
+        assertEquals(ResultStatus.DECLINE_AND_NOTIFY, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals("test_11", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
+        Assert.assertEquals(1, ResultUtils.getNotifications(result).size());
     }
 
     @Test
     public void acceptTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/accept.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
     public void ruleIsNotFireTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/rule_is_not_fire.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
     }
 
     @Test(expected = UnknownResultException.class)
@@ -96,7 +97,7 @@ public class CustomTest extends AbstractPaymentTest {
         PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -108,7 +109,7 @@ public class CustomTest extends AbstractPaymentTest {
         PaymentModel model = new PaymentModel();
         model.setAmount(500L);
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class CustomTest extends AbstractPaymentTest {
         PaymentModel model = new PaymentModel();
         model.setCurrency("EUR");
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -130,11 +131,11 @@ public class CustomTest extends AbstractPaymentTest {
         model.setAmount(56L);
         model.setCurrency("RUB");
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
 
         model.setCurrency("USD");
         result = invoke(parseContext, model);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
     }
 
     @Test
@@ -143,7 +144,7 @@ public class CustomTest extends AbstractPaymentTest {
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -155,11 +156,11 @@ public class CustomTest extends AbstractPaymentTest {
         model.setBin("553619");
         model.setPan("9137");
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
 
         model.setPan("9111");
         result = invoke(parseContext, model);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
     }
 
     @Test
@@ -169,7 +170,7 @@ public class CustomTest extends AbstractPaymentTest {
         PaymentModel model = new PaymentModel();
         model.setEmail(TEST_GMAIL_RU);
         ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
     }
 
     @Test
@@ -178,7 +179,7 @@ public class CustomTest extends AbstractPaymentTest {
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenReturn(2);
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
@@ -188,7 +189,7 @@ public class CustomTest extends AbstractPaymentTest {
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
 
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         verify(uniqueValueAggregator, times(1)).countUniqueValue(any(), any(), any(), any(), any());
     }
 
@@ -199,17 +200,17 @@ public class CustomTest extends AbstractPaymentTest {
         when(countryResolver.resolveCountry(any(), anyString())).thenReturn("RU");
 
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
-        assertEquals(1, result.getNotificationsRule().size());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
+        assertEquals(1, ResultUtils.getNotifications(result).size());
 
         when(countryResolver.resolveCountry(any(), anyString())).thenReturn("US");
         resourceAsStream = CustomTest.class.getResourceAsStream("/rules/eq_country.frd");
         result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
 
         resourceAsStream = CustomTest.class.getResourceAsStream("/rules/accept_with_notify.frd");
         result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
-        assertEquals(2, result.getNotificationsRule().size());
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals(2, ResultUtils.getNotifications(result).size());
     }
 }

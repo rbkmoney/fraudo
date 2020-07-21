@@ -4,6 +4,8 @@ import com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.PaymentModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -43,11 +45,15 @@ public class RealTimerTest extends AbstractPaymentTest {
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+
+        Assert.assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         assertEquals(0, countDownLatch.getCount());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC + 1 + TIME_CALLING);
 
         System.out.println("executionTime=" + executionTime);
+
+        result = invokeFullVisitor(parseContext, model);
+        assertEquals(2, result.getRuleResults().size());
     }
 
     @Test
@@ -66,10 +72,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
 
-        System.out.println("executionTime=" + executionTime);
-        System.out.println("result=" + result.getRuleChecked());
-
-        assertEquals(ResultStatus.ACCEPT, result.getResultStatus());
+        Assert.assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC * 4 + TIME_CALLING);
     }
 

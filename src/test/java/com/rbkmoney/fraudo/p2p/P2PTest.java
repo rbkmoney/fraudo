@@ -3,6 +3,7 @@ package com.rbkmoney.fraudo.p2p;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.test.model.P2PModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -11,8 +12,7 @@ import org.mockito.stubbing.Answer;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +43,7 @@ public class P2PTest extends AbstractP2PTest {
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
-        assertEquals(ResultStatus.NORMAL, result.getResultStatus());
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
         assertEquals(0, countDownLatch.getCount());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC + 1 + TIME_CALLING);
 

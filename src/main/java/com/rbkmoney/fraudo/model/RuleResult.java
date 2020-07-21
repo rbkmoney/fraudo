@@ -1,16 +1,16 @@
 package com.rbkmoney.fraudo.model;
 
+import com.rbkmoney.fraudo.constant.ResultStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultModel {
+public class RuleResult {
 
-    private List<RuleResult> ruleResults;
+    private ResultStatus resultStatus;
+    private String ruleChecked;
 
 }

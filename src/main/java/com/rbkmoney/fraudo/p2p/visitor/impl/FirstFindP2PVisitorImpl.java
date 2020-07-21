@@ -2,13 +2,13 @@ package com.rbkmoney.fraudo.p2p.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoP2PBaseVisitor;
 import com.rbkmoney.fraudo.FraudoP2PParser.*;
-import com.rbkmoney.fraudo.FraudoPaymentParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.NotValidContextException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.model.RuleResult;
 import com.rbkmoney.fraudo.p2p.generator.*;
 import com.rbkmoney.fraudo.p2p.visitor.CountP2PVisitor;
 import com.rbkmoney.fraudo.p2p.visitor.CustomP2PFuncVisitor;
@@ -63,7 +63,7 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
 
     @Override
     public ResultModel visitParse(ParseContext ctx) {
-        List<String> notifications = new ArrayList<>();
+        List<RuleResult> results = new ArrayList<>();
         for (int i = 0; i < ctx.fraud_rule().size(); i++) {
             Fraud_ruleContext fraudRuleContext = ctx.fraud_rule().get(i);
             ResultStatus result = (ResultStatus) visit(fraudRuleContext);
@@ -71,12 +71,13 @@ public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBa
             if (result == null) {
                 throw new UnknownResultException(fraudRuleContext.getText());
             } else if (result == ResultStatus.NOTIFY) {
-                notifications.add(key);
+                results.add(new RuleResult(result, key));
             } else if (result != ResultStatus.NORMAL) {
-                return new ResultModel(result, key, notifications);
+                results.add(new RuleResult(result, key));
+                return new ResultModel(results);
             }
         }
-        return new ResultModel(ResultStatus.NORMAL, notifications);
+        return new ResultModel(results);
     }
 
     @Override

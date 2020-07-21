@@ -7,6 +7,7 @@ import com.rbkmoney.fraudo.exception.NotValidContextException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.model.RuleResult;
 import com.rbkmoney.fraudo.payment.generator.RuleKeyGenerator;
 import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
 import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
@@ -67,7 +68,7 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
 
     @Override
     public ResultModel visitParse(ParseContext ctx) {
-        List<String> notifications = new ArrayList<>();
+        List<RuleResult> results = new ArrayList<>();
         for (int i = 0; i < ctx.fraud_rule().size(); i++) {
             Fraud_ruleContext fraudRuleContext = ctx.fraud_rule().get(i);
             ResultStatus result = (ResultStatus) visit(fraudRuleContext);
@@ -75,15 +76,13 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
             if (result == null) {
                 throw new UnknownResultException(fraudRuleContext.getText());
             } else if (result == ResultStatus.NOTIFY) {
-                notifications.add(key);
+                results.add(new RuleResult(result, key));
             } else if (result != ResultStatus.NORMAL) {
-                if (result == ResultStatus.DECLINE_AND_NOTIFY || result == ResultStatus.ACCEPT_AND_NOTIFY) {
-                    notifications.add(key);
-                }
-                return new ResultModel(result, key, notifications);
+                results.add(new RuleResult(result, key));
+                return new ResultModel(results);
             }
         }
-        return new ResultModel(ResultStatus.NORMAL, notifications);
+        return new ResultModel(results);
     }
 
     @Override

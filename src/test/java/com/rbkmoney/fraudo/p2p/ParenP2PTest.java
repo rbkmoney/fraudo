@@ -3,6 +3,7 @@ package com.rbkmoney.fraudo.p2p;
 import com.rbkmoney.fraudo.FraudoP2PParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.model.ResultModel;
+import com.rbkmoney.fraudo.utils.ResultUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,7 +32,7 @@ public class ParenP2PTest extends AbstractP2PTest {
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
 
-        assertEquals(ResultStatus.DECLINE, result.getResultStatus());
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         verify(countAggregator, times(2)).count(anyObject(), any(), any(), any());
     }
 
