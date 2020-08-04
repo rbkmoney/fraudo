@@ -219,6 +219,16 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     }
 
     @Override
+    public Object visitPayer_type(Payer_typeContext ctx) {
+        return threadLocalModel.get().getPayerType();
+    }
+
+    @Override
+    public Object visitToken_provider(Token_providerContext ctx) {
+        return threadLocalModel.get().getTokenProvider();
+    }
+
+    @Override
     public Boolean visitIn_white_list(In_white_listContext ctx) {
         return listVisitor.visitInWhiteList(ctx, threadLocalModel.get());
     }

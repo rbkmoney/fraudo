@@ -25,6 +25,8 @@ equalityExpression
 stringExpression
     : country_by
     | currency
+    | token_provider
+    | payer_type
     | STRING
     ;
 
