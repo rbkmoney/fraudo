@@ -13,8 +13,6 @@ public enum PaymentCheckedField {
     BIN("bin"),
     PAN("pan"),
     CURRENCY("currency"),
-    TOKEN_PROVIDER("token_provider"),
-    PAYER_TYPE("payer_type"),
     SHOP_ID("shop_id"),
     PARTY_ID("party_id"),
     CARD_TOKEN("card_token");
