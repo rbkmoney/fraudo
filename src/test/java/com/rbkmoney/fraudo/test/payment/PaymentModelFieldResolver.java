@@ -24,10 +24,6 @@ public class PaymentModelFieldResolver implements FieldResolver<PaymentModel, Pa
                 return paymentModel.getCardToken();
             case PAN:
                 return paymentModel.getPan();
-            case PAYER_TYPE:
-                return paymentModel.getPayerType();
-            case TOKEN_PROVIDER:
-                return paymentModel.getTokenProvider();
             default:
                 throw new UnresolvableFieldException(fieldName);
         }

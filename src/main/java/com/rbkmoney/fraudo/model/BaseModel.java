@@ -10,7 +10,5 @@ public class BaseModel {
     private String fingerprint;
     private Long amount;
     private String currency;
-    private String payerType;
-    private String tokenProvider;
 
 }

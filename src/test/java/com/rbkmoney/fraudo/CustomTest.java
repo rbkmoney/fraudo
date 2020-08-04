@@ -125,22 +125,22 @@ public class CustomTest extends AbstractPaymentTest {
 
     @Test
     public void tokenProviderTest() throws Exception {
-        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/token_provider.frd");
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/is_mobile.frd");
+        when(paymentModelPaymentTypeResolver.isMobile(any())).thenReturn(true);
 
         ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
-        model.setTokenProvider("applepay");
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
 
     @Test
     public void payerTypeTest() throws Exception {
-        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/payer_type.frd");
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/is_recurrent.frd");
+        when(paymentModelPaymentTypeResolver.isRecurrent(any())).thenReturn(true);
 
         ParseContext parseContext = getParseContext(resourceAsStream);
         PaymentModel model = new PaymentModel();
-        model.setPayerType("PAYMENT_RESOURCE");
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
