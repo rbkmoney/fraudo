@@ -32,6 +32,14 @@ currency
  : 'currency' LPAREN RPAREN
  ;
 
+payer_type
+ : 'payerType' LPAREN RPAREN
+ ;
+
+token_provider
+ : 'tokenProvider' LPAREN RPAREN
+ ;
+
 count
  : 'count' LPAREN STRING time_window (group_by)? RPAREN
  ;

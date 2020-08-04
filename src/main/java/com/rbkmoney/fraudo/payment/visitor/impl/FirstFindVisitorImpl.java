@@ -365,4 +365,13 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
         );
     }
 
+    @Override
+    public Boolean visitIs_mobile(Is_mobileContext ctx) {
+        return customFuncVisitor.visitCheckMobile(ctx, threadLocalModel.get());
+    }
+
+    @Override
+    public Boolean visitIs_recurrent(Is_recurrentContext ctx) {
+        return customFuncVisitor.visitCheckRecurrent(ctx, threadLocalModel.get());
+    }
 }

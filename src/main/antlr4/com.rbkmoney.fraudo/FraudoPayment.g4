@@ -36,6 +36,8 @@ relationalExpression
     | in_grey_list
     | in_list
     | like
+    | is_mobile
+    | is_recurrent
     ;
 
 unaryExpression
@@ -97,4 +99,12 @@ sum_refund
 
 in
  : 'in' LPAREN (stringExpression) DELIMETER string_list RPAREN
+ ;
+
+is_mobile
+ : 'isMobile' LPAREN RPAREN
+ ;
+
+is_recurrent
+ : 'isRecurrent' LPAREN RPAREN
  ;
