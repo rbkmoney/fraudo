@@ -108,3 +108,7 @@ is_mobile
 is_recurrent
  : 'isRecurrent' LPAREN RPAREN
  ;
+
+is_trusted
+ : 'is_trusted' LPAREN RPAREN
+ ;

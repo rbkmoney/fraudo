@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
+import com.rbkmoney.fraudo.payment.resolver.CustomerTypeResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTypeResolver;
@@ -22,6 +23,7 @@ public interface FraudVisitorFactory {
                                                                       FieldResolver<T, U> fieldPairResolver,
                                                                       PaymentGroupResolver<T, U> paymentGroupResolver,
                                                                       PaymentTimeWindowResolver timeWindowResolver,
-                                                                      PaymentTypeResolver<T> paymentTypeResolver);
+                                                                      PaymentTypeResolver<T> paymentTypeResolver,
+                                                                      CustomerTypeResolver<T> customerTypeResolver);
 
 }

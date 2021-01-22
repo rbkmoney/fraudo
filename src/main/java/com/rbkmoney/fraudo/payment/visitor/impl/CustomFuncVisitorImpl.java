@@ -2,6 +2,7 @@ package com.rbkmoney.fraudo.payment.visitor.impl;
 
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
 import com.rbkmoney.fraudo.model.Pair;
+import com.rbkmoney.fraudo.payment.resolver.CustomerTypeResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTypeResolver;
@@ -22,6 +23,7 @@ public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
     private final PaymentGroupResolver<T, U> groupResolver;
     private final PaymentTimeWindowResolver timeWindowResolver;
     private final PaymentTypeResolver<T> paymentTypeResolver;
+    private final CustomerTypeResolver<T> customerTypeResolver;
 
     @Override
     public String visitCountryBy(Country_byContext ctx, T model) {
@@ -59,6 +61,11 @@ public class CustomFuncVisitorImpl<T, U> implements CustomFuncVisitor<T> {
     @Override
     public boolean visitCheckRecurrent(Is_recurrentContext ctx, T model) {
         return paymentTypeResolver.isRecurrent(model);
+    }
+
+    @Override
+    public boolean visitCheckTrusted(Is_trustedContext ctx, T model) {
+        return customerTypeResolver.isTrusted(model);
     }
 
 }

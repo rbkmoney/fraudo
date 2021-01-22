@@ -374,4 +374,9 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     public Boolean visitIs_recurrent(Is_recurrentContext ctx) {
         return customFuncVisitor.visitCheckRecurrent(ctx, threadLocalModel.get());
     }
+
+    @Override
+    public Boolean visitIs_trusted(Is_trustedContext ctx) {
+        return customFuncVisitor.visitCheckTrusted(ctx, threadLocalModel.get());
+    }
 }

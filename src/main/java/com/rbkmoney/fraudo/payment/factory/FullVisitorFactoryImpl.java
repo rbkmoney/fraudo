@@ -5,6 +5,7 @@ import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
+import com.rbkmoney.fraudo.payment.resolver.CustomerTypeResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTypeResolver;
@@ -28,7 +29,8 @@ public class FullVisitorFactoryImpl implements FraudVisitorFactory {
             FieldResolver<T, U> fieldResolver,
             PaymentGroupResolver<T, U> paymentGroupResolver,
             PaymentTimeWindowResolver timeWindowResolver,
-            PaymentTypeResolver<T> paymentTypeResolver) {
+            PaymentTypeResolver<T> paymentTypeResolver,
+            CustomerTypeResolver<T> customerTypeResolver) {
         CountVisitor<T> countVisitor = new CountVisitorImpl<>(countPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
         SumVisitor<T> sumVisitor = new SumVisitorImpl<>(sumPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
         ListVisitor<T> listVisitor = new ListVisitorImpl<>(listFinder, fieldResolver);
@@ -38,7 +40,8 @@ public class FullVisitorFactoryImpl implements FraudVisitorFactory {
                 fieldResolver,
                 paymentGroupResolver,
                 timeWindowResolver,
-                paymentTypeResolver);
+                paymentTypeResolver,
+                customerTypeResolver);
         return new FullVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
     }
 

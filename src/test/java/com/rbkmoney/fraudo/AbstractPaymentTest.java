@@ -8,6 +8,7 @@ import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
 import com.rbkmoney.fraudo.payment.aggregator.SumPaymentAggregator;
 import com.rbkmoney.fraudo.payment.factory.FraudVisitorFactoryImpl;
 import com.rbkmoney.fraudo.payment.factory.FullVisitorFactoryImpl;
+import com.rbkmoney.fraudo.payment.resolver.CustomerTypeResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentGroupResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTypeResolver;
@@ -39,6 +40,8 @@ public class AbstractPaymentTest {
     PaymentTimeWindowResolver timeWindowResolver;
     @Mock
     PaymentTypeResolver<PaymentModel> paymentModelPaymentTypeResolver;
+    @Mock
+    CustomerTypeResolver<PaymentModel> customerTypeResolver;
 
     private FieldResolver<PaymentModel, PaymentCheckedField> fieldResolver = new PaymentModelFieldResolver();
     private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
@@ -64,7 +67,8 @@ public class AbstractPaymentTest {
                         fieldResolver,
                         paymentGroupResolver,
                         timeWindowResolver,
-                        paymentModelPaymentTypeResolver)
+                        paymentModelPaymentTypeResolver,
+                        customerTypeResolver)
                 .visit(parse, model);
     }
 
@@ -79,7 +83,8 @@ public class AbstractPaymentTest {
                         fieldResolver,
                         paymentGroupResolver,
                         timeWindowResolver,
-                        paymentModelPaymentTypeResolver)
+                        paymentModelPaymentTypeResolver,
+                        customerTypeResolver)
                 .visit(parse, model);
     }
 
