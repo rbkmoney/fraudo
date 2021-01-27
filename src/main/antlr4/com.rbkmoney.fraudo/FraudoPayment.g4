@@ -38,6 +38,7 @@ relationalExpression
     | like
     | is_mobile
     | is_recurrent
+    | is_trusted
     ;
 
 unaryExpression
@@ -110,5 +111,5 @@ is_recurrent
  ;
 
 is_trusted
- : 'is_trusted' LPAREN RPAREN
+ : 'isTrusted' LPAREN RPAREN
  ;
