@@ -14,6 +14,4 @@ public interface CustomFuncVisitor<T> {
 
     boolean visitCheckRecurrent(Is_recurrentContext ctx, T model);
 
-    boolean visitCheckTrusted(Is_trustedContext ctx, T model);
-
 }

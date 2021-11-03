@@ -1,0 +1,6 @@
+rule: isTrusted(
+    withdrawalsConditions(
+        condition("USD",3,3000,3),
+        condition("CAD", 4, 4)
+    )
+) -> accept;

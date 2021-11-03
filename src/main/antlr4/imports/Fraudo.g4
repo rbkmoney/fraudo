@@ -138,6 +138,6 @@ RPAREN     : ')' ;
 DECIMAL    : '-'? ('0'..'9')+ '.' ('0'..'9')+;
 INTEGER    : '-'? ('0'..'9')+;
 IDENTIFIER : [a-zA-Z_] [a-zA-Z_0-9]* ;
-WS         : [ \u000C\n]+ -> skip;
+WS         : [ \u000C\t\n]+ -> skip;
 SCOL       : ';';
 BOOLEAN    : TRUE | FALSE;
