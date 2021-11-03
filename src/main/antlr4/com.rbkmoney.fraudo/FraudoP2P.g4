@@ -56,5 +56,5 @@ floatExpression
     ;
 
 in
- : 'in' LPAREN (stringExpression) DELIMETER string_list RPAREN
+ : 'in' LPAREN (stringExpression) DELIMITER string_list RPAREN
  ;
