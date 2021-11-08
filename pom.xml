@@ -33,15 +33,14 @@
     </scm>
 
     <properties>
-        <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
-        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <antlr4.version>4.7.1</antlr4.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
+            <version>${antlr4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -60,13 +59,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-junit</artifactId>
-            <version>${hamcrest.junit.version}</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -88,7 +81,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.7.1</version>
+                <version>${antlr4.version}</version>
                 <configuration>
                     <arguments>
                         <argument>-package</argument>
@@ -106,29 +99,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.4</version>
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <append>true</append>
-                    <excludes>
-                        <exclude>com/rbkmoney/fraudo/constant/**/*</exclude>
-                        <exclude>com/rbkmoney/fraudo/model/**/*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 </project>
