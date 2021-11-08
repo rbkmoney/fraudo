@@ -33,7 +33,6 @@
     </scm>
 
     <properties>
-        <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
         <antlr4.version>4.7.1</antlr4.version>
     </properties>
 
@@ -61,12 +60,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-junit</artifactId>
-            <version>${hamcrest.junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
