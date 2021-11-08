@@ -33,8 +33,10 @@ public class FullVisitorFactoryImpl implements FraudVisitorFactory {
             PaymentTimeWindowResolver timeWindowResolver,
             PaymentTypeResolver<T> paymentTypeResolver,
             CustomerTypeResolver<T> customerTypeResolver) {
-        CountVisitor<T> countVisitor = new CountVisitorImpl<>(countPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
-        SumVisitor<T> sumVisitor = new SumVisitorImpl<>(sumPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
+        CountVisitor<T> countVisitor =
+                new CountVisitorImpl<>(countPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
+        SumVisitor<T> sumVisitor =
+                new SumVisitorImpl<>(sumPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
         ListVisitor<T> listVisitor = new ListVisitorImpl<>(listFinder, fieldResolver);
         IsTrustedFuncVisitor<T> isTrustedFuncVisitor = new IsTrustedFuncVisitorImpl<>(customerTypeResolver);
         TrustConditionConverter trustConditionConverter = new TrustConditionConverter();

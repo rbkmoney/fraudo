@@ -65,7 +65,10 @@ public class CustomTest extends AbstractPaymentTest {
     public void declineAndNotifyTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/declineAndNotify.frd");
         ResultModel result = parseAndVisit(resourceAsStream);
-        assertEquals(ResultStatus.DECLINE_AND_NOTIFY, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        assertEquals(
+                ResultStatus.DECLINE_AND_NOTIFY,
+                ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus()
+        );
         assertEquals("test_11", ResultUtils.findFirstNotNotifyStatus(result).get().getRuleChecked());
         Assert.assertEquals(1, ResultUtils.getNotifications(result).size());
     }
@@ -163,7 +166,8 @@ public class CustomTest extends AbstractPaymentTest {
     @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/catch.frd");
-        when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
+        when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any()))
+                .thenThrow(new UnknownResultException("as"));
         ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());

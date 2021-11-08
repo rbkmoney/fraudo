@@ -63,8 +63,8 @@ public class AbstractP2PTest {
     }
 
     com.rbkmoney.fraudo.FraudoP2PParser.ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoP2PLexer lexer = new com.rbkmoney.fraudo.FraudoP2PLexer(new ANTLRInputStream(resourceAsStream));
-        com.rbkmoney.fraudo.FraudoP2PParser parser = new com.rbkmoney.fraudo.FraudoP2PParser(new CommonTokenStream(lexer));
+        var lexer = new com.rbkmoney.fraudo.FraudoP2PLexer(new ANTLRInputStream(resourceAsStream));
+        var parser = new com.rbkmoney.fraudo.FraudoP2PParser(new CommonTokenStream(lexer));
 
         return parser.parse();
     }

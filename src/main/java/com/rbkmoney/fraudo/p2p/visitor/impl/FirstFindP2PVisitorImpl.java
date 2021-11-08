@@ -28,7 +28,8 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
+public class FirstFindP2PVisitorImpl<T extends BaseModel, U> extends FraudoP2PBaseVisitor<Object>
+        implements TemplateVisitor<T, ResultModel> {
 
     private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();

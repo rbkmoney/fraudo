@@ -9,26 +9,17 @@ public class P2PModelFieldResolver implements FieldResolver<P2PModel, P2PChecked
 
     @Override
     public String resolveValue(String fieldName, P2PModel model) {
-        switch (P2PCheckedField.getByValue(fieldName)) {
-            case BIN:
-                return model.getBin();
-            case IP:
-                return model.getIp();
-            case FINGERPRINT:
-                return model.getFingerprint();
-            case EMAIL:
-                return model.getEmail();
-            case COUNTRY_BANK:
-                return model.getCountry();
-            case CARD_TOKEN_FROM:
-                return model.getCardTokenFrom();
-            case CARD_TOKEN_TO:
-                return model.getCardTokenTo();
-            case PAN:
-                return model.getPan();
-            default:
-                throw new UnresolvableFieldException(fieldName);
-        }
+        return switch (P2PCheckedField.getByValue(fieldName)) {
+            case BIN -> model.getBin();
+            case IP -> model.getIp();
+            case FINGERPRINT -> model.getFingerprint();
+            case EMAIL -> model.getEmail();
+            case COUNTRY_BANK -> model.getCountry();
+            case CARD_TOKEN_FROM -> model.getCardTokenFrom();
+            case CARD_TOKEN_TO -> model.getCardTokenTo();
+            case PAN -> model.getPan();
+            default -> throw new UnresolvableFieldException(fieldName);
+        };
     }
 
     @Override

@@ -27,11 +27,19 @@ public class P2PFraudVisitorFactory implements FraudP2PVisitorFactory {
             FieldResolver<T, U> fieldResolver,
             P2PGroupResolver<T, U> groupResolver,
             P2PTimeWindowResolver timeWindowResolver) {
-        CountP2PVisitor<T> countVisitor = new CountP2PVisitorImpl<>(countAggregator, fieldResolver, groupResolver, timeWindowResolver);
-        SumP2PVisitor<T> sumVisitor = new SumP2PVisitorImpl<>(sumAggregator, fieldResolver, groupResolver, timeWindowResolver);
-        ListP2PVisitor<T> listVisitor = new ListP2PVisitorImpl<>(listFinder, fieldResolver);
-        CustomP2PFuncVisitor<T> customFuncVisitor = new CustomP2PFuncVisitorImpl<>(uniqueValueAggregator, countryResolver,
-                fieldResolver, groupResolver, timeWindowResolver);
+        CountP2PVisitor<T> countVisitor =
+                new CountP2PVisitorImpl<>(countAggregator, fieldResolver, groupResolver, timeWindowResolver);
+        SumP2PVisitor<T> sumVisitor =
+                new SumP2PVisitorImpl<>(sumAggregator, fieldResolver, groupResolver, timeWindowResolver);
+        ListP2PVisitor<T> listVisitor =
+                new ListP2PVisitorImpl<>(listFinder, fieldResolver);
+        CustomP2PFuncVisitor<T> customFuncVisitor = new CustomP2PFuncVisitorImpl<>(
+                uniqueValueAggregator,
+                countryResolver,
+                fieldResolver,
+                groupResolver,
+                timeWindowResolver
+        );
         return new FirstFindP2PVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
     }
 

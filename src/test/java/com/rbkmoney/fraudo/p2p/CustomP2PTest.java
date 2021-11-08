@@ -94,7 +94,7 @@ public class CustomP2PTest extends AbstractP2PTest {
         ResultModel result = invoke(parseContext, model);
         assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
     }
-    
+
     @Test
     public void inCurrencyTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/p2p/in_currency.frd");
@@ -136,7 +136,8 @@ public class CustomP2PTest extends AbstractP2PTest {
     @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = CustomP2PTest.class.getResourceAsStream("/rules/p2p/catch.frd");
-        when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));
+        when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any()))
+                .thenThrow(new UnknownResultException("as"));
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);
         assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
@@ -179,7 +180,8 @@ public class CustomP2PTest extends AbstractP2PTest {
 
     @Test
     public void uniqCountGroupByTest() throws Exception {
-        InputStream resourceAsStream = CustomP2PTest.class.getResourceAsStream("/rules/p2p/count_uniqGroupBy_window.frd");
+        InputStream resourceAsStream =
+                CustomP2PTest.class.getResourceAsStream("/rules/p2p/count_uniqGroupBy_window.frd");
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenReturn(2);
         FraudoP2PParser.ParseContext parseContext = getParseContext(resourceAsStream);
         ResultModel result = invokeParse(parseContext);

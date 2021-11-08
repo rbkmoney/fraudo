@@ -44,7 +44,8 @@ public class AbstractPaymentTest {
     CustomerTypeResolver<PaymentModel> customerTypeResolver;
 
     private FieldResolver<PaymentModel, PaymentCheckedField> fieldResolver = new PaymentModelFieldResolver();
-    private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver = new PaymentGroupResolver<>(fieldResolver);
+    private PaymentGroupResolver<PaymentModel, PaymentCheckedField> paymentGroupResolver =
+            new PaymentGroupResolver<>(fieldResolver);
 
     ResultModel parseAndVisit(InputStream resourceAsStream) throws IOException {
         ParseContext parse = getParseContext(resourceAsStream);
@@ -89,8 +90,8 @@ public class AbstractPaymentTest {
     }
 
     ParseContext getParseContext(InputStream resourceAsStream) throws IOException {
-        com.rbkmoney.fraudo.FraudoPaymentLexer lexer = new com.rbkmoney.fraudo.FraudoPaymentLexer(new ANTLRInputStream(resourceAsStream));
-        com.rbkmoney.fraudo.FraudoPaymentParser parser = new com.rbkmoney.fraudo.FraudoPaymentParser(new CommonTokenStream(lexer));
+        var lexer = new com.rbkmoney.fraudo.FraudoPaymentLexer(new ANTLRInputStream(resourceAsStream));
+        var parser = new com.rbkmoney.fraudo.FraudoPaymentParser(new CommonTokenStream(lexer));
         return parser.parse();
     }
 

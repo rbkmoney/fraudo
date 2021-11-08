@@ -15,15 +15,17 @@ import com.rbkmoney.fraudo.resolver.FieldResolver;
 
 public interface FraudVisitorFactory {
 
-    <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(CountPaymentAggregator<T, U> countPaymentAggregator,
-                                                                      SumPaymentAggregator<T, U> sumPaymentAggregator,
-                                                                      UniqueValueAggregator<T, U> uniqueValueAggregator,
-                                                                      CountryResolver<U> countryResolver,
-                                                                      InListFinder<T, U> listFinder,
-                                                                      FieldResolver<T, U> fieldPairResolver,
-                                                                      PaymentGroupResolver<T, U> paymentGroupResolver,
-                                                                      PaymentTimeWindowResolver timeWindowResolver,
-                                                                      PaymentTypeResolver<T> paymentTypeResolver,
-                                                                      CustomerTypeResolver<T> customerTypeResolver);
+    <T extends BaseModel, U> FirstFindVisitorImpl<T, U> createVisitor(
+            CountPaymentAggregator<T, U> countPaymentAggregator,
+            SumPaymentAggregator<T, U> sumPaymentAggregator,
+            UniqueValueAggregator<T, U> uniqueValueAggregator,
+            CountryResolver<U> countryResolver,
+            InListFinder<T, U> listFinder,
+            FieldResolver<T, U> fieldPairResolver,
+            PaymentGroupResolver<T, U> paymentGroupResolver,
+            PaymentTimeWindowResolver timeWindowResolver,
+            PaymentTypeResolver<T> paymentTypeResolver,
+            CustomerTypeResolver<T> customerTypeResolver
+    );
 
 }

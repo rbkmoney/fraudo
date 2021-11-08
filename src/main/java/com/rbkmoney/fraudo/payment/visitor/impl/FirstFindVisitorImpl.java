@@ -36,7 +36,8 @@ import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentBaseVisitor<Object>
+        implements TemplateVisitor<T, ResultModel> {
 
     private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
