@@ -8,6 +8,9 @@ public interface IsTrustedFuncVisitor<T> {
 
     boolean visitCheckTrusted(T model);
 
-    boolean visitCheckTrusted(List<TrustCondition> paymentsConditionsList,
+    boolean visitCheckTrusted(T model, String templateName);
+
+    boolean visitCheckTrusted(T model,
+                              List<TrustCondition> paymentsConditionsList,
                               List<TrustCondition> withdrawalConditionsList);
 }

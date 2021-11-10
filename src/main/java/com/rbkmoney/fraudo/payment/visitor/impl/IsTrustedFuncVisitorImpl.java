@@ -18,9 +18,15 @@ public class IsTrustedFuncVisitorImpl<T> implements IsTrustedFuncVisitor<T> {
     }
 
     @Override
-    public boolean visitCheckTrusted(List<TrustCondition> paymentsConditionsList,
+    public boolean visitCheckTrusted(T model, String templateName) {
+        return customerTypeResolver.isTrusted(model, templateName);
+    }
+
+    @Override
+    public boolean visitCheckTrusted(T model,
+                                     List<TrustCondition> paymentsConditionsList,
                                      List<TrustCondition> withdrawalConditionsList) {
-        return customerTypeResolver.isTrusted(paymentsConditionsList, withdrawalConditionsList);
+        return customerTypeResolver.isTrusted(model, paymentsConditionsList, withdrawalConditionsList);
     }
 
 }
