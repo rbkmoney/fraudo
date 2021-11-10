@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.isNull;
@@ -36,37 +37,46 @@ public class IsTrustedTest extends AbstractPaymentTest {
     }
 
     @Test
+    public void trustedWithTemplateNameTest() {
+        when(customerTypeResolver.isTrusted(any())).thenReturn(true);
+        testIsTrusted("/rules/is_trusted_with_template_name.frd");
+    }
+
+    @Test
     public void trustedWithWithdrawalsConditionsTest() {
-        when(customerTypeResolver.isTrusted(isNull(List.class), anyListOf(TrustCondition.class)))
+        when(customerTypeResolver.isTrusted(any(), isNull(List.class), anyListOf(TrustCondition.class)))
                 .thenReturn(true);
         testIsTrusted("/rules/is_trusted_with_withdrawals_conditions.frd");
     }
 
     @Test
     public void trustedWithPaymentsConditionsTest() {
-        when(customerTypeResolver.isTrusted(anyListOf(TrustCondition.class), isNull(List.class)))
+        when(customerTypeResolver.isTrusted(any(), anyListOf(TrustCondition.class), isNull(List.class)))
                 .thenReturn(true);
         testIsTrusted("/rules/is_trusted_with_payments_conditions.frd");
     }
 
     @Test
     public void trustedWithPaymentsAndWithdrawalSingleConditionsTest() {
-        when(customerTypeResolver.isTrusted(anyListOf(TrustCondition.class), anyListOf(TrustCondition.class)))
+        when(customerTypeResolver.isTrusted(any(), anyListOf(TrustCondition.class), anyListOf(TrustCondition.class)))
                 .thenReturn(true);
         testIsTrusted("/rules/is_trusted_with_payments_and_withdrawals_single_conditions.frd");
     }
 
     @Test
     public void trustedWithPaymentsAndWithdrawalTest() {
-        when(customerTypeResolver.isTrusted(anyListOf(TrustCondition.class), anyListOf(TrustCondition.class)))
+        when(customerTypeResolver.isTrusted(any(), anyListOf(TrustCondition.class), anyListOf(TrustCondition.class)))
                 .thenReturn(true);
         testIsTrusted("/rules/is_trusted_with_payments_and_withdrawals_conditions.frd");
 
+        ArgumentCaptor<PaymentModel> paymentModelCaptor = ArgumentCaptor.forClass(PaymentModel.class);
         ArgumentCaptor<List<TrustCondition>> paymentsCaptor = ArgumentCaptor.forClass((Class) List.class);
         ArgumentCaptor<List<TrustCondition>> withdrawalsCaptor = ArgumentCaptor.forClass((Class) List.class);
         verify(customerTypeResolver, times(1))
-                .isTrusted(paymentsCaptor.capture(), withdrawalsCaptor.capture());
+                .isTrusted(paymentModelCaptor.capture(), paymentsCaptor.capture(), withdrawalsCaptor.capture());
 
+        assertEquals(1, paymentModelCaptor.getAllValues().size());
+        assertNotNull(paymentModelCaptor.getValue());
         assertEquals(1, paymentsCaptor.getAllValues().size());
         List<TrustCondition> payments = paymentsCaptor.getValue();
         assertTrustedCondition("RUB",1,1000,10, payments.get(0));

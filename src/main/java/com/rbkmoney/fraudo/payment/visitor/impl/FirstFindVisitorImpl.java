@@ -386,16 +386,21 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     }
 
     @Override
+    public Object visitIsTrustedTemplateName(IsTrustedTemplateNameContext ctx) {
+        return isTrustedFuncVisitor.visitCheckTrusted(threadLocalModel.get(), TextUtil.safeGetText(ctx.STRING()));
+    }
+
+    @Override
     public Object visitIsTrustedConditionsSingleList(IsTrustedConditionsSingleListContext ctx) {
         if (ctx.payment_conditions() != null && !ctx.payment_conditions().isEmpty()) {
             List<TrustCondition> paymentsConditions =
                     trustConditionConverter.convertToList(ctx.payment_conditions().conditions_list());
-            return isTrustedFuncVisitor.visitCheckTrusted(paymentsConditions, null);
+            return isTrustedFuncVisitor.visitCheckTrusted(threadLocalModel.get(), paymentsConditions, null);
         }
         if (ctx.withdrawal_conditions() != null && !ctx.withdrawal_conditions().isEmpty()) {
             List<TrustCondition> withdrawalsConditions =
                     trustConditionConverter.convertToList(ctx.withdrawal_conditions().conditions_list());
-            return isTrustedFuncVisitor.visitCheckTrusted(null, withdrawalsConditions);
+            return isTrustedFuncVisitor.visitCheckTrusted(threadLocalModel.get(), null, withdrawalsConditions);
         }
         throw new NotValidContextException();
     }
@@ -406,7 +411,11 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
                 trustConditionConverter.convertToList(ctx.payment_conditions().conditions_list());
         List<TrustCondition> withdrawalsConditions =
                 trustConditionConverter.convertToList(ctx.withdrawal_conditions().conditions_list());
-        return isTrustedFuncVisitor.visitCheckTrusted(paymentsConditions, withdrawalsConditions);
+        return isTrustedFuncVisitor.visitCheckTrusted(
+                threadLocalModel.get(),
+                paymentsConditions,
+                withdrawalsConditions
+        );
     }
 
 }
