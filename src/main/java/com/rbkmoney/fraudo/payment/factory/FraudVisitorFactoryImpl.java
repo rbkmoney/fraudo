@@ -1,6 +1,7 @@
 package com.rbkmoney.fraudo.payment.factory;
 
 import com.rbkmoney.fraudo.aggregator.UniqueValueAggregator;
+import com.rbkmoney.fraudo.converter.TrustConditionConverter;
 import com.rbkmoney.fraudo.finder.InListFinder;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.payment.aggregator.CountPaymentAggregator;
@@ -11,6 +12,7 @@ import com.rbkmoney.fraudo.payment.resolver.PaymentTimeWindowResolver;
 import com.rbkmoney.fraudo.payment.resolver.PaymentTypeResolver;
 import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
 import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.payment.visitor.IsTrustedFuncVisitor;
 import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
 import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
 import com.rbkmoney.fraudo.payment.visitor.impl.*;
@@ -31,8 +33,10 @@ public class FraudVisitorFactoryImpl implements FraudVisitorFactory {
             PaymentTimeWindowResolver timeWindowResolver,
             PaymentTypeResolver<T> paymentTypeResolver,
             CustomerTypeResolver<T> customerTypeResolver) {
-        CountVisitor<T> countVisitor = new CountVisitorImpl<>(countPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
-        SumVisitor<T> sumVisitor = new SumVisitorImpl<>(sumPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
+        CountVisitor<T> countVisitor =
+                new CountVisitorImpl<>(countPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
+        SumVisitor<T> sumVisitor =
+                new SumVisitorImpl<>(sumPaymentAggregator, fieldResolver, paymentGroupResolver, timeWindowResolver);
         ListVisitor<T> listVisitor = new ListVisitorImpl<>(listFinder, fieldResolver);
         CustomFuncVisitor<T> customFuncVisitor = new CustomFuncVisitorImpl<>(
                 uniqueValueAggregator,
@@ -40,9 +44,20 @@ public class FraudVisitorFactoryImpl implements FraudVisitorFactory {
                 fieldResolver,
                 paymentGroupResolver,
                 timeWindowResolver,
-                paymentTypeResolver,
-                customerTypeResolver);
-        return new FirstFindVisitorImpl<>(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
+                paymentTypeResolver
+        );
+        IsTrustedFuncVisitor<T> isTrustedFuncVisitor = new IsTrustedFuncVisitorImpl<>(customerTypeResolver);
+        TrustConditionConverter trustConditionConverter = new TrustConditionConverter();
+
+        return new FirstFindVisitorImpl<>(
+                countVisitor,
+                sumVisitor,
+                listVisitor,
+                customFuncVisitor,
+                isTrustedFuncVisitor,
+                fieldResolver,
+                trustConditionConverter
+        );
     }
 
 }

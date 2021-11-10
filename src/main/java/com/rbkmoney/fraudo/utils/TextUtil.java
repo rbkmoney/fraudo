@@ -16,4 +16,10 @@ public class TextUtil {
                 .getText().replace("\"", "");
     }
 
+    public static Integer safeGetInteger(TerminalNode field) {
+        return Optional.ofNullable(field)
+                .map(node -> Integer.parseInt(node.getText()))
+                .orElseThrow(FieldUnsetException::new);
+    }
+
 }

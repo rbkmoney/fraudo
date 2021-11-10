@@ -2,15 +2,18 @@ package com.rbkmoney.fraudo.payment.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoPaymentBaseVisitor;
 import com.rbkmoney.fraudo.constant.ResultStatus;
+import com.rbkmoney.fraudo.converter.TrustConditionConverter;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
 import com.rbkmoney.fraudo.exception.NotValidContextException;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.model.RuleResult;
+import com.rbkmoney.fraudo.model.TrustCondition;
 import com.rbkmoney.fraudo.payment.generator.RuleKeyGenerator;
 import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
 import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.payment.visitor.IsTrustedFuncVisitor;
 import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
 import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
@@ -42,7 +45,9 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     private final SumVisitor<T> sumVisitor;
     private final ListVisitor<T> listVisitor;
     private final CustomFuncVisitor<T> customFuncVisitor;
+    private final IsTrustedFuncVisitor<T> isTrustedFuncVisitor;
     private final FieldResolver<T, U> fieldResolver;
+    private final TrustConditionConverter trustConditionConverter;
 
     @Override
     public void close() {
@@ -376,7 +381,32 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
     }
 
     @Override
-    public Boolean visitIs_trusted(Is_trustedContext ctx) {
-        return customFuncVisitor.visitCheckTrusted(ctx, threadLocalModel.get());
+    public Object visitIsTrusted(IsTrustedContext ctx) {
+        return isTrustedFuncVisitor.visitCheckTrusted(threadLocalModel.get());
     }
+
+    @Override
+    public Object visitIsTrustedConditionsSingleList(IsTrustedConditionsSingleListContext ctx) {
+        if (ctx.payment_conditions() != null && !ctx.payment_conditions().isEmpty()) {
+            List<TrustCondition> paymentsConditions =
+                    trustConditionConverter.convertToList(ctx.payment_conditions().conditions_list());
+            return isTrustedFuncVisitor.visitCheckTrusted(paymentsConditions, null);
+        }
+        if (ctx.withdrawal_conditions() != null && !ctx.withdrawal_conditions().isEmpty()) {
+            List<TrustCondition> withdrawalsConditions =
+                    trustConditionConverter.convertToList(ctx.withdrawal_conditions().conditions_list());
+            return isTrustedFuncVisitor.visitCheckTrusted(null, withdrawalsConditions);
+        }
+        throw new NotValidContextException();
+    }
+
+    @Override
+    public Object visitIsTrustedPaymentsAndWithdrawalConditions(IsTrustedPaymentsAndWithdrawalConditionsContext ctx) {
+        List<TrustCondition> paymentsConditions =
+                trustConditionConverter.convertToList(ctx.payment_conditions().conditions_list());
+        List<TrustCondition> withdrawalsConditions =
+                trustConditionConverter.convertToList(ctx.withdrawal_conditions().conditions_list());
+        return isTrustedFuncVisitor.visitCheckTrusted(paymentsConditions, withdrawalsConditions);
+    }
+
 }

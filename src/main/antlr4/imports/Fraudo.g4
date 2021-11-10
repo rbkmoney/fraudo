@@ -49,11 +49,11 @@ sum
  ;
 
 unique
- : 'unique' LPAREN STRING DELIMETER STRING time_window (group_by)? RPAREN
+ : 'unique' LPAREN STRING DELIMITER STRING time_window (group_by)? RPAREN
  ;
 
 in
- : 'in' LPAREN (country_by | STRING) DELIMETER string_list RPAREN
+ : 'in' LPAREN (country_by | STRING) DELIMITER string_list RPAREN
  ;
 
 in_white_list
@@ -69,11 +69,11 @@ in_grey_list
  ;
 
 in_list
- : 'inList' LPAREN STRING DELIMETER string_list RPAREN
+ : 'inList' LPAREN STRING DELIMITER string_list RPAREN
  ;
 
 like
- : 'like' LPAREN STRING DELIMETER STRING RPAREN
+ : 'like' LPAREN STRING DELIMITER STRING RPAREN
  ;
 
 country_by
@@ -98,22 +98,22 @@ catch_result
  ;
 
 string_list
- : STRING (DELIMETER STRING | WS)*
+ : STRING (DELIMITER STRING | WS)*
  ;
 
 time_window
- : DELIMETER INTEGER | DELIMETER INTEGER DELIMETER INTEGER
+ : DELIMITER INTEGER | DELIMITER INTEGER DELIMITER INTEGER
  ;
 
 group_by
- : DELIMETER string_list
+ : DELIMITER string_list
  ;
 
 STRING
  : '"' (~["\r\n] | '""')* '"'
  ;
 
-DELIMETER : ',' ;
+DELIMITER : ',' ;
 
 COMMENT
  : '#' ~[\r\n]* -> skip
@@ -138,6 +138,6 @@ RPAREN     : ')' ;
 DECIMAL    : '-'? ('0'..'9')+ '.' ('0'..'9')+;
 INTEGER    : '-'? ('0'..'9')+;
 IDENTIFIER : [a-zA-Z_] [a-zA-Z_0-9]* ;
-WS         : [ \u000C\n]+ -> skip;
+WS         : [ \u000C\t\n]+ -> skip;
 SCOL       : ';';
 BOOLEAN    : TRUE | FALSE;

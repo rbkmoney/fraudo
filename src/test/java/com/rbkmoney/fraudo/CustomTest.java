@@ -135,17 +135,6 @@ public class CustomTest extends AbstractPaymentTest {
     }
 
     @Test
-    public void trustedTest() throws Exception {
-        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/is_trusted.frd");
-        when(customerTypeResolver.isTrusted(any())).thenReturn(true);
-
-        ParseContext parseContext = getParseContext(resourceAsStream);
-        PaymentModel model = new PaymentModel();
-        ResultModel result = invoke(parseContext, model);
-        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
-    }
-
-    @Test
     public void payerTypeTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/is_recurrent.frd");
         when(paymentModelPaymentTypeResolver.isRecurrent(any())).thenReturn(true);

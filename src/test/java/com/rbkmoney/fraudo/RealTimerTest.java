@@ -23,7 +23,7 @@ public class RealTimerTest extends AbstractPaymentTest {
 
     public static final long TIME_CALL_AGGR_FUNC = 200L;
     public static final long MILLISTIME_FAST_FUNC = 10L;
-    public static final long TIME_CALLING = 200L;
+    public static final long TIME_CALLING = 300L;
 
     @Before
     public void init() {
@@ -50,7 +50,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         assertEquals(0, countDownLatch.getCount());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC + 1 + TIME_CALLING);
 
-        System.out.println("executionTime=" + executionTime);
+        System.out.println("timingTest.executionTime=" + executionTime);
 
         result = invokeFullVisitor(parseContext, model);
         assertEquals(2, result.getRuleResults().size());
@@ -71,6 +71,7 @@ public class RealTimerTest extends AbstractPaymentTest {
         long start = System.currentTimeMillis();
         ResultModel result = invoke(parseContext, model);
         long executionTime = System.currentTimeMillis() - start;
+        System.out.println("timingWithSuccessTest.executionTime=" + executionTime);
 
         Assert.assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
         assertTrue(executionTime < TIME_CALL_AGGR_FUNC * 4 + TIME_CALLING);

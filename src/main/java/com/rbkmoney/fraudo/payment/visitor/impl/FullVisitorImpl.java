@@ -1,6 +1,7 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
 import com.rbkmoney.fraudo.constant.ResultStatus;
+import com.rbkmoney.fraudo.converter.TrustConditionConverter;
 import com.rbkmoney.fraudo.exception.UnknownResultException;
 import com.rbkmoney.fraudo.model.BaseModel;
 import com.rbkmoney.fraudo.model.ResultModel;
@@ -8,6 +9,7 @@ import com.rbkmoney.fraudo.model.RuleResult;
 import com.rbkmoney.fraudo.payment.generator.RuleKeyGenerator;
 import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
 import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
+import com.rbkmoney.fraudo.payment.visitor.IsTrustedFuncVisitor;
 import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
 import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
@@ -22,8 +24,17 @@ import static com.rbkmoney.fraudo.FraudoPaymentParser.ParseContext;
 @Slf4j
 public class FullVisitorImpl<T extends BaseModel, U> extends FirstFindVisitorImpl<T, U> {
 
-    public FullVisitorImpl(CountVisitor<T> countVisitor, SumVisitor<T> sumVisitor, ListVisitor<T> listVisitor, CustomFuncVisitor<T> customFuncVisitor, FieldResolver<T, U> fieldResolver) {
-        super(countVisitor, sumVisitor, listVisitor, customFuncVisitor, fieldResolver);
+    public FullVisitorImpl(
+            CountVisitor<T> countVisitor,
+            SumVisitor<T> sumVisitor,
+            ListVisitor<T> listVisitor,
+            CustomFuncVisitor<T> customFuncVisitor,
+            IsTrustedFuncVisitor<T> isTrustedFuncVisitor,
+            FieldResolver<T, U> fieldResolver,
+            TrustConditionConverter trustConditionConverter
+    ) {
+        super(countVisitor, sumVisitor, listVisitor, customFuncVisitor, isTrustedFuncVisitor, fieldResolver,
+                trustConditionConverter);
     }
 
     @Override

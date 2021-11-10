@@ -71,7 +71,7 @@ count_success
  ;
 
 count_error
- : 'countError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
+ : 'countError' LPAREN STRING time_window DELIMITER STRING (group_by)? RPAREN
  ;
 
 count_chargeback
@@ -87,7 +87,7 @@ sum_success
  ;
 
 sum_error
- : 'sumError' LPAREN STRING time_window DELIMETER STRING (group_by)? RPAREN
+ : 'sumError' LPAREN STRING time_window DELIMITER STRING (group_by)? RPAREN
  ;
 
 sum_chargeback
@@ -99,7 +99,7 @@ sum_refund
  ;
 
 in
- : 'in' LPAREN (stringExpression) DELIMETER string_list RPAREN
+ : 'in' LPAREN (stringExpression) DELIMITER string_list RPAREN
  ;
 
 is_mobile
@@ -111,5 +111,33 @@ is_recurrent
  ;
 
 is_trusted
- : 'isTrusted' LPAREN RPAREN
+ : 'isTrusted' LPAREN RPAREN                                                        #isTrusted
+ | 'isTrusted' LPAREN (payment_conditions | withdrawal_conditions) RPAREN           #isTrustedConditionsSingleList
+ | 'isTrusted' LPAREN payment_conditions DELIMITER withdrawal_conditions RPAREN     #isTrustedPaymentsAndWithdrawalConditions
+ ;
+
+payment_conditions
+ : 'paymentsConditions' LPAREN conditions_list RPAREN
+ ;
+
+withdrawal_conditions
+ : 'withdrawalsConditions' LPAREN conditions_list RPAREN
+ ;
+
+conditions_list
+ : trusted_token_condition (DELIMITER trusted_token_condition | WS)*
+ ;
+
+trusted_token_condition
+ : 'condition' LPAREN
+        STRING DELIMITER            //transactions_currency
+        INTEGER DELIMITER           //transactions_years_offset
+        INTEGER DELIMITER           //transactions_count
+        INTEGER                     //transactions_sum
+    RPAREN
+ | 'condition' LPAREN
+        STRING DELIMITER            //transactions_currency
+        INTEGER DELIMITER           //transactions_years_offset
+        INTEGER                     //transactions_count
+    RPAREN
  ;

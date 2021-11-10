@@ -1,0 +1,8 @@
+rule: isTrusted(
+    paymentsConditions(
+        condition("RUB",1,1000,10)
+    ),
+    withdrawalsConditions(
+        condition("CAD", 4, 4)
+    )
+) -> accept;
