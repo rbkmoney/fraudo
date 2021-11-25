@@ -18,6 +18,8 @@ public class PaymentModelFieldResolver implements FieldResolver<PaymentModel, Pa
                 return paymentModel.getFingerprint();
             case EMAIL:
                 return paymentModel.getEmail();
+            case PHONE:
+                return paymentModel.getPhone();
             case COUNTRY_BANK:
                 return paymentModel.getBinCountryCode();
             case CARD_TOKEN:

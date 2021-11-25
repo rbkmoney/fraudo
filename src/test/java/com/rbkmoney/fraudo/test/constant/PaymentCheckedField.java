@@ -6,6 +6,7 @@ import java.util.Map;
 public enum PaymentCheckedField {
 
     EMAIL("email"),
+    PHONE("phone"),
     IP("ip"),
     FINGERPRINT("fingerprint"),
     COUNTRY_BANK("country_bank"),

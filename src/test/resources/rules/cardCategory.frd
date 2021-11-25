@@ -1,0 +1,2 @@
+rule: cardCategory() = "credit"
+-> accept;

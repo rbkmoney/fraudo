@@ -100,4 +100,15 @@ public class CountTest extends AbstractPaymentTest {
         verify(countPaymentAggregator, times(1)).count(anyObject(), any(), any(), any());
     }
 
+    @Test
+    public void countPhoneTest() throws Exception {
+        InputStream resourceAsStream = CountTest.class.getResourceAsStream("/rules/count_phone.frd");
+        when(countPaymentAggregator.count(anyObject(), any(), any(), any())).thenReturn(10);
+        ParseContext parseContext = getParseContext(resourceAsStream);
+        ResultModel result = invokeParse(parseContext);
+
+        assertEquals(ResultStatus.DECLINE, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+        verify(countPaymentAggregator, times(1)).count(anyObject(), any(), any(), any());
+    }
+
 }
