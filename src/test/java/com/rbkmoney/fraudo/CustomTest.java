@@ -161,6 +161,34 @@ public class CustomTest extends AbstractPaymentTest {
     }
 
     @Test
+    public void paymentSystemTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/paymentSystem.frd");
+        ParseContext parseContext = getParseContext(resourceAsStream);
+        PaymentModel model = new PaymentModel();
+        model.setPaymentSystem("VISA");
+        ResultModel result = invoke(parseContext, model);
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+
+        model.setPaymentSystem("MIR");
+        result = invoke(parseContext, model);
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
+    }
+
+    @Test
+    public void cardCategoryTest() throws Exception {
+        InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/cardCategory.frd");
+        ParseContext parseContext = getParseContext(resourceAsStream);
+        PaymentModel model = new PaymentModel();
+        model.setCardCategory("credit");
+        ResultModel result = invoke(parseContext, model);
+        assertEquals(ResultStatus.ACCEPT, ResultUtils.findFirstNotNotifyStatus(result).get().getResultStatus());
+
+        model.setCardCategory("debit");
+        result = invoke(parseContext, model);
+        assertFalse(ResultUtils.findFirstNotNotifyStatus(result).isPresent());
+    }
+
+    @Test
     public void catchTest() throws Exception {
         InputStream resourceAsStream = CustomTest.class.getResourceAsStream("/rules/catch.frd");
         when(uniqueValueAggregator.countUniqueValue(any(), any(), any(), any(), any())).thenThrow(new UnknownResultException("as"));

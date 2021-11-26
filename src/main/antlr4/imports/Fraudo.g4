@@ -32,6 +32,14 @@ currency
  : 'currency' LPAREN RPAREN
  ;
 
+payment_system
+ : 'paymentSystem' LPAREN RPAREN
+ ;
+
+card_category
+ : 'cardCategory' LPAREN RPAREN
+ ;
+
 payer_type
  : 'payerType' LPAREN RPAREN
  ;

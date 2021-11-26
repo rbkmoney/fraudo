@@ -1,6 +1,7 @@
 package com.rbkmoney.fraudo.payment.visitor.impl;
 
 import com.rbkmoney.fraudo.FraudoPaymentBaseVisitor;
+import com.rbkmoney.fraudo.FraudoPaymentParser;
 import com.rbkmoney.fraudo.constant.ResultStatus;
 import com.rbkmoney.fraudo.converter.TrustConditionConverter;
 import com.rbkmoney.fraudo.exception.NotImplementedOperatorException;
@@ -11,11 +12,7 @@ import com.rbkmoney.fraudo.model.ResultModel;
 import com.rbkmoney.fraudo.model.RuleResult;
 import com.rbkmoney.fraudo.model.TrustCondition;
 import com.rbkmoney.fraudo.payment.generator.RuleKeyGenerator;
-import com.rbkmoney.fraudo.payment.visitor.CountVisitor;
-import com.rbkmoney.fraudo.payment.visitor.CustomFuncVisitor;
-import com.rbkmoney.fraudo.payment.visitor.IsTrustedFuncVisitor;
-import com.rbkmoney.fraudo.payment.visitor.ListVisitor;
-import com.rbkmoney.fraudo.payment.visitor.SumVisitor;
+import com.rbkmoney.fraudo.payment.visitor.*;
 import com.rbkmoney.fraudo.resolver.FieldResolver;
 import com.rbkmoney.fraudo.utils.TextUtil;
 import com.rbkmoney.fraudo.utils.key.generator.CountKeyGenerator;
@@ -36,7 +33,8 @@ import static com.rbkmoney.fraudo.FraudoPaymentParser.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentBaseVisitor<Object> implements TemplateVisitor<T, ResultModel> {
+public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentBaseVisitor<Object>
+        implements TemplateVisitor<T, ResultModel> {
 
     private ThreadLocal<Map<String, Object>> localFuncCache = ThreadLocal.withInitial(HashMap::new);
     private ThreadLocal<T> threadLocalModel = new ThreadLocal<>();
@@ -418,4 +416,13 @@ public class FirstFindVisitorImpl<T extends BaseModel, U> extends FraudoPaymentB
         );
     }
 
+    @Override
+    public String visitCard_category(FraudoPaymentParser.Card_categoryContext ctx) {
+        return threadLocalModel.get().getCardCategory();
+    }
+
+    @Override
+    public String visitPayment_system(Payment_systemContext ctx) {
+        return threadLocalModel.get().getPaymentSystem();
+    }
 }

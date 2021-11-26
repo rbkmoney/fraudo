@@ -25,6 +25,8 @@ equalityExpression
 stringExpression
     : country_by
     | currency
+    | payment_system
+    | card_category
     | STRING
     ;
 
